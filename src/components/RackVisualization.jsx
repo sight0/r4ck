@@ -1,7 +1,20 @@
 import PropTypes from 'prop-types';
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography, Box } from '@mui/material';
+import { styled } from '@mui/system';
 import RackComponent from './RackComponent';
+
+const StyledRackContainer = styled(Box)({
+    position: 'relative',
+    '& .rack-units': {
+        position: 'absolute',
+        left: '-30px',
+        width: '25px',
+        textAlign: 'right',
+        fontSize: '10px',
+        color: '#999',
+    },
+});
 
 const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) => {
     const [components, setComponents] = useState([]);
@@ -9,10 +22,11 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
     const [newComponent, setNewComponent] = useState(null);
     const [recommendation, setRecommendation] = useState('');
     const [draggedComponent, setDraggedComponent] = useState(null);
+    const [placementIndicator, setPlacementIndicator] = useState(null);
     const rackRef = useRef(null);
 
     const rackHeight = 42 * 20; // 42U rack height
-    const rackWidth = 300;
+    const rackWidth = 400; // Increased width for better visibility
 
     useEffect(() => {
         // TODO: Implement actual recommendation logic
@@ -30,11 +44,24 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
 
         setNewComponent({
             ...component,
-            x: 10, // Always align to left
+            x: 30, // Adjusted to accommodate rack unit labels
             y: snappedY,
             id: Date.now(),
         });
         setDialogOpen(true);
+        setPlacementIndicator(null);
+    }, []);
+
+    const handleDragOver = useCallback((e) => {
+        e.preventDefault();
+        const rect = rackRef.current.getBoundingClientRect();
+        const y = e.clientY - rect.top;
+        const snappedY = Math.floor(y / 20) * 20;
+
+        setPlacementIndicator({
+            y: snappedY,
+            height: 40, // Default height of 2U
+        });
     }, []);
 
     const handleDialogClose = (name, capacity, units) => {
@@ -112,54 +139,81 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
             <Typography variant="h5" sx={{ mb: 2, color: '#333', fontWeight: 'bold' }}>
                 IDF {currentIdf} Rack Design
             </Typography>
-            <Box className="rack-container">
-                <svg
-                    ref={rackRef}
-                    width={rackWidth}
-                    height={rackHeight}
-                    onDrop={handleDrop}
-                    onDragOver={(e) => e.preventDefault()}
-                    onMouseMove={handleComponentDrag}
-                    onMouseUp={handleComponentDragEnd}
-                >
-                    {/* Rack units */}
+            <StyledRackContainer>
+                <Box className="rack-units">
                     {[...Array(42)].map((_, index) => (
-                        <g key={index} transform={`translate(0, ${index * 20})`}>
-                            <line x1="0" y1="0" x2={rackWidth} y2="0" stroke="#ddd" strokeWidth="1" />
-                            <text x="5" y="15" fill="#999" fontSize="10">
-                                {42 - index}U
-                            </text>
-                        </g>
+                        <div key={index} style={{ position: 'absolute', top: `${index * 20}px` }}>
+                            {42 - index}U
+                        </div>
                     ))}
+                </Box>
+                <Box className="rack-container">
+                    <svg
+                        ref={rackRef}
+                        width={rackWidth}
+                        height={rackHeight}
+                        onDrop={handleDrop}
+                        onDragOver={handleDragOver}
+                        onMouseMove={handleComponentDrag}
+                        onMouseUp={handleComponentDragEnd}
+                    >
+                        {/* Rack units */}
+                        {[...Array(42)].map((_, index) => (
+                            <line
+                                key={index}
+                                x1="0"
+                                y1={index * 20}
+                                x2={rackWidth}
+                                y2={index * 20}
+                                stroke="#ddd"
+                                strokeWidth="1"
+                            />
+                        ))}
 
-                    {/* Components */}
-                    {components.map((comp) => (
-                        <RackComponent
-                            key={comp.id}
-                            component={comp}
-                            rackWidth={rackWidth}
-                            onDelete={handleDeleteComponent}
-                            onDragStart={(e) => handleComponentDragStart(e, comp)}
-                            isDragging={draggedComponent && draggedComponent.id === comp.id}
-                        />
-                    ))}
+                        {/* Components */}
+                        {components.map((comp) => (
+                            <RackComponent
+                                key={comp.id}
+                                component={comp}
+                                rackWidth={rackWidth}
+                                onDelete={handleDeleteComponent}
+                                onDragStart={(e) => handleComponentDragStart(e, comp)}
+                                isDragging={draggedComponent && draggedComponent.id === comp.id}
+                            />
+                        ))}
 
-                    {/* Preview of dragged component */}
-                    {draggedComponent && (
-                        <rect
-                            x={10}
-                            y={draggedComponent.y}
-                            width={rackWidth - 20}
-                            height={draggedComponent.units * 20}
-                            fill="rgba(66, 165, 245, 0.5)"
-                            stroke="#1e88e5"
-                            strokeDasharray="5,5"
-                            rx="5"
-                            ry="5"
-                        />
-                    )}
-                </svg>
-            </Box>
+                        {/* Preview of dragged component */}
+                        {draggedComponent && (
+                            <rect
+                                x={30}
+                                y={draggedComponent.y}
+                                width={rackWidth - 40}
+                                height={draggedComponent.units * 20}
+                                fill="rgba(66, 165, 245, 0.5)"
+                                stroke="#1e88e5"
+                                strokeDasharray="5,5"
+                                rx="5"
+                                ry="5"
+                            />
+                        )}
+
+                        {/* Placement indicator */}
+                        {placementIndicator && (
+                            <rect
+                                x={30}
+                                y={placementIndicator.y}
+                                width={rackWidth - 40}
+                                height={placementIndicator.height}
+                                fill="rgba(76, 175, 80, 0.3)"
+                                stroke="#4caf50"
+                                strokeDasharray="5,5"
+                                rx="5"
+                                ry="5"
+                            />
+                        )}
+                    </svg>
+                </Box>
+            </StyledRackContainer>
             <Button onClick={handleNextIdf} className="next-idf-button">
                 Next IDF
             </Button>
