@@ -1,4 +1,5 @@
-import React, { useState, useCallback, useRef } from 'react';
+import PropTypes from 'prop-types';
+import { useState, useCallback, useRef } from 'react';
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
 
 const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) => {
