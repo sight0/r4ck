@@ -1,20 +1,20 @@
-import { useCallback } from 'react';
-import { List, ListItem, TextField } from '@mui/material';
+import React, { useCallback } from 'react';
+import { List, ListItem, TextField, Typography } from '@mui/material';
 
 const components = [
-    { id: 1, name: 'Rack' },
-    { id: 2, name: 'Switch' },
-    // Add more components as needed
+    { id: 1, name: 'Rack', type: 'rack' },
+    { id: 2, name: 'Switch', type: 'switch' },
 ];
 
-const Sidebar = () => {
+const Sidebar = ({ currentIdf }) => {
     const handleDragStart = useCallback((e, component) => {
         e.dataTransfer.setData('component', JSON.stringify(component));
     }, []);
 
     return (
         <aside className="sidebar">
-            <TextField placeholder="Search components" fullWidth />
+            <Typography variant="h6" sx={{ m: 2 }}>IDF {currentIdf}</Typography>
+            <TextField placeholder="Search components" fullWidth sx={{ m: 2 }} />
             <List>
                 {components.map(component => (
                     <ListItem
@@ -22,6 +22,7 @@ const Sidebar = () => {
                         draggable
                         onDragStart={(e) => handleDragStart(e, component)}
                         className="sidebar-item"
+                        sx={{ cursor: 'move' }}
                     >
                         {component.name}
                     </ListItem>
