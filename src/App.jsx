@@ -37,6 +37,7 @@ const App = () => {
                         currentIdf={currentIdf} 
                         setCurrentIdf={setCurrentIdf}
                         totalIdfs={networkInfo.idfs}
+                        idfUsers={networkInfo.idfUsers}
                     />
                 </Grid>
             </Grid>

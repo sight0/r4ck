@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
-import { TextField, Button, Box } from '@mui/material';
+import { TextField, Button, Box, Typography } from '@mui/material';
 
 const InitialSetupForm = ({ onSubmit }) => {
-    const [formData, setFormData] = useState({
-        endDevices: '',
-        idfs: '',
-        mdfs: 1,
-        usersPerIdf: ''
-    });
+    const [numIdfs, setNumIdfs] = useState(1);
+    const [idfUsers, setIdfUsers] = useState({});
 
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+    const handleIdfChange = (e) => {
+        setNumIdfs(parseInt(e.target.value) || 1);
+    };
+
+    const handleUserChange = (idf, value) => {
+        setIdfUsers({ ...idfUsers, [idf]: value });
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onSubmit(formData);
+        onSubmit({ idfs: numIdfs, idfUsers });
     };
 
     return (
@@ -23,33 +23,26 @@ const InitialSetupForm = ({ onSubmit }) => {
             <TextField
                 fullWidth
                 margin="normal"
-                name="endDevices"
-                label="Number of End Devices"
-                type="number"
-                value={formData.endDevices}
-                onChange={handleChange}
-                required
-            />
-            <TextField
-                fullWidth
-                margin="normal"
                 name="idfs"
                 label="Number of IDFs"
                 type="number"
-                value={formData.idfs}
-                onChange={handleChange}
+                value={numIdfs}
+                onChange={handleIdfChange}
                 required
             />
-            <TextField
-                fullWidth
-                margin="normal"
-                name="usersPerIdf"
-                label="Users per IDF"
-                type="number"
-                value={formData.usersPerIdf}
-                onChange={handleChange}
-                required
-            />
+            {[...Array(numIdfs)].map((_, index) => (
+                <TextField
+                    key={index}
+                    fullWidth
+                    margin="normal"
+                    name={`idf-${index + 1}`}
+                    label={`Users for IDF ${index + 1}`}
+                    type="number"
+                    value={idfUsers[index + 1] || ''}
+                    onChange={(e) => handleUserChange(index + 1, e.target.value)}
+                    required
+                />
+            ))}
             <Button type="submit" variant="contained" sx={{ mt: 2 }}>
                 Start Design
             </Button>

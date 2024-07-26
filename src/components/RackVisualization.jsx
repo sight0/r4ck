@@ -1,22 +1,23 @@
-import React, { useState, useCallback } from 'react';
-import { Stage, Layer, Rect, Text } from 'react-konva';
+import React, { useState, useCallback, useRef } from 'react';
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
 
-const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs }) => {
+const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) => {
     const [components, setComponents] = useState([]);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [newComponent, setNewComponent] = useState(null);
+    const rackRef = useRef(null);
 
     const handleDrop = useCallback((e) => {
         e.preventDefault();
-        const stage = e.target.getStage();
-        const point = stage.getPointerPosition();
+        const rect = rackRef.current.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
         const component = JSON.parse(e.dataTransfer.getData('component'));
 
         setNewComponent({
             ...component,
-            x: point.x,
-            y: point.y,
+            x,
+            y,
             id: components.length,
         });
         setDialogOpen(true);
@@ -45,41 +46,46 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs }) => {
         }
     };
 
+    const rackHeight = 42 * 20; // 42U rack height
+    const rackWidth = 200;
+
     return (
         <div className="rack-visualization">
-            <div
+            <svg
+                ref={rackRef}
+                width={rackWidth}
+                height={rackHeight}
                 onDrop={handleDrop}
                 onDragOver={(e) => e.preventDefault()}
-                style={{ width: '100%', height: '100%' }}
             >
-                <Stage width={window.innerWidth * 0.8} height={window.innerHeight}>
-                    <Layer>
-                        {components.map((comp) => (
-                            <React.Fragment key={comp.id}>
-                                <Rect
-                                    x={comp.x}
-                                    y={comp.y}
-                                    width={100}
-                                    height={comp.units * 20}
-                                    fill={comp.type === 'rack' ? '#8d6e63' : '#42a5f5'}
-                                    stroke={comp.type === 'rack' ? '#5d4037' : '#1e88e5'}
-                                    strokeWidth={2}
-                                    draggable
-                                />
-                                <Text
-                                    x={comp.x}
-                                    y={comp.y + 5}
-                                    width={100}
-                                    text={`${comp.name}\n${comp.capacity}`}
-                                    fontSize={12}
-                                    fill="white"
-                                    align="center"
-                                />
-                            </React.Fragment>
-                        ))}
-                    </Layer>
-                </Stage>
-            </div>
+                {/* Rack outline */}
+                <rect x="0" y="0" width={rackWidth} height={rackHeight} fill="#f0f0f0" stroke="#000" />
+                
+                {/* Patch panels */}
+                {[...Array(Math.ceil(idfUsers[currentIdf] / 24))].map((_, index) => (
+                    <g key={index} transform={`translate(0, ${index * 20})`}>
+                        <rect x="10" y="0" width={rackWidth - 20} height="20" fill="#42a5f5" stroke="#1e88e5" />
+                        <text x={rackWidth / 2} y="15" textAnchor="middle" fill="white" fontSize="12">
+                            Patch Panel {index + 1}
+                        </text>
+                    </g>
+                ))}
+
+                {/* Other components */}
+                {components.map((comp) => (
+                    <g key={comp.id} transform={`translate(${comp.x}, ${comp.y})`}>
+                        <rect
+                            width={rackWidth - 20}
+                            height={comp.units * 20}
+                            fill={comp.type === 'rack' ? '#8d6e63' : '#42a5f5'}
+                            stroke={comp.type === 'rack' ? '#5d4037' : '#1e88e5'}
+                        />
+                        <text x={(rackWidth - 20) / 2} y="15" textAnchor="middle" fill="white" fontSize="12">
+                            {comp.name} ({comp.capacity})
+                        </text>
+                    </g>
+                ))}
+            </svg>
             <Button onClick={handleNextIdf} disabled={currentIdf >= totalIdfs}>
                 Next IDF
             </Button>
