@@ -25,7 +25,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
         const component = JSON.parse(e.dataTransfer.getData('component'));
 
         // Snap to grid
-        const snappedY = Math.round(y / 20) * 20;
+        const snappedY = Math.floor(y / 20) * 20;
 
         setNewComponent({
             ...component,
@@ -38,15 +38,24 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
 
     const handleDialogClose = (name, capacity, units) => {
         if (name && capacity && units) {
-            setComponents(prevComponents => [
-                ...prevComponents,
-                {
-                    ...newComponent,
-                    name,
-                    capacity,
-                    units: parseInt(units),
-                }
-            ]);
+            const newComp = {
+                ...newComponent,
+                name,
+                capacity,
+                units: parseInt(units),
+            };
+            
+            // Check for overlap with existing components
+            const overlap = components.some(comp => 
+                (newComp.y < comp.y + comp.units * 20) && 
+                (newComp.y + newComp.units * 20 > comp.y)
+            );
+
+            if (!overlap) {
+                setComponents(prevComponents => [...prevComponents, newComp]);
+            } else {
+                alert("This position overlaps with an existing component. Please choose a different position.");
+            }
         }
         setDialogOpen(false);
         setNewComponent(null);
@@ -59,16 +68,14 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
         }
     };
 
-    const handleComponentDrop = useCallback((e) => {
-        e.preventDefault();
-        const componentId = e.dataTransfer.getData('componentId');
+    const handleComponentDrag = useCallback((e, id) => {
         const rect = rackRef.current.getBoundingClientRect();
         const y = e.clientY - rect.top;
-        const snappedY = Math.round(y / 20) * 20;
+        const snappedY = Math.floor(y / 20) * 20;
 
         setComponents(prevComponents => 
             prevComponents.map(comp => 
-                comp.id.toString() === componentId ? { ...comp, y: snappedY } : comp
+                comp.id === id ? { ...comp, y: snappedY } : comp
             )
         );
     }, []);
@@ -107,7 +114,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
                             component={comp}
                             rackWidth={rackWidth}
                             onDelete={handleDeleteComponent}
-                            onDragStart={(e) => e.dataTransfer.setData('componentId', comp.id)}
+                            onDrag={(e) => handleComponentDrag(e, comp.id)}
                         />
                     ))}
                 </svg>
@@ -118,16 +125,21 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
             <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
                 <DialogTitle>Component Details</DialogTitle>
                 <DialogContent>
-                    <TextField label="Name" fullWidth margin="normal" />
-                    <TextField label="Capacity/Ports" fullWidth margin="normal" />
-                    <TextField label="Units (U)" type="number" fullWidth margin="normal" />
+                    <TextField label="Name" fullWidth margin="normal" id="component-name" />
+                    <TextField label="Capacity/Ports" fullWidth margin="normal" id="component-capacity" />
+                    <TextField label="Units (U)" type="number" fullWidth margin="normal" id="component-units" />
                     <Typography variant="body2" className="recommendation">
                         {recommendation}
                     </Typography>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
-                    <Button onClick={() => handleDialogClose('Sample Name', '24 ports', '1')}>Add</Button>
+                    <Button onClick={() => {
+                        const name = document.getElementById('component-name').value;
+                        const capacity = document.getElementById('component-capacity').value;
+                        const units = document.getElementById('component-units').value;
+                        handleDialogClose(name, capacity, units);
+                    }}>Add</Button>
                 </DialogActions>
             </Dialog>
         </Box>
