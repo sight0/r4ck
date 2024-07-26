@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography, Box } from '@mui/material';
+import RackComponent from './RackComponent';
 
 const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) => {
     const [components, setComponents] = useState([]);
@@ -20,7 +21,6 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
     const handleDrop = useCallback((e) => {
         e.preventDefault();
         const rect = rackRef.current.getBoundingClientRect();
-        const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
         const component = JSON.parse(e.dataTransfer.getData('component'));
 
@@ -59,10 +59,6 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
         }
     };
 
-    const handleDragStart = (e, id) => {
-        e.dataTransfer.setData('componentId', id);
-    };
-
     const handleComponentDrop = useCallback((e) => {
         e.preventDefault();
         const componentId = e.dataTransfer.getData('componentId');
@@ -77,36 +73,21 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
         );
     }, []);
 
+    const handleDeleteComponent = (id) => {
+        setComponents(prevComponents => prevComponents.filter(comp => comp.id !== id));
+    };
+
     return (
-        <Box className="rack-visualization" sx={{ 
-            display: 'flex', 
-            flexDirection: 'column', 
-            alignItems: 'center', 
-            p: 3, 
-            background: 'linear-gradient(145deg, #f0f0f0, #e6e6e6)',
-            borderRadius: '15px',
-            boxShadow: '20px 20px 60px #bebebe, -20px -20px 60px #ffffff',
-        }}>
+        <Box className="rack-visualization">
             <Typography variant="h5" sx={{ mb: 2, color: '#333', fontWeight: 'bold' }}>
                 IDF {currentIdf} Rack Design
             </Typography>
-            <Box sx={{ 
-                position: 'relative', 
-                width: rackWidth, 
-                height: rackHeight,
-                border: '2px solid #333',
-                borderRadius: '5px',
-                overflow: 'hidden',
-                transition: 'all 0.3s ease',
-                '&:hover': {
-                    boxShadow: '0 0 15px rgba(0,0,0,0.2)',
-                },
-            }}>
+            <Box className="rack-container">
                 <svg
                     ref={rackRef}
                     width={rackWidth}
                     height={rackHeight}
-                    onDrop={handleComponentDrop}
+                    onDrop={handleDrop}
                     onDragOver={(e) => e.preventDefault()}
                 >
                     {/* Rack units */}
@@ -121,43 +102,17 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
 
                     {/* Components */}
                     {components.map((comp) => (
-                        <g 
-                            key={comp.id} 
-                            transform={`translate(${comp.x}, ${comp.y})`}
-                            draggable
-                            onDragStart={(e) => handleDragStart(e, comp.id)}
-                        >
-                            <rect
-                                width={rackWidth - 20}
-                                height={comp.units * 20}
-                                fill={comp.type === 'rack' ? '#8d6e63' : '#42a5f5'}
-                                stroke={comp.type === 'rack' ? '#5d4037' : '#1e88e5'}
-                                rx="5"
-                                ry="5"
-                            />
-                            <text x={(rackWidth - 20) / 2} y={(comp.units * 20) / 2} textAnchor="middle" fill="white" fontSize="12" dy=".3em">
-                                {comp.name} ({comp.capacity})
-                            </text>
-                        </g>
+                        <RackComponent
+                            key={comp.id}
+                            component={comp}
+                            rackWidth={rackWidth}
+                            onDelete={handleDeleteComponent}
+                            onDragStart={(e) => e.dataTransfer.setData('componentId', comp.id)}
+                        />
                     ))}
                 </svg>
             </Box>
-            <Button 
-                onClick={handleNextIdf}
-                sx={{ 
-                    mt: 2, 
-                    background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-                    border: 0,
-                    borderRadius: 3,
-                    boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
-                    color: 'white',
-                    height: 48,
-                    padding: '0 30px',
-                    '&:hover': {
-                        background: 'linear-gradient(45deg, #FE8B8B 30%, #FFAE73 90%)',
-                    },
-                }}
-            >
+            <Button onClick={handleNextIdf} className="next-idf-button">
                 Next IDF
             </Button>
             <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
@@ -166,7 +121,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
                     <TextField label="Name" fullWidth margin="normal" />
                     <TextField label="Capacity/Ports" fullWidth margin="normal" />
                     <TextField label="Units (U)" type="number" fullWidth margin="normal" />
-                    <Typography variant="body2" sx={{ mt: 2, p: 2, bgcolor: '#f0f7ff', borderRadius: 1, color: '#0277bd' }}>
+                    <Typography variant="body2" className="recommendation">
                         {recommendation}
                     </Typography>
                 </DialogContent>
