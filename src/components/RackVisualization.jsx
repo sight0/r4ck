@@ -31,10 +31,10 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
             ...component,
             x: 10, // Always align to left
             y: snappedY,
-            id: components.length,
+            id: Date.now(),
         });
         setDialogOpen(true);
-    }, [components]);
+    }, []);
 
     const handleDialogClose = (name, capacity, units) => {
         if (name && capacity && units) {
@@ -59,6 +59,24 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
         }
     };
 
+    const handleDragStart = (e, id) => {
+        e.dataTransfer.setData('componentId', id);
+    };
+
+    const handleComponentDrop = useCallback((e) => {
+        e.preventDefault();
+        const componentId = e.dataTransfer.getData('componentId');
+        const rect = rackRef.current.getBoundingClientRect();
+        const y = e.clientY - rect.top;
+        const snappedY = Math.round(y / 20) * 20;
+
+        setComponents(prevComponents => 
+            prevComponents.map(comp => 
+                comp.id.toString() === componentId ? { ...comp, y: snappedY } : comp
+            )
+        );
+    }, []);
+
     return (
         <Box className="rack-visualization" sx={{ 
             display: 'flex', 
@@ -71,9 +89,6 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
         }}>
             <Typography variant="h5" sx={{ mb: 2, color: '#333', fontWeight: 'bold' }}>
                 IDF {currentIdf} Rack Design
-            </Typography>
-            <Typography variant="body2" sx={{ mb: 2, color: '#666', fontStyle: 'italic' }}>
-                {recommendation}
             </Typography>
             <Box sx={{ 
                 position: 'relative', 
@@ -91,7 +106,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
                     ref={rackRef}
                     width={rackWidth}
                     height={rackHeight}
-                    onDrop={handleDrop}
+                    onDrop={handleComponentDrop}
                     onDragOver={(e) => e.preventDefault()}
                 >
                     {/* Rack units */}
@@ -106,7 +121,12 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
 
                     {/* Components */}
                     {components.map((comp) => (
-                        <g key={comp.id} transform={`translate(${comp.x}, ${comp.y})`}>
+                        <g 
+                            key={comp.id} 
+                            transform={`translate(${comp.x}, ${comp.y})`}
+                            draggable
+                            onDragStart={(e) => handleDragStart(e, comp.id)}
+                        >
                             <rect
                                 width={rackWidth - 20}
                                 height={comp.units * 20}
@@ -147,6 +167,9 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
                     <TextField label="Name" fullWidth margin="normal" />
                     <TextField label="Capacity/Ports" fullWidth margin="normal" />
                     <TextField label="Units (U)" type="number" fullWidth margin="normal" />
+                    <Typography variant="body2" sx={{ mt: 2, p: 2, bgcolor: '#f0f7ff', borderRadius: 1, color: '#0277bd' }}>
+                        {recommendation}
+                    </Typography>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
