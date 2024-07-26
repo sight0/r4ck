@@ -1,4 +1,3 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 import { IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -21,7 +20,7 @@ const RackComponent = ({ component, rackWidth, onDelete, onDragStart }) => {
             <text x={(rackWidth - 20) / 2} y={(component.units * 20) / 2} textAnchor="middle" fill="white" fontSize="12" dy=".3em">
                 {component.name} ({component.capacity})
             </text>
-            <foreignObject x={rackWidth - 50} y="0" width="30" height="30">
+            <foreignObject x={rackWidth - 50} y='-4'  width="30" height="30">
                 <IconButton onClick={() => onDelete(component.id)} size="small">
                     <DeleteIcon fontSize="small" />
                 </IconButton>
