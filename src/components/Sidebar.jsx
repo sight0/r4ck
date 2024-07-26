@@ -1,4 +1,4 @@
-import React from 'react';
+import { useCallback } from 'react';
 import { List, ListItem, TextField } from '@mui/material';
 
 const components = [
@@ -7,10 +7,10 @@ const components = [
     // Add more components as needed
 ];
 
-function Sidebar() {
-    const handleDragStart = (e, component) => {
+const Sidebar = () => {
+    const handleDragStart = useCallback((e, component) => {
         e.dataTransfer.setData('component', JSON.stringify(component));
-    };
+    }, []);
 
     return (
         <aside className="sidebar">

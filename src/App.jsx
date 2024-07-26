@@ -4,9 +4,9 @@ import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import RackVisualization from './components/RackVisualization';
 
-function App() {
+const App = () => {
     return (
-        <div>
+        <>
             <Header />
             <Grid container>
                 <Grid item xs={2}>
@@ -16,7 +16,7 @@ function App() {
                     <RackVisualization />
                 </Grid>
             </Grid>
-        </div>
+        </>
     );
 }
 

@@ -1,4 +1,3 @@
-import React from 'react';
 import { AppBar, Toolbar, Typography } from '@mui/material';
 import { styled } from '@mui/system';
 
@@ -12,7 +11,7 @@ const Title = styled(Typography)({
     fontFamily: 'Roboto, sans-serif',
 });
 
-function Header() {
+const Header = () => {
     return (
         <AppBar position="static">
             <Toolbar className="app-bar">

@@ -1,25 +1,25 @@
-import React, { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Stage, Layer, Rect } from 'react-konva';
 
-function RackVisualization() {
+const RackVisualization = () => {
     const [components, setComponents] = useState([]);
 
-    const handleDrop = (e) => {
+    const handleDrop = useCallback((e) => {
         e.preventDefault();
         const stage = e.target.getStage();
         const point = stage.getPointerPosition();
         const component = JSON.parse(e.dataTransfer.getData('component'));
 
-        setComponents([
-            ...components,
+        setComponents(prevComponents => [
+            ...prevComponents,
             {
                 ...component,
                 x: point.x,
                 y: point.y,
-                id: components.length,
+                id: prevComponents.length,
             }
         ]);
-    };
+    }, []);
 
     return (
         <div
