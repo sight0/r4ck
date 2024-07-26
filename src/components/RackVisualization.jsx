@@ -143,8 +143,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
                 </svg>
             </Box>
             <Button 
-                onClick={handleNextIdf} 
-                disabled={currentIdf >= totalIdfs}
+                onClick={handleNextIdf}
                 sx={{ 
                     mt: 2, 
                     background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
