@@ -5,7 +5,7 @@ const InitialSetupForm = ({ onSubmit }) => {
     const [formData, setFormData] = useState({
         endDevices: '',
         idfs: '',
-        mdfs: '',
+        mdfs: 1,
         usersPerIdf: ''
     });
 
@@ -37,16 +37,6 @@ const InitialSetupForm = ({ onSubmit }) => {
                 label="Number of IDFs"
                 type="number"
                 value={formData.idfs}
-                onChange={handleChange}
-                required
-            />
-            <TextField
-                fullWidth
-                margin="normal"
-                name="mdfs"
-                label="Number of MDFs"
-                type="number"
-                value={formData.mdfs}
                 onChange={handleChange}
                 required
             />
