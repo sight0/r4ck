@@ -2,17 +2,18 @@ import PropTypes from 'prop-types';
 import { IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-const RackComponent = ({ component, rackWidth, onDelete, onDrag }) => {
+const RackComponent = ({ component, rackWidth, onDelete, onDragStart, isDragging }) => {
     return (
         <g 
             transform={`translate(${component.x}, ${component.y})`}
             draggable="true"
-            onDrag={onDrag}
+            onMouseDown={(e) => onDragStart(e)}
+            style={{ cursor: 'move' }}
         >
             <rect
                 width={rackWidth - 20}
                 height={component.units * 20}
-                fill="#42a5f5"
+                fill={isDragging ? "rgba(66, 165, 245, 0.5)" : "#42a5f5"}
                 stroke="#1e88e5"
                 rx="5"
                 ry="5"
@@ -40,7 +41,8 @@ RackComponent.propTypes = {
     }).isRequired,
     rackWidth: PropTypes.number.isRequired,
     onDelete: PropTypes.func.isRequired,
-    onDrag: PropTypes.func.isRequired,
+    onDragStart: PropTypes.func.isRequired,
+    isDragging: PropTypes.bool.isRequired,
 };
 
 export default RackComponent;

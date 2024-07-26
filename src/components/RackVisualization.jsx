@@ -8,6 +8,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
     const [dialogOpen, setDialogOpen] = useState(false);
     const [newComponent, setNewComponent] = useState(null);
     const [recommendation, setRecommendation] = useState('');
+    const [draggedComponent, setDraggedComponent] = useState(null);
     const rackRef = useRef(null);
 
     const rackHeight = 42 * 20; // 42U rack height
@@ -68,17 +69,39 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
         }
     };
 
-    const handleComponentDrag = useCallback((e, id) => {
+    const handleComponentDragStart = useCallback((e, component) => {
+        setDraggedComponent(component);
+    }, []);
+
+    const handleComponentDrag = useCallback((e) => {
+        if (!draggedComponent) return;
+
         const rect = rackRef.current.getBoundingClientRect();
         const y = e.clientY - rect.top;
         const snappedY = Math.floor(y / 20) * 20;
 
-        setComponents(prevComponents => 
-            prevComponents.map(comp => 
-                comp.id === id ? { ...comp, y: snappedY } : comp
-            )
+        setDraggedComponent(prev => ({ ...prev, y: snappedY }));
+    }, [draggedComponent]);
+
+    const handleComponentDragEnd = useCallback(() => {
+        if (!draggedComponent) return;
+
+        const overlap = components.some(comp => 
+            comp.id !== draggedComponent.id &&
+            (draggedComponent.y < comp.y + comp.units * 20) && 
+            (draggedComponent.y + draggedComponent.units * 20 > comp.y)
         );
-    }, []);
+
+        if (!overlap) {
+            setComponents(prevComponents => 
+                prevComponents.map(comp => 
+                    comp.id === draggedComponent.id ? draggedComponent : comp
+                )
+            );
+        }
+
+        setDraggedComponent(null);
+    }, [draggedComponent, components]);
 
     const handleDeleteComponent = (id) => {
         setComponents(prevComponents => prevComponents.filter(comp => comp.id !== id));
@@ -96,6 +119,8 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
                     height={rackHeight}
                     onDrop={handleDrop}
                     onDragOver={(e) => e.preventDefault()}
+                    onMouseMove={handleComponentDrag}
+                    onMouseUp={handleComponentDragEnd}
                 >
                     {/* Rack units */}
                     {[...Array(42)].map((_, index) => (
@@ -114,9 +139,25 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
                             component={comp}
                             rackWidth={rackWidth}
                             onDelete={handleDeleteComponent}
-                            onDrag={(e) => handleComponentDrag(e, comp.id)}
+                            onDragStart={(e) => handleComponentDragStart(e, comp)}
+                            isDragging={draggedComponent && draggedComponent.id === comp.id}
                         />
                     ))}
+
+                    {/* Preview of dragged component */}
+                    {draggedComponent && (
+                        <rect
+                            x={10}
+                            y={draggedComponent.y}
+                            width={rackWidth - 20}
+                            height={draggedComponent.units * 20}
+                            fill="rgba(66, 165, 245, 0.5)"
+                            stroke="#1e88e5"
+                            strokeDasharray="5,5"
+                            rx="5"
+                            ry="5"
+                        />
+                    )}
                 </svg>
             </Box>
             <Button onClick={handleNextIdf} className="next-idf-button">
