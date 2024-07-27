@@ -8,7 +8,7 @@ const StyledRackContainer = styled(Box)({
     position: 'relative',
     '& .rack-units': {
         position: 'absolute',
-        left: '-30px',
+        left: '1px',
         width: '25px',
         textAlign: 'right',
         fontSize: '10px',
@@ -26,7 +26,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
     const rackRef = useRef(null);
 
     const rackHeight = 42 * 20; // 42U rack height
-    const rackWidth = 400; // Increased width for better visibility
+    const rackWidth = 300; // Increased width for better visibility
 
     useEffect(() => {
         // TODO: Implement actual recommendation logic

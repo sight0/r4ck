@@ -42,7 +42,7 @@ RackComponent.propTypes = {
     rackWidth: PropTypes.number.isRequired,
     onDelete: PropTypes.func.isRequired,
     onDragStart: PropTypes.func.isRequired,
-    isDragging: PropTypes.bool.isRequired,
+    isDragging: PropTypes.bool,
 };
 
 export default RackComponent;
