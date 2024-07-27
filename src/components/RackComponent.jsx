@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types';
 import { IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
-const RackComponent = ({ component, rackWidth, onDelete, onDragStart, isDragging }) => {
+const RackComponent = ({ component, rackWidth, onDelete, onEdit, onDragStart, isDragging }) => {
     return (
         <g 
             transform={`translate(${component.x}, ${component.y})`}
@@ -21,7 +22,12 @@ const RackComponent = ({ component, rackWidth, onDelete, onDragStart, isDragging
             <text x={(rackWidth - 40) / 2} y={(component.units * 20) / 2} textAnchor="middle" fill="white" fontSize="12" dy=".3em">
                 {component.name} ({component.capacity})
             </text>
-            <foreignObject x={rackWidth - 70} y='-4'  width="30" height="30">
+            <foreignObject x={rackWidth - 100} y='-4' width="30" height="30">
+                <IconButton onClick={() => onEdit(component)} size="small">
+                    <EditIcon fontSize="small" />
+                </IconButton>
+            </foreignObject>
+            <foreignObject x={rackWidth - 70} y='-4' width="30" height="30">
                 <IconButton onClick={() => onDelete(component.id)} size="small">
                     <DeleteIcon fontSize="small" />
                 </IconButton>
@@ -38,9 +44,11 @@ RackComponent.propTypes = {
         name: PropTypes.string.isRequired,
         capacity: PropTypes.string.isRequired,
         units: PropTypes.number.isRequired,
+        type: PropTypes.string.isRequired,
     }).isRequired,
     rackWidth: PropTypes.number.isRequired,
     onDelete: PropTypes.func.isRequired,
+    onEdit: PropTypes.func.isRequired,
     onDragStart: PropTypes.func.isRequired,
     isDragging: PropTypes.bool,
 };

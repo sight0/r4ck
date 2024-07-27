@@ -3,6 +3,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography, Box } from '@mui/material';
 import { styled } from '@mui/system';
 import RackComponent from './RackComponent';
+import ComponentConfigDialog from './ComponentConfigDialog';
 
 const StyledRackContainer = styled(Box)({
     position: 'relative',
@@ -20,9 +21,11 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
     const [components, setComponents] = useState([]);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [newComponent, setNewComponent] = useState(null);
+    const [editComponent, setEditComponent] = useState(null);
     const [recommendation, setRecommendation] = useState('');
     const [draggedComponent, setDraggedComponent] = useState(null);
     const [placementIndicator, setPlacementIndicator] = useState(null);
+    const [configDialogOpen, setConfigDialogOpen] = useState(false);
     const rackRef = useRef(null);
 
     const rackHeight = 42 * 20; // 42U rack height
@@ -134,6 +137,23 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
         setComponents(prevComponents => prevComponents.filter(comp => comp.id !== id));
     };
 
+    const handleEditComponent = (component) => {
+        setEditComponent(component);
+        setConfigDialogOpen(true);
+    };
+
+    const handleConfigDialogClose = (updatedComponent) => {
+        if (updatedComponent) {
+            setComponents(prevComponents =>
+                prevComponents.map(comp =>
+                    comp.id === updatedComponent.id ? updatedComponent : comp
+                )
+            );
+        }
+        setConfigDialogOpen(false);
+        setEditComponent(null);
+    };
+
     return (
         <Box className="rack-visualization">
             <Typography variant="h5" sx={{ mb: 2, color: '#333', fontWeight: 'bold' }}>
@@ -177,6 +197,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
                                 component={comp}
                                 rackWidth={rackWidth}
                                 onDelete={handleDeleteComponent}
+                                onEdit={handleEditComponent}
                                 onDragStart={(e) => handleComponentDragStart(e, comp)}
                                 isDragging={draggedComponent && draggedComponent.id === comp.id}
                             />
@@ -237,6 +258,11 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
                     }}>Add</Button>
                 </DialogActions>
             </Dialog>
+            <ComponentConfigDialog
+                open={configDialogOpen}
+                onClose={handleConfigDialogClose}
+                component={editComponent}
+            />
         </Box>
     );
 }
