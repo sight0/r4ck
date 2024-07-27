@@ -128,6 +128,9 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
                     comp.id === draggedComponent.id ? draggedComponent : comp
                 )
             );
+        } else {
+            // If there's an overlap, revert to the original position
+            setComponents(prevComponents => prevComponents);
         }
 
         setDraggedComponent(null);
@@ -144,11 +147,21 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
 
     const handleConfigDialogClose = (updatedComponent) => {
         if (updatedComponent) {
-            setComponents(prevComponents =>
-                prevComponents.map(comp =>
-                    comp.id === updatedComponent.id ? updatedComponent : comp
-                )
+            const overlap = components.some(comp => 
+                comp.id !== updatedComponent.id &&
+                (updatedComponent.y < comp.y + comp.units * 20) && 
+                (updatedComponent.y + updatedComponent.units * 20 > comp.y)
             );
+
+            if (!overlap) {
+                setComponents(prevComponents =>
+                    prevComponents.map(comp =>
+                        comp.id === updatedComponent.id ? updatedComponent : comp
+                    )
+                );
+            } else {
+                alert("The updated component overlaps with existing components. Please adjust the size or position.");
+            }
         }
         setConfigDialogOpen(false);
         setEditComponent(null);
