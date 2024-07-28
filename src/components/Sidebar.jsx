@@ -1,4 +1,5 @@
-import React, { useCallback } from 'react';
+import PropTypes from 'prop-types';
+import { useCallback } from 'react';
 import { List, ListItem, TextField, Typography, Box } from '@mui/material';
 
 const components = [
@@ -69,5 +70,9 @@ const Sidebar = ({ currentIdf }) => {
         </Box>
     );
 }
+
+Sidebar.propTypes = {
+    currentIdf: PropTypes.number.isRequired,
+};
 
 export default Sidebar;

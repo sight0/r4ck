@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { TextField, Button, Box, Typography } from '@mui/material';
+import PropTypes from 'prop-types';
+import { useState } from 'react';
+import { TextField, Button, Box } from '@mui/material';
 
 const InitialSetupForm = ({ onSubmit }) => {
     const [numIdfs, setNumIdfs] = useState(1);
@@ -49,5 +50,9 @@ const InitialSetupForm = ({ onSubmit }) => {
         </Box>
     );
 };
+
+InitialSetupForm.propTypes = {
+    onSubmit: PropTypes.func.isRequired,
+}
 
 export default InitialSetupForm;
