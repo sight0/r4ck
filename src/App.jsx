@@ -18,7 +18,7 @@ const App = () => {
                 main: '#ffffff',
             },
             secondary: {
-                main: '#FFD700', // New accent color (golden)
+                main: '#bdbdbd', // New accent color (golden)
             },
             background: {
                 default: '#303030',
