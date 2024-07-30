@@ -9,10 +9,10 @@ import InitialSetupForm from './components/InitialSetupForm';
 const theme = createTheme({
     palette: {
         primary: {
-            main: '#42a5f5',
+            main: '#ffffff',
         },
         secondary: {
-            main: '#f50057',
+            main: '#beb8b8',
         },
     },
 });
