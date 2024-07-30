@@ -13,7 +13,7 @@ const StyledRackContainer = styled(Box)({
         width: '25px',
         textAlign: 'right',
         fontSize: '10px',
-        color: '#999',
+        color: '#999'
     },
 });
 
@@ -176,7 +176,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
                 <StyledRackContainer>
                     <Box className="rack-units">
                         {[...Array(42)].map((_, index) => (
-                            <div key={index} style={{ position: 'absolute', top: `${index * 20}px` }}>
+                            <div key={index} style={{ position: 'absolute', top: `${index * 20}px`, color: '#fff' }}>
                                 {42 - index}U
                             </div>
                         ))}
@@ -192,15 +192,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
                             onMouseUp={handleComponentDragEnd}
                         >
                             {/* Rack outline */}
-                            <rect
-                                x="0"
-                                y="0"
-                                width={rackWidth}
-                                height={rackHeight}
-                                fill="none"
-                                stroke="#666"
-                                strokeWidth="2"
-                            />
+
                             {/* Rack units */}
                             {[...Array(42)].map((_, index) => (
                                 <line
