@@ -191,11 +191,11 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
                             onMouseMove={handleComponentDrag}
                             onMouseUp={handleComponentDragEnd}
                         >
-                            {/*<rect*/}
-                            {/*    className="canvas-background"*/}
-                            {/*    width={rackWidth}*/}
-                            {/*    height={rackHeight}*/}
-                            {/*/>*/}
+                            <rect
+                                className="canvas-background"
+                                width={rackWidth}
+                                height={rackHeight}
+                            />
 
                             {/* Rack units */}
                             {[...Array(42)].map((_, index) => (
@@ -205,8 +205,9 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
                                     y1={index * 20}
                                     x2={rackWidth}
                                     y2={index * 20}
-                                    stroke="#ddd"
+                                    stroke="currentColor"
                                     strokeWidth="1"
+                                    opacity="0.2"
                                 />
                             ))}
 

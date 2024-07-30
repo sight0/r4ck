@@ -46,6 +46,13 @@ button {
   transition: background-color var(--transition-speed), color var(--transition-speed);
 }
 
+button:focus,
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 2px solid var(--accent-color);
+}
+
 .app-bar {
   background-color: var(--primary-color);
   color: var(--text-dark);
@@ -79,17 +86,19 @@ button {
 
 .rack-visualization-container {
   background-color: var(--background-light);
-  transition: background-color var(--transition-speed);
+  transition: background-color var(--transition-speed), color var(--transition-speed);
   padding: 20px;
   border-radius: 8px;
 }
 
 body.dark-mode .rack-visualization-container {
   background-color: var(--background-dark);
+  color: var(--text-dark);
 }
 
 .rack-visualization {
   background-color: inherit;
+  color: inherit;
 }
 
 .canvas-background {
@@ -97,8 +106,17 @@ body.dark-mode .rack-visualization-container {
   transition: fill var(--transition-speed);
 }
 
-.dark-mode .canvas-background {
+body.dark-mode .canvas-background {
   fill: var(--background-dark);
+}
+
+.rack-units {
+  color: var(--text-light);
+  transition: color var(--transition-speed);
+}
+
+body.dark-mode .rack-units {
+  color: var(--text-dark);
 }
 
 /* Add golden hover effect to buttons */
