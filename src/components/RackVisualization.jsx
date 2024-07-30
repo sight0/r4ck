@@ -168,11 +168,11 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
     };
 
     return (
-        <Box className="rack-visualization">
-            <Typography variant="h5" sx={{ mb: 2, fontWeight: 'bold' }}>
+        <Box className="rack-visualization-container">
+            <Typography variant="h5" sx={{ mb: 2, fontWeight: 'bold', color: 'text.primary' }}>
                 IDF {currentIdf} Rack Design
             </Typography>
-            <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }} className="rack-visualization">
                 <StyledRackContainer>
                     <Box className="rack-units">
                         {[...Array(42)].map((_, index) => (

@@ -77,13 +77,19 @@ button {
   color: var(--text-dark);
 }
 
-.rack-visualization {
+.rack-visualization-container {
   background-color: var(--background-light);
   transition: background-color var(--transition-speed);
+  padding: 20px;
+  border-radius: 8px;
 }
 
-.dark-mode .rack-visualization {
+body.dark-mode .rack-visualization-container {
   background-color: var(--background-dark);
+}
+
+.rack-visualization {
+  background-color: inherit;
 }
 
 .canvas-background {
