@@ -7,6 +7,7 @@
   --text-light: #333333;
   --text-dark: #ffffff;
   --transition-speed: 0.3s;
+  --accent-color: #ffd700; /* Gold */
 }
 
 body {
@@ -64,7 +65,7 @@ button {
 
 .sidebar-item {
   background-color: rgba(0, 0, 0, 0.05);
-  transition: background-color var(--transition-speed);
+  transition: background-color var(--transition-speed), color var(--transition-speed);
 }
 
 .dark-mode .sidebar-item {
@@ -72,11 +73,8 @@ button {
 }
 
 .sidebar-item:hover {
-  background-color: rgba(0, 0, 0, 0.1);
-}
-
-.dark-mode .sidebar-item:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: var(--accent-color);
+  color: var(--text-dark);
 }
 
 .rack-visualization {
@@ -95,4 +93,10 @@ button {
 
 .dark-mode .canvas-background {
   fill: var(--background-dark);
+}
+
+/* Add golden hover effect to buttons */
+button:hover {
+  background-color: var(--accent-color) !important;
+  color: var(--text-dark) !important;
 }

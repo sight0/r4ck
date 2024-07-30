@@ -7,7 +7,7 @@ const InitialSetupForm = ({ onSubmit }) => {
     const [idfUsers, setIdfUsers] = useState({1: ''});
 
     const handleIdfChange = (e) => {
-        const value = Math.max(parseInt(e.target.value) || 1, 1);
+        const value = Math.max(Math.min(parseInt(e.target.value) || 1, 10), 1);
         setNumIdfs(value);
         
         // Update idfUsers object when numIdfs changes
@@ -27,7 +27,11 @@ const InitialSetupForm = ({ onSubmit }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onSubmit({ idfs: numIdfs, idfUsers });
+        const formattedIdfUsers = Object.entries(idfUsers).reduce((acc, [idf, users]) => {
+            acc[idf] = parseInt(users) || 0;
+            return acc;
+        }, {});
+        onSubmit({ idfs: numIdfs, idfUsers: formattedIdfUsers });
     };
 
     return (
@@ -39,12 +43,12 @@ const InitialSetupForm = ({ onSubmit }) => {
                 fullWidth
                 margin="normal"
                 name="idfs"
-                label="Number of IDFs"
+                label="Number of IDFs (max 10)"
                 type="number"
                 value={numIdfs}
                 onChange={handleIdfChange}
                 required
-                inputProps={{ min: 1 }}
+                inputProps={{ min: 1, max: 10 }}
             />
             <Box sx={{ maxHeight: 'md', overflowY: 'auto', mt: 2 }}>
                 {Object.keys(idfUsers).map((idf) => (
@@ -58,6 +62,7 @@ const InitialSetupForm = ({ onSubmit }) => {
                         value={idfUsers[idf]}
                         onChange={(e) => handleUserChange(idf, e.target.value)}
                         required
+                        inputProps={{ min: 0 }}
                     />
                 ))}
             </Box>
