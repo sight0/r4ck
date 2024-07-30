@@ -31,7 +31,7 @@ const InitialSetupForm = ({ onSubmit }) => {
     };
 
     return (
-        <Box component="form" onSubmit={handleSubmit} sx={{ maxWidth: 400, margin: 'auto', mt: 4 }}>
+        <Box component="form" onSubmit={handleSubmit} sx={{ width: {xs:'100%',sm:'90%',md:'50%',lg:'20%'}, margin: 'auto', mt: 4 }}>
             <Typography variant="h5" gutterBottom>
                 Initial Setup
             </Typography>
@@ -46,7 +46,7 @@ const InitialSetupForm = ({ onSubmit }) => {
                 required
                 inputProps={{ min: 1 }}
             />
-            <Box sx={{ maxHeight: '300px', overflowY: 'auto', mt: 2 }}>
+            <Box sx={{ maxHeight: 'md', overflowY: 'auto', mt: 2 }}>
                 {Object.keys(idfUsers).map((idf) => (
                     <TextField
                         key={idf}
