@@ -9,7 +9,7 @@ const StyledRackContainer = styled(Box)({
     position: 'relative',
     '& .rack-units': {
         position: 'absolute',
-        left: '1px',
+        left: '5px',
         width: '25px',
         textAlign: 'right',
         fontSize: '10px',
@@ -191,17 +191,27 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
                             onMouseMove={handleComponentDrag}
                             onMouseUp={handleComponentDragEnd}
                         >
+                            {/* Rack outline */}
+                            <rect
+                                x="0"
+                                y="0"
+                                width={rackWidth}
+                                height={rackHeight}
+                                fill="none"
+                                stroke="#666"
+                                strokeWidth="2"
+                            />
                             {/* Rack units */}
                             {[...Array(42)].map((_, index) => (
                                 <line
                                     key={index}
-                                    x1="0"
+                                    x1="30"
                                     y1={index * 20}
                                     x2={rackWidth}
                                     y2={index * 20}
-                                    stroke="currentColor"
+                                    stroke="#666"
                                     strokeWidth="1"
-                                    opacity="0.2"
+                                    opacity="0.5"
                                 />
                             ))}
 

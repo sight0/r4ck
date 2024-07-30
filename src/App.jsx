@@ -10,23 +10,22 @@ const App = () => {
     const [setupComplete, setSetupComplete] = useState(false);
     const [networkInfo, setNetworkInfo] = useState(null);
     const [currentIdf, setCurrentIdf] = useState(1);
-    const [darkMode, setDarkMode] = useState(false);
 
     const theme = createTheme({
         palette: {
-            mode: darkMode ? 'dark' : 'light',
+            mode: 'dark',
             primary: {
                 main: '#ffffff',
             },
             secondary: {
                 main: '#beb8b8',
             },
+            background: {
+                default: '#303030',
+                paper: '#424242',
+            },
         },
     });
-
-    const toggleDarkMode = () => {
-        setDarkMode(!darkMode);
-    };
 
     const handleSetupSubmit = (formData) => {
         setNetworkInfo(formData);
@@ -37,7 +36,7 @@ const App = () => {
         <ThemeProvider theme={theme}>
             <CssBaseline />
             <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-                <Header darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+                <Header />
                 {!setupComplete ? (
                     <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <InitialSetupForm onSubmit={handleSetupSubmit} />
