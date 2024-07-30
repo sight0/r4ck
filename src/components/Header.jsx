@@ -1,5 +1,7 @@
-import { AppBar, Toolbar, Typography } from '@mui/material';
+import { AppBar, Toolbar, Typography, IconButton, Switch } from '@mui/material';
 import { styled } from '@mui/system';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
 
 const Logo = styled('img')({
     marginRight: '16px',
@@ -8,10 +10,10 @@ const Logo = styled('img')({
 });
 
 const Title = styled(Typography)({
-    fontFamily: 'Roboto, sans-serif',
+    flexGrow: 1,
 });
 
-const Header = () => {
+const Header = ({ darkMode, toggleDarkMode }) => {
     return (
         <AppBar position="static">
             <Toolbar className="app-bar">
@@ -19,6 +21,14 @@ const Header = () => {
                 <Title variant="h6">
                     Design and Recommendation Tool
                 </Title>
+                <IconButton color="inherit" onClick={toggleDarkMode}>
+                    {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
+                </IconButton>
+                <Switch
+                    checked={darkMode}
+                    onChange={toggleDarkMode}
+                    color="default"
+                />
             </Toolbar>
         </AppBar>
     );
