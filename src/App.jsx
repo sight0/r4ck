@@ -6,21 +6,27 @@ import Sidebar from './components/Sidebar';
 import RackVisualization from './components/RackVisualization';
 import InitialSetupForm from './components/InitialSetupForm';
 
-const theme = createTheme({
-    palette: {
-        primary: {
-            main: '#ffffff',
-        },
-        secondary: {
-            main: '#beb8b8',
-        },
-    },
-});
-
 const App = () => {
     const [setupComplete, setSetupComplete] = useState(false);
     const [networkInfo, setNetworkInfo] = useState(null);
     const [currentIdf, setCurrentIdf] = useState(1);
+    const [darkMode, setDarkMode] = useState(false);
+
+    const theme = createTheme({
+        palette: {
+            mode: darkMode ? 'dark' : 'light',
+            primary: {
+                main: '#ffffff',
+            },
+            secondary: {
+                main: '#beb8b8',
+            },
+        },
+    });
+
+    const toggleDarkMode = () => {
+        setDarkMode(!darkMode);
+    };
 
     const handleSetupSubmit = (formData) => {
         setNetworkInfo(formData);
@@ -31,7 +37,7 @@ const App = () => {
         <ThemeProvider theme={theme}>
             <CssBaseline />
             <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-                <Header />
+                <Header darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
                 {!setupComplete ? (
                     <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <InitialSetupForm onSubmit={handleSetupSubmit} />

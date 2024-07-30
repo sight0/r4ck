@@ -1,17 +1,28 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import { TextField, Button, Box } from '@mui/material';
+import { TextField, Button, Box, Typography } from '@mui/material';
 
 const InitialSetupForm = ({ onSubmit }) => {
     const [numIdfs, setNumIdfs] = useState(1);
-    const [idfUsers, setIdfUsers] = useState({});
+    const [idfUsers, setIdfUsers] = useState({1: ''});
 
     const handleIdfChange = (e) => {
-        setNumIdfs(parseInt(e.target.value) || 1);
+        const value = parseInt(e.target.value) || 1;
+        setNumIdfs(value);
+        
+        // Update idfUsers object when numIdfs changes
+        const newIdfUsers = {};
+        for (let i = 1; i <= value; i++) {
+            newIdfUsers[i] = idfUsers[i] || '';
+        }
+        setIdfUsers(newIdfUsers);
     };
 
     const handleUserChange = (idf, value) => {
-        setIdfUsers({ ...idfUsers, [idf]: value });
+        setIdfUsers(prevUsers => ({
+            ...prevUsers,
+            [idf]: value
+        }));
     };
 
     const handleSubmit = (e) => {
@@ -20,7 +31,10 @@ const InitialSetupForm = ({ onSubmit }) => {
     };
 
     return (
-        <Box component="form" onSubmit={handleSubmit} sx={{ m: 2 }}>
+        <Box component="form" onSubmit={handleSubmit} sx={{ maxWidth: 400, margin: 'auto', mt: 4 }}>
+            <Typography variant="h5" gutterBottom>
+                Initial Setup
+            </Typography>
             <TextField
                 fullWidth
                 margin="normal"
@@ -30,21 +44,24 @@ const InitialSetupForm = ({ onSubmit }) => {
                 value={numIdfs}
                 onChange={handleIdfChange}
                 required
+                inputProps={{ min: 1 }}
             />
-            {[...Array(numIdfs)].map((_, index) => (
-                <TextField
-                    key={index}
-                    fullWidth
-                    margin="normal"
-                    name={`idf-${index + 1}`}
-                    label={`Users for IDF ${index + 1}`}
-                    type="number"
-                    value={idfUsers[index + 1] || ''}
-                    onChange={(e) => handleUserChange(index + 1, e.target.value)}
-                    required
-                />
-            ))}
-            <Button type="submit" variant="contained" sx={{ mt: 2 }}>
+            <Box sx={{ maxHeight: '300px', overflowY: 'auto', mt: 2 }}>
+                {Object.keys(idfUsers).map((idf) => (
+                    <TextField
+                        key={idf}
+                        fullWidth
+                        margin="normal"
+                        name={`idf-${idf}`}
+                        label={`Users for IDF ${idf}`}
+                        type="number"
+                        value={idfUsers[idf]}
+                        onChange={(e) => handleUserChange(idf, e.target.value)}
+                        required
+                    />
+                ))}
+            </Box>
+            <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
                 Start Design
             </Button>
         </Box>
