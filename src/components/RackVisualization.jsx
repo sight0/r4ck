@@ -262,8 +262,8 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
                                     y={placementIndicator.y}
                                     width={rackWidth - 40}
                                     height={placementIndicator.height}
-                                    fill={`${accentColor}33`}
-                                    stroke={accentColor}
+                                    fill={`${theme.palette.secondary.main}33`}
+                                    stroke="#FFD700"
                                     strokeDasharray="5,5"
                                     rx="5"
                                     ry="5"
