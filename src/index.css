@@ -53,6 +53,22 @@ select:focus {
   outline: 2px solid var(--accent-color);
 }
 
+/* Light theme focus styles */
+body:not(.dark-mode) input:focus,
+body:not(.dark-mode) textarea:focus,
+body:not(.dark-mode) select:focus {
+  background-color: #ffffff;
+  color: var(--text-light);
+}
+
+/* Dark theme focus styles */
+body.dark-mode input:focus,
+body.dark-mode textarea:focus,
+body.dark-mode select:focus {
+  background-color: #424242;
+  color: var(--text-dark);
+}
+
 .app-bar {
   background-color: var(--primary-color);
   color: var(--text-dark);
