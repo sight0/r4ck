@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography, Box } from '@mui/material';
 import { styled } from '@mui/system';
+import { useTheme } from '@mui/material/styles';
 import RackComponent from './RackComponent';
 import ComponentConfigDialog from './ComponentConfigDialog';
 
@@ -18,6 +19,7 @@ const StyledRackContainer = styled(Box)({
 });
 
 const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) => {
+    const theme = useTheme();
     const [components, setComponents] = useState([]);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [newComponent, setNewComponent] = useState(null);
@@ -30,6 +32,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
 
     const rackHeight = 42 * 20; // 42U rack height
     const rackWidth = 300; // Increased width for better visibility
+    const accentColor = theme.palette.secondary.main;
 
     useEffect(() => {
         // TODO: Implement actual recommendation logic
@@ -76,6 +79,12 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
                 units: parseInt(units),
             };
             
+            // Check if the component fits within the rack
+            if (newComp.y + newComp.units * 20 > rackHeight) {
+                alert("The component doesn't fit within the rack. Please adjust the size or position.");
+                return;
+            }
+            
             // Check for overlap with existing components
             const overlap = components.some(comp => 
                 (newComp.y < comp.y + comp.units * 20) && 
@@ -84,12 +93,15 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
 
             if (!overlap) {
                 setComponents(prevComponents => [...prevComponents, newComp]);
+                setDialogOpen(false);
+                setNewComponent(null);
             } else {
                 alert("This position overlaps with an existing component. Please choose a different position.");
             }
+        } else {
+            setDialogOpen(false);
+            setNewComponent(null);
         }
-        setDialogOpen(false);
-        setNewComponent(null);
     };
 
     const handleNextIdf = () => {
@@ -170,7 +182,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
     return (
         <Box className="rack-visualization-container">
             <Typography variant="h5" sx={{ mb: 2, fontWeight: 'bold', color: 'text.primary' }}>
-                IDF {currentIdf} Rack Design
+                IDF <span style={{ color: accentColor }}>{currentIdf}</span> Rack Design
             </Typography>
             <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }} className="rack-visualization">
                 <StyledRackContainer>
@@ -250,8 +262,8 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
                                     y={placementIndicator.y}
                                     width={rackWidth - 40}
                                     height={placementIndicator.height}
-                                    fill="rgba(76, 175, 80, 0.3)"
-                                    stroke="#4caf50"
+                                    fill={`${accentColor}33`}
+                                    stroke={accentColor}
                                     strokeDasharray="5,5"
                                     rx="5"
                                     ry="5"
@@ -262,7 +274,15 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
                 </StyledRackContainer>
             </Box>
             <Box sx={{display: 'flex', justifyContent: 'center', mt: 2}}>
-                <Button onClick={handleNextIdf} className="next-idf-button" variant="contained">
+                <Button 
+                    onClick={handleNextIdf} 
+                    className="next-idf-button" 
+                    variant="contained"
+                    sx={{
+                        background: `linear-gradient(45deg, ${theme.palette.primary.main} 30%, ${accentColor} 90%)`,
+                        boxShadow: `0 3px 5px 2px ${accentColor}66`,
+                    }}
+                >
                     Next IDF
                 </Button>
             </Box>
