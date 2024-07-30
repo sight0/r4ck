@@ -192,7 +192,15 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
                             onMouseUp={handleComponentDragEnd}
                         >
                             {/* Rack outline */}
-
+                            <rect
+                                x="30"
+                                y="0"
+                                width={rackWidth - 30}
+                                height={rackHeight}
+                                fill="none"
+                                stroke="#666"
+                                strokeWidth="2"
+                            />
                             {/* Rack units */}
                             {[...Array(42)].map((_, index) => (
                                 <line
@@ -253,7 +261,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
                     </Box>
                 </StyledRackContainer>
             </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+            <Box sx={{display: 'flex', justifyContent: 'center', mt: 2}}>
                 <Button onClick={handleNextIdf} className="next-idf-button" variant="contained">
                     Next IDF
                 </Button>
