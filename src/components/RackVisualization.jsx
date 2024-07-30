@@ -247,8 +247,10 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
                                     y={draggedComponent.y}
                                     width={rackWidth - 40}
                                     height={draggedComponent.units * 20}
-                                    fill={`#FFD70033`}
-                                    stroke="#1e88e5"
+                                    fill="#FFD700"
+                                    fillOpacity={0.2}
+                                    stroke="#FFD700"
+                                    strokeWidth={2}
                                     strokeDasharray="5,5"
                                     rx="5"
                                     ry="5"
@@ -262,8 +264,10 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
                                     y={placementIndicator.y}
                                     width={rackWidth - 40}
                                     height={placementIndicator.height}
-                                    fill={`#FFD70033`}
+                                    fill="#FFD700"
+                                    fillOpacity={0.2}
                                     stroke="#FFD700"
+                                    strokeWidth={2}
                                     strokeDasharray="5,5"
                                     rx="5"
                                     ry="5"
