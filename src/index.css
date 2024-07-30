@@ -113,8 +113,13 @@ body.dark-mode .rack-visualization-container {
 }
 
 .rack-visualization {
-  background-color: inherit;
-  color: inherit;
+  background-color: var(--background-light);
+  color: var(--text-light);
+}
+
+body.dark-mode .rack-visualization {
+  background-color: var(--background-dark);
+  color: var(--text-dark);
 }
 
 .canvas-background {
