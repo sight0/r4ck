@@ -49,21 +49,21 @@
 }
 
 .next-idf-button:hover {
-  background-color: #d1004a;
+  background-color: #616161;
 }
 
 .recommendation {
   margin-top: 16px;
   padding: 12px;
-  background-color: rgba(2, 119, 189, 0.1);
+  background-color: rgba(117, 117, 117, 0.1);
   border-radius: 4px;
-  color: #0277bd;
+  color: #757575;
   font-size: 14px;
 }
 
 .dark-mode .recommendation {
-  background-color: rgba(33, 150, 243, 0.1);
-  color: #42a5f5;
+  background-color: rgba(189, 189, 189, 0.1);
+  color: #bdbdbd;
 }
 
 @keyframes fadeIn {

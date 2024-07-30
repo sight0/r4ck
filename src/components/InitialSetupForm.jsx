@@ -7,7 +7,7 @@ const InitialSetupForm = ({ onSubmit }) => {
     const [idfUsers, setIdfUsers] = useState({1: ''});
 
     const handleIdfChange = (e) => {
-        const value = parseInt(e.target.value) || 1;
+        const value = Math.max(parseInt(e.target.value) || 1, 1);
         setNumIdfs(value);
         
         // Update idfUsers object when numIdfs changes

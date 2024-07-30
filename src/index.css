@@ -1,9 +1,9 @@
 :root {
   --font-family: 'Roboto', sans-serif;
-  --primary-color: #3f51b5;
-  --secondary-color: #f50057;
+  --primary-color: #424242;
+  --secondary-color: #757575;
   --background-light: #f5f5f5;
-  --background-dark: #303030;
+  --background-dark: #212121;
   --text-light: #333333;
   --text-dark: #ffffff;
   --transition-speed: 0.3s;
@@ -52,22 +52,22 @@ button {
 
 .sidebar {
   background-color: var(--background-light);
+  color: var(--text-light);
   box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-  transition: background-color var(--transition-speed);
+  transition: background-color var(--transition-speed), color var(--transition-speed);
 }
 
 .dark-mode .sidebar {
   background-color: var(--background-dark);
+  color: var(--text-dark);
 }
 
 .sidebar-item {
-  color: var(--text-light);
   background-color: rgba(0, 0, 0, 0.05);
-  transition: background-color var(--transition-speed), color var(--transition-speed);
+  transition: background-color var(--transition-speed);
 }
 
 .dark-mode .sidebar-item {
-  color: var(--text-dark);
   background-color: rgba(255, 255, 255, 0.05);
 }
 
@@ -86,4 +86,13 @@ button {
 
 .dark-mode .rack-visualization {
   background-color: var(--background-dark);
+}
+
+.canvas-background {
+  fill: var(--background-light);
+  transition: fill var(--transition-speed);
+}
+
+.dark-mode .canvas-background {
+  fill: var(--background-dark);
 }
