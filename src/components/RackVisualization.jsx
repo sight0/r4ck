@@ -191,12 +191,6 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
                             onMouseMove={handleComponentDrag}
                             onMouseUp={handleComponentDragEnd}
                         >
-                            <rect
-                                className="canvas-background"
-                                width={rackWidth}
-                                height={rackHeight}
-                            />
-
                             {/* Rack units */}
                             {[...Array(42)].map((_, index) => (
                                 <line
