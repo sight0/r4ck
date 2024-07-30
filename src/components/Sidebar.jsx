@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { useCallback } from 'react';
-import { List, ListItem, TextField, Typography, Box } from '@mui/material';
+import { List, ListItem, TextField, Typography, Box, Paper } from '@mui/material';
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 
 const components = [
     { id: 1, name: 'Rack', type: 'rack' },
@@ -13,16 +14,17 @@ const Sidebar = ({ currentIdf }) => {
     }, []);
 
     return (
-        <Box 
+        <Paper 
+            elevation={3}
             className="sidebar"
             sx={{
-                background: 'linear-gradient(to right, #f6f6f6, #ffffff)',
+                background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)',
                 height: '100%',
                 padding: '20px',
-                boxShadow: '2px 0 10px rgba(0,0,0,0.1)',
+                color: 'white',
             }}
         >
-            <Typography variant="h6" sx={{ mb: 3, color: '#333', fontWeight: 'bold' }}>
+            <Typography variant="h5" sx={{ mb: 3, fontWeight: 'bold', textAlign: 'center' }}>
                 IDF {currentIdf}
             </Typography>
             <TextField 
@@ -32,14 +34,17 @@ const Sidebar = ({ currentIdf }) => {
                     mb: 3,
                     '& .MuiOutlinedInput-root': {
                         '& fieldset': {
-                            borderColor: '#ccc',
+                            borderColor: 'rgba(255,255,255,0.5)',
                         },
                         '&:hover fieldset': {
-                            borderColor: '#999',
+                            borderColor: 'white',
                         },
                         '&.Mui-focused fieldset': {
-                            borderColor: '#42a5f5',
+                            borderColor: 'white',
                         },
+                    },
+                    '& .MuiInputBase-input': {
+                        color: 'white',
                     },
                 }} 
             />
@@ -51,23 +56,24 @@ const Sidebar = ({ currentIdf }) => {
                         onDragStart={(e) => handleDragStart(e, component)}
                         sx={{ 
                             cursor: 'move',
-                            mb: 1,
-                            backgroundColor: '#fff',
-                            borderRadius: '5px',
-                            boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+                            mb: 2,
+                            backgroundColor: 'rgba(255,255,255,0.1)',
+                            borderRadius: '10px',
                             transition: 'all 0.3s ease',
                             '&:hover': {
-                                backgroundColor: '#f0f7ff',
-                                boxShadow: '0 4px 8px rgba(0,0,0,0.15)',
+                                backgroundColor: 'rgba(255,255,255,0.2)',
                                 transform: 'translateY(-2px)',
                             },
+                            display: 'flex',
+                            alignItems: 'center',
                         }}
                     >
+                        <DragIndicatorIcon sx={{ mr: 1 }} />
                         {component.name}
                     </ListItem>
                 ))}
             </List>
-        </Box>
+        </Paper>
     );
 }
 
