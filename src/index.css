@@ -115,6 +115,7 @@ body.dark-mode .rack-visualization-container {
 .rack-visualization {
   background-color: var(--background-light);
   color: var(--text-light);
+  transition: background-color var(--transition-speed), color var(--transition-speed);
 }
 
 body.dark-mode .rack-visualization {
@@ -122,13 +123,19 @@ body.dark-mode .rack-visualization {
   color: var(--text-dark);
 }
 
-.canvas-background {
-  fill: var(--background-light);
-  transition: fill var(--transition-speed);
+.rack-visualization svg {
+  background-color: inherit;
 }
 
-body.dark-mode .canvas-background {
+.rack-visualization svg rect,
+.rack-visualization svg line {
+  transition: fill var(--transition-speed), stroke var(--transition-speed);
+}
+
+body.dark-mode .rack-visualization svg rect,
+body.dark-mode .rack-visualization svg line {
   fill: var(--background-dark);
+  stroke: var(--text-dark);
 }
 
 .rack-units {
@@ -138,6 +145,10 @@ body.dark-mode .canvas-background {
 
 body.dark-mode .rack-units {
   color: var(--text-dark);
+}
+
+body.dark-mode .rack-visualization text {
+  fill: var(--text-dark);
 }
 
 /* Add golden hover effect to buttons */
