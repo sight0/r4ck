@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography, Box, Grid } from '@mui/material';
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography, Box, Grid, Paper } from '@mui/material';
 import { styled } from '@mui/system';
 import { useTheme } from '@mui/material/styles';
 import RackComponent from './RackComponent';
@@ -28,6 +28,26 @@ const StyledRackContainer = styled(Box)({
         color: '#999'
     },
 });
+
+const StyledIdfButton = styled(Button)(({ theme }) => ({
+    margin: theme.spacing(1),
+    minWidth: '80px',
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.primary.contrastText,
+    '&:hover': {
+        backgroundColor: theme.palette.primary.dark,
+    },
+}));
+
+const StyledMdfButton = styled(Button)(({ theme }) => ({
+    margin: theme.spacing(1),
+    minWidth: '100px',
+    backgroundColor: theme.palette.secondary.main,
+    color: theme.palette.secondary.contrastText,
+    '&:hover': {
+        backgroundColor: theme.palette.secondary.dark,
+    },
+}));
 
 const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
     const theme = useTheme();
@@ -322,6 +342,19 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
                     </Box>
                 </Grid>
             </Grid>
+            <Box sx={{ mt: 4, p: 2, border: '1px solid #ccc', borderRadius: '4px' }}>
+                <Typography variant="h6" gutterBottom>IDF and MDF Layout</Typography>
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <StyledMdfButton>MDF</StyledMdfButton>
+                    <Box sx={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', maxWidth: '80%' }}>
+                        {[...Array(numIdfs)].map((_, index) => (
+                            <StyledIdfButton key={index} onClick={() => setCurrentIdf(index + 1)}>
+                                IDF {index + 1}
+                            </StyledIdfButton>
+                        ))}
+                    </Box>
+                </Box>
+            </Box>
             <Box sx={{display: 'flex', justifyContent: 'center', mt: 2}}>
                 <Button 
                     onClick={handleNextIdf} 
