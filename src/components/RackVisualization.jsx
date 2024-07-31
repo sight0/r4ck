@@ -173,11 +173,20 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
             );
 
             if (!overlap) {
-                setComponents(prevComponents =>
-                    prevComponents.map(comp =>
+                setComponents(prevComponents => {
+                    const newComponents = prevComponents.map(comp =>
                         comp.id === updatedComponent.id ? updatedComponent : comp
-                    )
-                );
+                    );
+                    
+                    // Recalculate exhausted ports
+                    const patchPanelPorts = newComponents
+                        .filter(c => c.type === 'patchPanel')
+                        .reduce((total, panel) => total + parseInt(panel.capacity), 0);
+                    const totalPorts = idfData[currentIdf]?.ports || 0;
+                    setExhaustedPorts(Math.min(patchPanelPorts, totalPorts));
+                    
+                    return newComponents;
+                });
             } else {
                 alert("The updated component overlaps with existing components. Please adjust the size or position.");
             }
