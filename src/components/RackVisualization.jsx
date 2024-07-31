@@ -165,7 +165,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, setSho
             setCurrentIdf(currentIdf + 1);
             setComponents([]);
         } else {
-            setShowMdf(true);
+            alert("TODO: Implement MDF visualization");
         }
     };
 
