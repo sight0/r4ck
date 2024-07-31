@@ -4,38 +4,42 @@ import { TextField, Button, Box, Typography } from '@mui/material';
 
 const InitialSetupForm = ({ onSubmit }) => {
     const [numIdfs, setNumIdfs] = useState(1);
-    const [idfUsers, setIdfUsers] = useState({1: ''});
-    const [numDevices, setNumDevices] = useState('');
+    const [idfData, setIdfData] = useState({1: {users: '', devices: ''}});
 
     const handleIdfChange = (e) => {
         const value = Math.max(Math.min(parseInt(e.target.value) || 1, 10), 1);
         setNumIdfs(value);
         
-        // Update idfUsers object when numIdfs changes
-        const newIdfUsers = {};
+        // Update idfData object when numIdfs changes
+        const newIdfData = {};
         for (let i = 1; i <= value; i++) {
-            newIdfUsers[i] = idfUsers[i] || '';
+            newIdfData[i] = idfData[i] || {users: '', devices: ''};
         }
-        setIdfUsers(newIdfUsers);
+        setIdfData(newIdfData);
     };
 
-    const handleUserChange = (idf, value) => {
-        setIdfUsers(prevUsers => ({
-            ...prevUsers,
-            [idf]: value
+    const handleDataChange = (idf, field, value) => {
+        setIdfData(prevData => ({
+            ...prevData,
+            [idf]: {
+                ...prevData[idf],
+                [field]: value
+            }
         }));
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const formattedIdfUsers = Object.entries(idfUsers).reduce((acc, [idf, users]) => {
-            acc[idf] = parseInt(users) || 0;
+        const formattedIdfData = Object.entries(idfData).reduce((acc, [idf, data]) => {
+            acc[idf] = {
+                users: parseInt(data.users) || 0,
+                devices: parseInt(data.devices) || 0
+            };
             return acc;
         }, {});
         onSubmit({ 
             idfs: numIdfs, 
-            idfUsers: formattedIdfUsers,
-            numDevices: parseInt(numDevices) || 0
+            idfData: formattedIdfData
         });
     };
 
@@ -56,32 +60,34 @@ const InitialSetupForm = ({ onSubmit }) => {
                 inputProps={{ min: 1, max: 10 }}
             />
             <Box sx={{ maxHeight: 'md', overflowY: 'auto', mt: 2 }}>
-                {Object.keys(idfUsers).map((idf) => (
-                    <TextField
-                        key={idf}
-                        fullWidth
-                        margin="normal"
-                        name={`idf-${idf}`}
-                        label={`Users for IDF ${idf}`}
-                        type="number"
-                        value={idfUsers[idf]}
-                        onChange={(e) => handleUserChange(idf, e.target.value)}
-                        required
-                        inputProps={{ min: 0 }}
-                    />
+                {Object.keys(idfData).map((idf) => (
+                    <Box key={idf} sx={{ mb: 2 }}>
+                        <Typography variant="subtitle1">IDF {idf}</Typography>
+                        <TextField
+                            fullWidth
+                            margin="normal"
+                            name={`idf-${idf}-users`}
+                            label={`Users for IDF ${idf}`}
+                            type="number"
+                            value={idfData[idf].users}
+                            onChange={(e) => handleDataChange(idf, 'users', e.target.value)}
+                            required
+                            inputProps={{ min: 0 }}
+                        />
+                        <TextField
+                            fullWidth
+                            margin="normal"
+                            name={`idf-${idf}-devices`}
+                            label={`Devices for IDF ${idf}`}
+                            type="number"
+                            value={idfData[idf].devices}
+                            onChange={(e) => handleDataChange(idf, 'devices', e.target.value)}
+                            required
+                            inputProps={{ min: 0 }}
+                        />
+                    </Box>
                 ))}
             </Box>
-            <TextField
-                fullWidth
-                margin="normal"
-                name="numDevices"
-                label="Total Number of Devices"
-                type="number"
-                value={numDevices}
-                onChange={(e) => setNumDevices(e.target.value)}
-                required
-                inputProps={{ min: 0 }}
-            />
             <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
                 Start Design
             </Button>
