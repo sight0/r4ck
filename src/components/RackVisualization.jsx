@@ -49,7 +49,8 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
         e.preventDefault();
         const rect = rackRef.current.getBoundingClientRect();
         const y = e.clientY - rect.top;
-        const component = JSON.parse(e.dataTransfer.getData('component'));
+        const componentData = e.dataTransfer.getData('text/plain');
+        const component = JSON.parse(componentData);
 
         // Snap to grid
         const snappedY = Math.floor(y / 20) * 20;
@@ -76,14 +77,13 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
         });
     }, []);
 
-    const handleDialogClose = (name, capacity, units, type) => {
-        if (name && capacity && units && type) {
+    const handleDialogClose = (name, capacity, units) => {
+        if (name && capacity && units) {
             const newComp = {
                 ...newComponent,
                 name,
                 capacity,
                 units: parseInt(units),
-                type,
             };
             
             // Check if the component fits within the rack
