@@ -349,7 +349,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
                     </Box>
                     <Divider sx={{ my: 2 }} />
                     <Box sx={{ border: '1px solid #ccc', borderRadius: '4px', p: 2 }}>
-                        <Typography variant="h6" gutterBottom>IDF and MDF Layout</Typography>
+                        <Typography variant="h6" gutterBottom>Infrastructure Layout</Typography>
                         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
                             <StyledMdfButton sx={{ mb: 2 }}>MDF</StyledMdfButton>
                             <Box sx={{ 
