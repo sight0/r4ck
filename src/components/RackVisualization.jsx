@@ -396,7 +396,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
                                             IDF {index + 1}
                                         </StyledIdfButton>
                                         <Typography variant="caption" sx={{ mt: 1 }}>
-                                            {idfData[index + 1]?.ports || 0} ports
+                                            {idfData[index + 1]?.ports || 0} end device(s)
                                         </Typography>
                                     </Box>
                                 ))}
