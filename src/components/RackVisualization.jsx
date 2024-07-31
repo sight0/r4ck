@@ -7,6 +7,8 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { styled } from '@mui/system';
 import { useTheme } from '@mui/material/styles';
 import LanguageIcon from '@mui/icons-material/Language';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import RackComponent from './RackComponent';
 import ComponentConfigDialog from './ComponentConfigDialog';
 import { components } from './Sidebar';
@@ -51,7 +53,7 @@ const StyledLine = styled('div')(({ theme }) => ({
     margin: '0 auto',
 }));
 
-const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
+const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, setShowMdf }) => {
     const theme = useTheme();
     const [components, setComponents] = useState([]);
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -151,10 +153,19 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
         }
     };
 
+    const handlePreviousIdf = () => {
+        if (currentIdf > 1) {
+            setCurrentIdf(currentIdf - 1);
+            setComponents([]);
+        }
+    };
+
     const handleNextIdf = () => {
         if (currentIdf < numIdfs) {
             setCurrentIdf(currentIdf + 1);
             setComponents([]);
+        } else {
+            setShowMdf(true);
         }
     };
 
@@ -237,12 +248,24 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
 
     return (
         <Box className="rack-visualization-container">
-            <Typography variant="h5" sx={{ mb: 2, fontWeight: 'bold', color: 'text.primary' }}>
-                IDF <span style={{ color: accentColor }}>{currentIdf}</span> Rack Design
-            </Typography>
-            <Typography variant="subtitle1" gutterBottom>
-                Exhausted Ports: {exhaustedPorts} / {idfData[currentIdf]?.ports || 0}
-            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                <Box>
+                    <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'text.primary' }}>
+                        {currentIdf === numIdfs + 1 ? 'MDF' : `IDF ${currentIdf}`} Rack Design
+                    </Typography>
+                    <Typography variant="subtitle1" gutterBottom>
+                        Exhausted Ports: {exhaustedPorts} / {idfData[currentIdf]?.ports || 0}
+                    </Typography>
+                </Box>
+                <Box>
+                    <IconButton onClick={handlePreviousIdf} disabled={currentIdf === 1}>
+                        <ArrowBackIosNewIcon />
+                    </IconButton>
+                    <IconButton onClick={handleNextIdf}>
+                        <ArrowForwardIosIcon />
+                    </IconButton>
+                </Box>
+            </Box>
             <Grid container spacing={2}>
                 <Grid item xs={12} md={8}>
                     <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }} className="rack-visualization">
@@ -456,19 +479,6 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
                     </Box>
                 </Grid>
             </Grid>
-            <Box sx={{display: 'flex', justifyContent: 'center', mt: 2}}>
-                <Button 
-                    onClick={handleNextIdf} 
-                    className="next-idf-button" 
-                    variant="contained"
-                    sx={{
-                        background: `linear-gradient(45deg, ${theme.palette.primary.main} 30%, ${accentColor} 90%)`,
-                        boxShadow: `0 3px 5px 2px ${accentColor}66`,
-                    }}
-                >
-                    Next IDF
-                </Button>
-            </Box>
             <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
                 <DialogTitle>Component Details</DialogTitle>
                 <DialogContent>
@@ -503,6 +513,7 @@ RackVisualization.propTypes = {
     setCurrentIdf: PropTypes.func.isRequired,
     numIdfs: PropTypes.number.isRequired,
     idfData: PropTypes.object.isRequired,
+    setShowMdf: PropTypes.func.isRequired,
 };
 
 export default RackVisualization;
