@@ -32,7 +32,7 @@ const Sidebar = ({ currentIdf }) => {
                 Components List
             </Typography>
             <TextField 
-                placeholder="Search components" 
+                placeholder="Search components"
                 fullWidth 
                 sx={{ 
                     mb: 3,
@@ -48,7 +48,8 @@ const Sidebar = ({ currentIdf }) => {
                         },
                     },
                     '& .MuiInputBase-input': {
-                        color: '#333',
+                        color: '#272727',
+                        backgroundColor: '#dcdcdc',
                     },
                 }} 
             />
