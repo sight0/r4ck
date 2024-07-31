@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography, Box, Grid, Paper, Divider } from '@mui/material';
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography, Box, Grid, Paper, Divider, IconButton } from '@mui/material';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { styled } from '@mui/system';
 import { useTheme } from '@mui/material/styles';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
@@ -370,36 +372,67 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
                             }} />
                             <Box sx={{ 
                                 display: 'flex', 
-                                justifyContent: 'space-around', 
-                                flexWrap: 'wrap', 
+                                alignItems: 'center', 
                                 width: '100%',
-                                mt: 4
+                                mt: 4,
+                                overflowX: 'auto',
+                                '&::-webkit-scrollbar': {
+                                    height: '8px',
+                                },
+                                '&::-webkit-scrollbar-thumb': {
+                                    backgroundColor: theme.palette.grey[300],
+                                    borderRadius: '4px',
+                                },
                             }}>
-                                {[...Array(numIdfs)].map((_, index) => (
-                                    <Box key={index} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', m: 1 }}>
-                                        <Box sx={{ 
-                                            width: '2px', 
-                                            height: '20px', 
-                                            backgroundColor: theme.palette.grey[400]
-                                        }} />
-                                        <Box sx={{
-                                            width: '10px',
-                                            height: '10px',
-                                            borderRadius: '50%',
-                                            backgroundColor: theme.palette.grey[400],
-                                            my: 1
-                                        }} />
-                                        <StyledIdfButton 
-                                            onClick={() => setCurrentIdf(index + 1)}
-                                            isActive={currentIdf === index + 1}
-                                        >
-                                            IDF {index + 1}
-                                        </StyledIdfButton>
-                                        <Typography variant="caption" sx={{ mt: 1 }}>
-                                            {idfData[index + 1]?.ports || 0} end device(s)
-                                        </Typography>
-                                    </Box>
-                                ))}
+                                <IconButton 
+                                    onClick={() => document.getElementById('idf-container').scrollLeft -= 100}
+                                    sx={{ flexShrink: 0 }}
+                                >
+                                    <ChevronLeftIcon />
+                                </IconButton>
+                                <Box 
+                                    id="idf-container"
+                                    sx={{ 
+                                        display: 'flex', 
+                                        overflowX: 'auto',
+                                        scrollBehavior: 'smooth',
+                                        '&::-webkit-scrollbar': {
+                                            display: 'none',
+                                        },
+                                    }}
+                                >
+                                    {[...Array(numIdfs)].map((_, index) => (
+                                        <Box key={index} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', m: 1, flexShrink: 0 }}>
+                                            <Box sx={{ 
+                                                width: '2px', 
+                                                height: '20px', 
+                                                backgroundColor: theme.palette.grey[400]
+                                            }} />
+                                            <Box sx={{
+                                                width: '10px',
+                                                height: '10px',
+                                                borderRadius: '50%',
+                                                backgroundColor: theme.palette.grey[400],
+                                                my: 1
+                                            }} />
+                                            <StyledIdfButton 
+                                                onClick={() => setCurrentIdf(index + 1)}
+                                                isActive={currentIdf === index + 1}
+                                            >
+                                                IDF {index + 1}
+                                            </StyledIdfButton>
+                                            <Typography variant="caption" sx={{ mt: 1 }}>
+                                                {idfData[index + 1]?.ports || 0} end device(s)
+                                            </Typography>
+                                        </Box>
+                                    ))}
+                                </Box>
+                                <IconButton 
+                                    onClick={() => document.getElementById('idf-container').scrollLeft += 100}
+                                    sx={{ flexShrink: 0 }}
+                                >
+                                    <ChevronRightIcon />
+                                </IconButton>
                             </Box>
                         </Box>
                     </Box>
