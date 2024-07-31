@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types';
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography, Box, Grid, Paper } from '@mui/material';
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography, Box, Grid, Paper, Divider } from '@mui/material';
 import { styled } from '@mui/system';
 import { useTheme } from '@mui/material/styles';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import RackComponent from './RackComponent';
 import ComponentConfigDialog from './ComponentConfigDialog';
 
@@ -29,10 +30,10 @@ const StyledRackContainer = styled(Box)({
     },
 });
 
-const StyledIdfButton = styled(Button)(({ theme }) => ({
+const StyledIdfButton = styled(Button)(({ theme, isActive }) => ({
     margin: theme.spacing(1),
     minWidth: '80px',
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: isActive ? theme.palette.primary.dark : theme.palette.primary.main,
     color: theme.palette.primary.contrastText,
     '&:hover': {
         backgroundColor: theme.palette.primary.dark,
@@ -47,6 +48,12 @@ const StyledMdfButton = styled(Button)(({ theme }) => ({
     '&:hover': {
         backgroundColor: theme.palette.secondary.dark,
     },
+}));
+
+const StyledLine = styled('div')(({ theme }) => ({
+    width: '2px',
+    backgroundColor: theme.palette.grey[400],
+    margin: '0 auto',
 }));
 
 const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
@@ -235,7 +242,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
                 Exhausted Ports: {exhaustedPorts} / {idfData[currentIdf]?.ports || 0}
             </Typography>
             <Grid container spacing={2}>
-                <Grid item xs={12} md={9}>
+                <Grid item xs={12} md={8}>
                     <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }} className="rack-visualization">
                 <StyledRackContainer>
                     <Box className="rack-units">
@@ -330,8 +337,8 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
                 </StyledRackContainer>
                 </Box>
                 </Grid>
-                <Grid item xs={12} md={3}>
-                    <Box sx={{ border: '1px solid #ccc', borderRadius: '4px', p: 2 }}>
+                <Grid item xs={12} md={4}>
+                    <Box sx={{ border: '1px solid #ccc', borderRadius: '4px', p: 2, mb: 2 }}>
                         <Typography variant="h6" gutterBottom>Legend</Typography>
                         {Object.entries(componentColors).map(([type, color]) => (
                             <Box key={type} sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
@@ -340,21 +347,31 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
                             </Box>
                         ))}
                     </Box>
+                    <Divider sx={{ my: 2 }} />
+                    <Box sx={{ border: '1px solid #ccc', borderRadius: '4px', p: 2 }}>
+                        <Typography variant="h6" gutterBottom>IDF and MDF Layout</Typography>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                            <StyledMdfButton>MDF</StyledMdfButton>
+                            <StyledLine sx={{ height: '20px' }} />
+                            <ArrowDownwardIcon />
+                            <StyledLine sx={{ height: '20px' }} />
+                            <Box sx={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', width: '100%' }}>
+                                {[...Array(numIdfs)].map((_, index) => (
+                                    <Box key={index} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                        <StyledIdfButton 
+                                            onClick={() => setCurrentIdf(index + 1)}
+                                            isActive={currentIdf === index + 1}
+                                        >
+                                            IDF {index + 1}
+                                        </StyledIdfButton>
+                                        {index < numIdfs - 1 && <StyledLine sx={{ height: '20px', width: '2px' }} />}
+                                    </Box>
+                                ))}
+                            </Box>
+                        </Box>
+                    </Box>
                 </Grid>
             </Grid>
-            <Box sx={{ mt: 4, p: 2, border: '1px solid #ccc', borderRadius: '4px' }}>
-                <Typography variant="h6" gutterBottom>IDF and MDF Layout</Typography>
-                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <StyledMdfButton>MDF</StyledMdfButton>
-                    <Box sx={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', maxWidth: '80%' }}>
-                        {[...Array(numIdfs)].map((_, index) => (
-                            <StyledIdfButton key={index} onClick={() => setCurrentIdf(index + 1)}>
-                                IDF {index + 1}
-                            </StyledIdfButton>
-                        ))}
-                    </Box>
-                </Box>
-            </Box>
             <Box sx={{display: 'flex', justifyContent: 'center', mt: 2}}>
                 <Button 
                     onClick={handleNextIdf} 
