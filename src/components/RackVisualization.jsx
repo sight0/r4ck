@@ -64,8 +64,9 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
     const rackRef = useRef(null);
 
     const rackSize = idfData[currentIdf]?.rackSize || 42; // Use the specified rack size or default to 42U
-    const rackHeight = rackSize * 20; // Each U is 20px tall
-    const rackWidth = rackSize <= 24 ? 200 : 300; // Adjust width for smaller racks
+    const rackHeight = rackSize * 25; // Each U is 20px tall
+    // const rackWidth = rackSize <= 24 ? 200 : 300; // Adjust width for smaller racks
+    const rackWidth = 298; // Adjust width for smaller racks
     const accentColor = theme.palette.secondary.main;
 
     useEffect(() => {
@@ -106,7 +107,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
 
         setPlacementIndicator({
             y: snappedY,
-            height: 40, // Default height of 2U
+            height: 20, // Default height of 2U
         });
     }, []);
 
