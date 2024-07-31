@@ -1,5 +1,6 @@
-import { AppBar, Toolbar, Typography } from '@mui/material';
+import { AppBar, Toolbar, Typography, IconButton } from '@mui/material';
 import { styled } from '@mui/system';
+import GitHubIcon from '@mui/icons-material/GitHub';
 
 const Logo = styled('img')({
     marginRight: '16px',
@@ -19,6 +20,16 @@ const Header = () => {
                 <Title variant="h6">
                     Design and Recommendation Tool
                 </Title>
+                <IconButton
+                    color="inherit"
+                    aria-label="GitHub repository"
+                    component="a"
+                    href="https://github.com/sight0/r4ck"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    <GitHubIcon />
+                </IconButton>
             </Toolbar>
         </AppBar>
     );
