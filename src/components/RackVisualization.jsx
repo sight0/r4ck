@@ -1,10 +1,21 @@
 import PropTypes from 'prop-types';
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography, Box } from '@mui/material';
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography, Box, Grid } from '@mui/material';
 import { styled } from '@mui/system';
 import { useTheme } from '@mui/material/styles';
 import RackComponent from './RackComponent';
 import ComponentConfigDialog from './ComponentConfigDialog';
+
+const componentColors = {
+    switch: '#4CAF50',  // Green
+    fiber_switch: '#2196F3',  // Blue
+    patchPanel: '#9C27B0',  // Purple
+    firewall: '#F44336',  // Red
+    ups: '#FFC107',  // Amber
+    server: '#00BCD4',  // Cyan
+    rack: '#795548',  // Brown
+    other: '#607D8B',  // Blue Grey
+};
 
 const StyledRackContainer = styled(Box)({
     position: 'relative',
@@ -203,7 +214,9 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
             <Typography variant="subtitle1" gutterBottom>
                 Exhausted Ports: {exhaustedPorts} / {idfData[currentIdf]?.ports || 0}
             </Typography>
-            <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }} className="rack-visualization">
+            <Grid container spacing={2}>
+                <Grid item xs={12} md={9}>
+                    <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }} className="rack-visualization">
                 <StyledRackContainer>
                     <Box className="rack-units">
                         {[...Array(42)].map((_, index) => (
@@ -295,7 +308,20 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
                         </svg>
                     </Box>
                 </StyledRackContainer>
-            </Box>
+                </Box>
+                </Grid>
+                <Grid item xs={12} md={3}>
+                    <Box sx={{ border: '1px solid #ccc', borderRadius: '4px', p: 2 }}>
+                        <Typography variant="h6" gutterBottom>Legend</Typography>
+                        {Object.entries(componentColors).map(([type, color]) => (
+                            <Box key={type} sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                                <Box sx={{ width: 20, height: 20, backgroundColor: color, mr: 1 }} />
+                                <Typography>{type.charAt(0).toUpperCase() + type.slice(1)}</Typography>
+                            </Box>
+                        ))}
+                    </Box>
+                </Grid>
+            </Grid>
             <Box sx={{display: 'flex', justifyContent: 'center', mt: 2}}>
                 <Button 
                     onClick={handleNextIdf} 
