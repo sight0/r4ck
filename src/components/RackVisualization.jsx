@@ -358,13 +358,13 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
                             <Box sx={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', width: '100%' }}>
                                 {[...Array(numIdfs)].map((_, index) => (
                                     <Box key={index} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                        <StyledLine sx={{ height: '20px', width: '2px' }} />
                                         <StyledIdfButton 
                                             onClick={() => setCurrentIdf(index + 1)}
                                             isActive={currentIdf === index + 1}
                                         >
                                             IDF {index + 1}
                                         </StyledIdfButton>
-                                        {index < numIdfs - 1 && <StyledLine sx={{ height: '20px', width: '2px' }} />}
                                     </Box>
                                 ))}
                             </Box>
