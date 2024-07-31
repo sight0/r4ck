@@ -18,7 +18,7 @@ const StyledRackContainer = styled(Box)({
     },
 });
 
-const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers, numDevices }) => {
+const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfData }) => {
     const theme = useTheme();
     const [components, setComponents] = useState([]);
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -38,11 +38,12 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers, num
     useEffect(() => {
         // Calculate exhausted ports based on the number of patch panel components
         const patchPanelPorts = components.filter(c => c.type === 'patchPanel').reduce((total, panel) => total + parseInt(panel.capacity), 0);
-        setExhaustedPorts(Math.min(patchPanelPorts, numDevices));
+        const totalPorts = idfData[currentIdf]?.ports || 0;
+        setExhaustedPorts(Math.min(patchPanelPorts, totalPorts));
 
         // TODO: Implement actual recommendation logic
         setRecommendation('Recommendation: Add a 48-port switch for optimal performance.');
-    }, [components, currentIdf, idfUsers, numDevices]);
+    }, [components, currentIdf, idfData]);
 
     const handleDrop = useCallback((e) => {
         e.preventDefault();
@@ -190,7 +191,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers, num
                 IDF <span style={{ color: accentColor }}>{currentIdf}</span> Rack Design
             </Typography>
             <Typography variant="subtitle1" gutterBottom>
-                Exhausted Ports: {exhaustedPorts} / {numDevices}
+                Exhausted Ports: {exhaustedPorts} / {idfData[currentIdf]?.ports || 0}
             </Typography>
             <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }} className="rack-visualization">
                 <StyledRackContainer>
@@ -331,8 +332,7 @@ RackVisualization.propTypes = {
     currentIdf: PropTypes.number.isRequired,
     setCurrentIdf: PropTypes.func.isRequired,
     totalIdfs: PropTypes.number.isRequired,
-    idfUsers: PropTypes.object.isRequired,
-    numDevices: PropTypes.number.isRequired,
+    idfData: PropTypes.object.isRequired,
 };
 
 export default RackVisualization;

@@ -4,7 +4,7 @@ import { TextField, Button, Box, Typography } from '@mui/material';
 
 const InitialSetupForm = ({ onSubmit }) => {
     const [numIdfs, setNumIdfs] = useState(1);
-    const [idfData, setIdfData] = useState({1: {devices: ''}});
+    const [idfData, setIdfData] = useState({1: {ports: ''}});
 
     const handleIdfChange = (e) => {
         const value = Math.max(Math.min(parseInt(e.target.value) || 1, 10), 1);
@@ -22,7 +22,7 @@ const InitialSetupForm = ({ onSubmit }) => {
         setIdfData(prevData => ({
             ...prevData,
             [idf]: {
-                devices: value
+                ports: value
             }
         }));
     };
@@ -31,7 +31,7 @@ const InitialSetupForm = ({ onSubmit }) => {
         e.preventDefault();
         const formattedIdfData = Object.entries(idfData).reduce((acc, [idf, data]) => {
             acc[idf] = {
-                devices: parseInt(data.devices) || 0
+                ports: parseInt(data.ports) || 0
             };
             return acc;
         }, {});
@@ -64,10 +64,10 @@ const InitialSetupForm = ({ onSubmit }) => {
                         <TextField
                             fullWidth
                             margin="normal"
-                            name={`idf-${idf}-devices`}
-                            label={`End User Devices for IDF ${idf}`}
+                            name={`idf-${idf}-ports`}
+                            label={`Number of Ports for IDF ${idf}`}
                             type="number"
-                            value={idfData[idf].devices}
+                            value={idfData[idf].ports}
                             onChange={(e) => handleDataChange(idf, e.target.value)}
                             required
                             inputProps={{ min: 0 }}
