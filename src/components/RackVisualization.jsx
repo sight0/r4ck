@@ -8,16 +8,9 @@ import { useTheme } from '@mui/material/styles';
 import LanguageIcon from '@mui/icons-material/Language';
 import RackComponent from './RackComponent';
 import ComponentConfigDialog from './ComponentConfigDialog';
+import { components } from './Sidebar';
 
-const componentColors = {
-    switch: '#4CAF50',  // Green
-    fiber_switch: '#2196F3',  // Blue
-    patchPanel: '#9C27B0',  // Purple
-    firewall: '#F44336',  // Red
-    ups: '#FFC107',  // Amber
-    server: '#00BCD4',  // Cyan
-    other: '#607D8B',  // Blue Grey
-};
+const componentColors = Object.fromEntries(components.map(comp => [comp.type, comp.color]));
 
 const StyledRackContainer = styled(Box)({
     position: 'relative',
@@ -341,10 +334,10 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
                 <Grid item xs={12} md={4}>
                     <Box sx={{ border: '1px solid #ccc', borderRadius: '4px', p: 2, mb: 2 }}>
                         <Typography variant="h6" gutterBottom>Legend</Typography>
-                        {Object.entries(componentColors).map(([type, color]) => (
-                            <Box key={type} sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                                <Box sx={{ width: 20, height: 20, backgroundColor: color, mr: 1 }} />
-                                <Typography>{type.charAt(0).toUpperCase() + type.slice(1)}</Typography>
+                        {components.map((component) => (
+                            <Box key={component.id} sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                                <Box sx={{ width: 20, height: 20, backgroundColor: component.color, mr: 1 }} />
+                                <Typography>{component.name}</Typography>
                             </Box>
                         ))}
                     </Box>
