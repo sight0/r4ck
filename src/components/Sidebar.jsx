@@ -18,14 +18,14 @@ const Sidebar = ({ currentIdf }) => {
             elevation={3}
             className="sidebar"
             sx={{
-                background: 'linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)',
+                background: '#f5f5f5',
                 height: '100%',
                 padding: '20px',
-                color: 'white',
+                color: '#333',
             }}
         >
-            <Typography variant="h5" sx={{ mb: 3, fontWeight: 'bold', textAlign: 'center' }}>
-                IDF {currentIdf}
+            <Typography variant="h5" sx={{ mb: 3, fontWeight: 'bold', textAlign: 'center', color: '#1a1a1a' }}>
+                Components List
             </Typography>
             <TextField 
                 placeholder="Search components" 
@@ -34,17 +34,17 @@ const Sidebar = ({ currentIdf }) => {
                     mb: 3,
                     '& .MuiOutlinedInput-root': {
                         '& fieldset': {
-                            borderColor: 'rgba(255,255,255,0.5)',
+                            borderColor: '#bdbdbd',
                         },
                         '&:hover fieldset': {
-                            borderColor: 'white',
+                            borderColor: '#9e9e9e',
                         },
                         '&.Mui-focused fieldset': {
-                            borderColor: 'white',
+                            borderColor: '#757575',
                         },
                     },
                     '& .MuiInputBase-input': {
-                        color: 'white',
+                        color: '#333',
                     },
                 }} 
             />
@@ -57,18 +57,20 @@ const Sidebar = ({ currentIdf }) => {
                         sx={{ 
                             cursor: 'move',
                             mb: 2,
-                            backgroundColor: 'rgba(255,255,255,0.1)',
+                            backgroundColor: '#ffffff',
                             borderRadius: '10px',
                             transition: 'all 0.3s ease',
+                            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
                             '&:hover': {
-                                backgroundColor: 'rgba(255,255,255,0.2)',
+                                backgroundColor: '#f0f0f0',
                                 transform: 'translateY(-2px)',
+                                boxShadow: '0 4px 8px rgba(0,0,0,0.15)',
                             },
                             display: 'flex',
                             alignItems: 'center',
                         }}
                     >
-                        <DragIndicatorIcon sx={{ mr: 1 }} />
+                        <DragIndicatorIcon sx={{ mr: 1, color: '#757575' }} />
                         {component.name}
                     </ListItem>
                 ))}
