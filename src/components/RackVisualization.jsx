@@ -18,7 +18,7 @@ const StyledRackContainer = styled(Box)({
     },
 });
 
-const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) => {
+const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers, numDevices }) => {
     const theme = useTheme();
     const [components, setComponents] = useState([]);
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -28,6 +28,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
     const [draggedComponent, setDraggedComponent] = useState(null);
     const [placementIndicator, setPlacementIndicator] = useState(null);
     const [configDialogOpen, setConfigDialogOpen] = useState(false);
+    const [exhaustedPorts, setExhaustedPorts] = useState(0);
     const rackRef = useRef(null);
 
     const rackHeight = 42 * 20; // 42U rack height
@@ -35,9 +36,13 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
     const accentColor = theme.palette.secondary.main;
 
     useEffect(() => {
+        // Calculate exhausted ports based on the number of patch panel components
+        const patchPanelPorts = components.filter(c => c.type === 'patchPanel').reduce((total, panel) => total + parseInt(panel.capacity), 0);
+        setExhaustedPorts(Math.min(patchPanelPorts, numDevices));
+
         // TODO: Implement actual recommendation logic
         setRecommendation('Recommendation: Add a 48-port switch for optimal performance.');
-    }, [currentIdf, idfUsers]);
+    }, [components, currentIdf, idfUsers, numDevices]);
 
     const handleDrop = useCallback((e) => {
         e.preventDefault();
@@ -184,6 +189,9 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfUsers }) =
             <Typography variant="h5" sx={{ mb: 2, fontWeight: 'bold', color: 'text.primary' }}>
                 IDF <span style={{ color: accentColor }}>{currentIdf}</span> Rack Design
             </Typography>
+            <Typography variant="subtitle1" gutterBottom>
+                Exhausted Ports: {exhaustedPorts} / {numDevices}
+            </Typography>
             <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }} className="rack-visualization">
                 <StyledRackContainer>
                     <Box className="rack-units">
@@ -324,6 +332,7 @@ RackVisualization.propTypes = {
     setCurrentIdf: PropTypes.func.isRequired,
     totalIdfs: PropTypes.number.isRequired,
     idfUsers: PropTypes.object.isRequired,
+    numDevices: PropTypes.number.isRequired,
 };
 
 export default RackVisualization;

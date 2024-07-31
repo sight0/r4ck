@@ -5,6 +5,7 @@ import { TextField, Button, Box, Typography } from '@mui/material';
 const InitialSetupForm = ({ onSubmit }) => {
     const [numIdfs, setNumIdfs] = useState(1);
     const [idfUsers, setIdfUsers] = useState({1: ''});
+    const [numDevices, setNumDevices] = useState('');
 
     const handleIdfChange = (e) => {
         const value = Math.max(Math.min(parseInt(e.target.value) || 1, 10), 1);
@@ -31,7 +32,11 @@ const InitialSetupForm = ({ onSubmit }) => {
             acc[idf] = parseInt(users) || 0;
             return acc;
         }, {});
-        onSubmit({ idfs: numIdfs, idfUsers: formattedIdfUsers });
+        onSubmit({ 
+            idfs: numIdfs, 
+            idfUsers: formattedIdfUsers,
+            numDevices: parseInt(numDevices) || 0
+        });
     };
 
     return (
@@ -66,6 +71,17 @@ const InitialSetupForm = ({ onSubmit }) => {
                     />
                 ))}
             </Box>
+            <TextField
+                fullWidth
+                margin="normal"
+                name="numDevices"
+                label="Total Number of Devices"
+                type="number"
+                value={numDevices}
+                onChange={(e) => setNumDevices(e.target.value)}
+                required
+                inputProps={{ min: 0 }}
+            />
             <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
                 Start Design
             </Button>

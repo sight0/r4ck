@@ -5,11 +5,13 @@ import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import RackVisualization from './components/RackVisualization';
 import InitialSetupForm from './components/InitialSetupForm';
+import PatchSchedule from './components/PatchSchedule';
 
 const App = () => {
     const [setupComplete, setSetupComplete] = useState(false);
     const [networkInfo, setNetworkInfo] = useState(null);
     const [currentIdf, setCurrentIdf] = useState(1);
+    const [connections, setConnections] = useState([]);
 
     const theme = createTheme({
         palette: {
@@ -32,6 +34,10 @@ const App = () => {
         setSetupComplete(true);
     };
 
+    const handleAddConnection = (connection) => {
+        setConnections([...connections, connection]);
+    };
+
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
@@ -52,7 +58,10 @@ const App = () => {
                                 setCurrentIdf={setCurrentIdf}
                                 totalIdfs={networkInfo.idfs}
                                 idfUsers={networkInfo.idfUsers}
+                                numDevices={networkInfo.numDevices}
+                                onAddConnection={handleAddConnection}
                             />
+                            <PatchSchedule connections={connections} />
                         </Box>
                     </Box>
                 )}
