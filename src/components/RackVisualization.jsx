@@ -256,7 +256,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
                         {currentIdf === numIdfs + 1 ? 'MDF' : `IDF ${currentIdf}`} Rack Design
                     </Typography>
                     <Typography variant="subtitle1" gutterBottom>
-                        Exhausted Ports: {exhaustedPorts} / {idfData[currentIdf]?.ports || 0}
+                        End User Devices Connected: {exhaustedPorts} / {idfData[currentIdf]?.ports || 0}
                     </Typography>
                 </Box>
                 <Box>
