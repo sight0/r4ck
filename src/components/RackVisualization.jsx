@@ -290,6 +290,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
                                     onEdit={handleEditComponent}
                                     onDragStart={(e) => handleComponentDragStart(e, comp)}
                                     isDragging={draggedComponent && draggedComponent.id === comp.id}
+                                    componentColors={componentColors}
                                 />
                             ))}
 
@@ -334,10 +335,10 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
                 <Grid item xs={12} md={4}>
                     <Box sx={{ border: '1px solid #ccc', borderRadius: '4px', p: 2, mb: 2 }}>
                         <Typography variant="h6" gutterBottom>Legend</Typography>
-                        {components.map((component) => (
-                            <Box key={component.id} sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                                <Box sx={{ width: 20, height: 20, backgroundColor: component.color, mr: 1 }} />
-                                <Typography>{component.name}</Typography>
+                        {Object.entries(componentColors).map(([type, color]) => (
+                            <Box key={type} sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                                <Box sx={{ width: 20, height: 20, backgroundColor: color, mr: 1 }} />
+                                <Typography>{type.charAt(0).toUpperCase() + type.slice(1).replace('_', ' ')}</Typography>
                             </Box>
                         ))}
                     </Box>

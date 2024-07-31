@@ -4,18 +4,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import PanToolIcon from '@mui/icons-material/PanTool';
 
-const componentColors = {
-    switch: '#4CAF50',  // Green
-    fiber_switch: '#2196F3',  // Blue
-    patchPanel: '#9C27B0',  // Purple
-    firewall: '#F44336',  // Red
-    ups: '#FFC107',  // Amber
-    server: '#00BCD4',  // Cyan
-    rack: '#795548',  // Brown
-    other: '#607D8B',  // Blue Grey
-};
-
-const RackComponent = ({ component, rackWidth, onDelete, onEdit, onDragStart, isDragging }) => {
+const RackComponent = ({ component, rackWidth, onDelete, onEdit, onDragStart, isDragging, componentColors }) => {
     return (
         <g 
             transform={`translate(${component.x}, ${component.y})`}
@@ -29,7 +18,7 @@ const RackComponent = ({ component, rackWidth, onDelete, onEdit, onDragStart, is
                 ry="5"
             />
             <text x={(rackWidth - 40) / 2} y={(component.units * 20) / 2} textAnchor="middle" fill="white" fontSize="12" dy=".3em">
-                {component.name} ({component.capacity})
+                {component.type.charAt(0).toUpperCase() + component.type.slice(1).replace('_', ' ')} ({component.capacity})
             </text>
             <foreignObject x="0" y='-4' width="30" height="30">
                 <IconButton 
@@ -69,6 +58,7 @@ RackComponent.propTypes = {
     onEdit: PropTypes.func.isRequired,
     onDragStart: PropTypes.func.isRequired,
     isDragging: PropTypes.bool,
+    componentColors: PropTypes.object.isRequired,
 };
 
 export default RackComponent;
