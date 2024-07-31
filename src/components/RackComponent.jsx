@@ -13,8 +13,8 @@ const RackComponent = ({ component, rackWidth, onDelete, onEdit, onDragStart, is
                 width={rackWidth - 40}
                 height={component.units * 20}
                 fill={isDragging ? "rgba(66, 165, 245, 0.5)" : componentColors[component.type] || componentColors.other}
-                stroke={isHighlighted ? "#333" : componentColors[component.type] || componentColors.other}
-                strokeWidth={isHighlighted ? 3 : 1}
+                stroke={isHighlighted ? "#000000" : componentColors[component.type] || componentColors.other}
+                strokeWidth={isHighlighted ? 7 : 1}
                 rx="5"
                 ry="5"
             />

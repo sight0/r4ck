@@ -77,7 +77,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
 
     useEffect(() => {
         // Calculate exhausted ports based on the number of patch panel components
-        const patchPanelPorts = components.filter(c => c.type === 'patchPanel').reduce((total, panel) => total + parseInt(panel.capacity), 0);
+        const patchPanelPorts = components.filter(c => c.type === 'patch_panel').reduce((total, panel) => total + parseInt(panel.capacity), 0);
         const totalPorts = idfData[currentIdf]?.ports || 0;
         setExhaustedPorts(Math.min(patchPanelPorts, totalPorts));
 
@@ -220,7 +220,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
                     
                     // Recalculate exhausted ports
                     const patchPanelPorts = newComponents
-                        .filter(c => c.type === 'patchPanel')
+                        .filter(c => c.type === 'patch_panel')
                         .reduce((total, panel) => total + parseInt(panel.capacity), 0);
                     const totalPorts = idfData[currentIdf]?.ports || 0;
                     setExhaustedPorts(Math.min(patchPanelPorts, totalPorts));
@@ -350,7 +350,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
                                 <Box key={type} sx={{ display: 'flex', alignItems: 'center', mb: 1, justifyContent: 'space-between' }}>
                                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                         <Box sx={{ width: 20, height: 20, backgroundColor: color, mr: 1 }} />
-                                        <Typography>{components.find(comp => comp.type === type)?.name || type} ({count})</Typography>
+                                        <Typography>{type} ({count})</Typography>
                                     </Box>
                                     <IconButton
                                         size="small"
