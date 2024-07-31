@@ -5,7 +5,6 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { styled } from '@mui/system';
 import { useTheme } from '@mui/material/styles';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import LanguageIcon from '@mui/icons-material/Language';
 import RackComponent from './RackComponent';
 import ComponentConfigDialog from './ComponentConfigDialog';
@@ -17,7 +16,6 @@ const componentColors = {
     firewall: '#F44336',  // Red
     ups: '#FFC107',  // Amber
     server: '#00BCD4',  // Cyan
-    rack: '#795548',  // Brown
     other: '#607D8B',  // Blue Grey
 };
 
