@@ -63,7 +63,8 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
     const [exhaustedPorts, setExhaustedPorts] = useState(0);
     const rackRef = useRef(null);
 
-    const rackHeight = 42 * 20; // 42U rack height
+    const rackSize = idfData[currentIdf]?.rackSize || 42; // Use the specified rack size or default to 42U
+    const rackHeight = rackSize * 20; // Each U is 20px tall
     const rackWidth = 300; // Increased width for better visibility
     const accentColor = theme.palette.secondary.main;
 
@@ -240,9 +241,9 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
                     <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }} className="rack-visualization">
                 <StyledRackContainer>
                     <Box className="rack-units">
-                        {[...Array(42)].map((_, index) => (
+                        {[...Array(rackSize)].map((_, index) => (
                             <div key={index} style={{ position: 'absolute', top: `${index * 20}px`, color: '#fff' }}>
-                                {42 - index}U
+                                {rackSize - index}U
                             </div>
                         ))}
                     </Box>
@@ -267,7 +268,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
                                 strokeWidth="2"
                             />
                             {/* Rack units */}
-                            {[...Array(42)].map((_, index) => (
+                            {[...Array(rackSize)].map((_, index) => (
                                 <line
                                     key={index}
                                     x1="30"
