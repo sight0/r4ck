@@ -3,6 +3,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography, Box, Grid, Paper, Divider, IconButton } from '@mui/material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import { styled } from '@mui/system';
 import { useTheme } from '@mui/material/styles';
 import LanguageIcon from '@mui/icons-material/Language';
@@ -61,6 +62,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
     const [placementIndicator, setPlacementIndicator] = useState(null);
     const [configDialogOpen, setConfigDialogOpen] = useState(false);
     const [exhaustedPorts, setExhaustedPorts] = useState(0);
+    const [highlightedType, setHighlightedType] = useState(null);
     const rackRef = useRef(null);
 
     const rackSize = idfData[currentIdf]?.rackSize || 42; // Use the specified rack size or default to 42U
@@ -68,6 +70,10 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
     // const rackWidth = rackSize <= 24 ? 200 : 300; // Adjust width for smaller racks
     const rackWidth = 298; // Adjust width for smaller racks
     const accentColor = theme.palette.secondary.main;
+
+    const handleHighlight = (type) => {
+        setHighlightedType(type);
+    };
 
     useEffect(() => {
         // Calculate exhausted ports based on the number of patch panel components
@@ -293,6 +299,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
                                     onDragStart={(e) => handleComponentDragStart(e, comp)}
                                     isDragging={draggedComponent && draggedComponent.id === comp.id}
                                     componentColors={componentColors}
+                                    isHighlighted={highlightedType === comp.type}
                                 />
                             ))}
 
@@ -337,12 +344,24 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
                 <Grid item xs={12} md={4}>
                     <Box sx={{ border: '1px solid #ccc', borderRadius: '4px', p: 2, mb: 2 }}>
                         <Typography variant="h6" gutterBottom>Legend</Typography>
-                        {Object.entries(componentColors).map(([type, color]) => (
-                            <Box key={type} sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                                <Box sx={{ width: 20, height: 20, backgroundColor: color, mr: 1 }} />
-                                <Typography>{type.charAt(0).toUpperCase() + type.slice(1).replace('_', ' ')}</Typography>
-                            </Box>
-                        ))}
+                        {Object.entries(componentColors).map(([type, color]) => {
+                            const count = components.filter(comp => comp.type === type).length;
+                            return (
+                                <Box key={type} sx={{ display: 'flex', alignItems: 'center', mb: 1, justifyContent: 'space-between' }}>
+                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                        <Box sx={{ width: 20, height: 20, backgroundColor: color, mr: 1 }} />
+                                        <Typography>{type.charAt(0).toUpperCase() + type.slice(1).replace('_', ' ')} ({count})</Typography>
+                                    </Box>
+                                    <IconButton
+                                        size="small"
+                                        onMouseEnter={() => handleHighlight(type)}
+                                        onMouseLeave={() => handleHighlight(null)}
+                                    >
+                                        <VisibilityIcon fontSize="small" />
+                                    </IconButton>
+                                </Box>
+                            );
+                        })}
                     </Box>
                     <Divider sx={{ my: 2 }} />
                     <Box sx={{ border: '1px solid #ccc', borderRadius: '4px', p: 2 }}>

@@ -4,7 +4,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import PanToolIcon from '@mui/icons-material/PanTool';
 
-const RackComponent = ({ component, rackWidth, onDelete, onEdit, onDragStart, isDragging, componentColors }) => {
+const RackComponent = ({ component, rackWidth, onDelete, onEdit, onDragStart, isDragging, componentColors, isHighlighted }) => {
     return (
         <g 
             transform={`translate(${component.x}, ${component.y})`}
@@ -13,7 +13,8 @@ const RackComponent = ({ component, rackWidth, onDelete, onEdit, onDragStart, is
                 width={rackWidth - 40}
                 height={component.units * 20}
                 fill={isDragging ? "rgba(66, 165, 245, 0.5)" : componentColors[component.type] || componentColors.other}
-                stroke={componentColors[component.type] || componentColors.other}
+                stroke={isHighlighted ? "#333" : componentColors[component.type] || componentColors.other}
+                strokeWidth={isHighlighted ? 3 : 1}
                 rx="5"
                 ry="5"
             />
@@ -59,6 +60,7 @@ RackComponent.propTypes = {
     onDragStart: PropTypes.func.isRequired,
     isDragging: PropTypes.bool,
     componentColors: PropTypes.object.isRequired,
+    isHighlighted: PropTypes.bool,
 };
 
 export default RackComponent;
