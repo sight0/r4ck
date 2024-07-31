@@ -384,12 +384,14 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
                                     borderRadius: '4px',
                                 },
                             }}>
-                                <IconButton 
-                                    onClick={() => document.getElementById('idf-container').scrollLeft -= 100}
-                                    sx={{ flexShrink: 0 }}
-                                >
-                                    <ChevronLeftIcon />
-                                </IconButton>
+                                {numIdfs > 1 && (
+                                    <IconButton 
+                                        onClick={() => document.getElementById('idf-container').scrollLeft -= 100}
+                                        sx={{ flexShrink: 0 }}
+                                    >
+                                        <ChevronLeftIcon />
+                                    </IconButton>
+                                )}
                                 <Box 
                                     id="idf-container"
                                     sx={{ 
@@ -399,6 +401,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
                                         '&::-webkit-scrollbar': {
                                             display: 'none',
                                         },
+                                        justifyContent: numIdfs === 1 ? 'center' : 'flex-start',
                                     }}
                                 >
                                     {[...Array(numIdfs)].map((_, index) => (
@@ -427,12 +430,14 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
                                         </Box>
                                     ))}
                                 </Box>
-                                <IconButton 
-                                    onClick={() => document.getElementById('idf-container').scrollLeft += 100}
-                                    sx={{ flexShrink: 0 }}
-                                >
-                                    <ChevronRightIcon />
-                                </IconButton>
+                                {numIdfs > 1 && (
+                                    <IconButton 
+                                        onClick={() => document.getElementById('idf-container').scrollLeft += 100}
+                                        sx={{ flexShrink: 0 }}
+                                    >
+                                        <ChevronRightIcon />
+                                    </IconButton>
+                                )}
                             </Box>
                         </Box>
                     </Box>
