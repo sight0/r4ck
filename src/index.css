@@ -86,7 +86,7 @@ select:focus {
 
 .rack-visualization svg rect,
 .rack-visualization svg line {
-  fill: var(--secondary-color);
+  /*fill: var(--secondary-color);*/
   stroke: var(--text-color);
 }
 
