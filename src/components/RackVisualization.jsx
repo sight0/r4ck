@@ -4,7 +4,7 @@ import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, T
 import { styled } from '@mui/system';
 import { useTheme } from '@mui/material/styles';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import CloudIcon from '@mui/icons-material/Cloud';
+import LanguageIcon from '@mui/icons-material/Language';
 import RackComponent from './RackComponent';
 import ComponentConfigDialog from './ComponentConfigDialog';
 
@@ -352,7 +352,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
                     <Box sx={{ border: '1px solid #ccc', borderRadius: '4px', p: 2 }}>
                         <Typography variant="h6" gutterBottom>Infrastructure Layout</Typography>
                         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
-                            <CloudIcon sx={{ fontSize: 40, mb: 2, color: theme.palette.info.main }} />
+                            <LanguageIcon sx={{ fontSize: 40, mb: 2, color: theme.palette.info.main }} />
                             <Box sx={{ 
                                 width: '2px', 
                                 height: '20px', 
