@@ -5,7 +5,6 @@ import { styled } from '@mui/system';
 import { useTheme } from '@mui/material/styles';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import CloudIcon from '@mui/icons-material/Cloud';
-import ComputerIcon from '@mui/icons-material/Computer';
 import RackComponent from './RackComponent';
 import ComponentConfigDialog from './ComponentConfigDialog';
 
@@ -353,6 +352,12 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
                     <Box sx={{ border: '1px solid #ccc', borderRadius: '4px', p: 2 }}>
                         <Typography variant="h6" gutterBottom>Infrastructure Layout</Typography>
                         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
+                            <CloudIcon sx={{ fontSize: 40, mb: 2, color: theme.palette.info.main }} />
+                            <Box sx={{ 
+                                width: '2px', 
+                                height: '20px', 
+                                backgroundColor: theme.palette.grey[400]
+                            }} />
                             <StyledMdfButton sx={{ mb: 2 }}>MDF</StyledMdfButton>
                             <Box sx={{ 
                                 width: '100%', 
@@ -390,6 +395,9 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
                                         >
                                             IDF {index + 1}
                                         </StyledIdfButton>
+                                        <Typography variant="caption" sx={{ mt: 1 }}>
+                                            {idfData[index + 1]?.ports || 0} ports
+                                        </Typography>
                                     </Box>
                                 ))}
                             </Box>
