@@ -44,7 +44,7 @@ const InitialSetupForm = ({ onSubmit }) => {
         });
     };
 
-    const rackSizes = [42, 45, 48, 52];
+    const rackSizes = [21, 24, 42, 45, 48, 52];
 
     return (
         <Box component="form" onSubmit={handleSubmit} sx={{ width: {xs:'100%',sm:'90%',md:'50%',lg:'20%'}, margin: 'auto', mt: 4 }}>

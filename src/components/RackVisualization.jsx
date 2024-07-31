@@ -65,7 +65,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
 
     const rackSize = idfData[currentIdf]?.rackSize || 42; // Use the specified rack size or default to 42U
     const rackHeight = rackSize * 20; // Each U is 20px tall
-    const rackWidth = 300; // Increased width for better visibility
+    const rackWidth = rackSize <= 24 ? 200 : 300; // Adjust width for smaller racks
     const accentColor = theme.palette.secondary.main;
 
     useEffect(() => {
