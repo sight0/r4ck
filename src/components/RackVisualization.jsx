@@ -350,15 +350,38 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
                     <Divider sx={{ my: 2 }} />
                     <Box sx={{ border: '1px solid #ccc', borderRadius: '4px', p: 2 }}>
                         <Typography variant="h6" gutterBottom>IDF and MDF Layout</Typography>
-                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                            <StyledMdfButton>MDF</StyledMdfButton>
-                            <StyledLine sx={{ height: '20px' }} />
-                            <ArrowDownwardIcon />
-                            <StyledLine sx={{ height: '20px' }} />
-                            <Box sx={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', width: '100%' }}>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
+                            <StyledMdfButton sx={{ mb: 2 }}>MDF</StyledMdfButton>
+                            <Box sx={{ 
+                                width: '100%', 
+                                height: '2px', 
+                                backgroundColor: theme.palette.grey[400], 
+                                position: 'absolute', 
+                                top: '50%', 
+                                left: 0,
+                                transform: 'translateY(-50%)'
+                            }} />
+                            <Box sx={{ 
+                                display: 'flex', 
+                                justifyContent: 'space-around', 
+                                flexWrap: 'wrap', 
+                                width: '100%',
+                                mt: 4
+                            }}>
                                 {[...Array(numIdfs)].map((_, index) => (
-                                    <Box key={index} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                        <StyledLine sx={{ height: '20px', width: '2px' }} />
+                                    <Box key={index} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', m: 1 }}>
+                                        <Box sx={{ 
+                                            width: '2px', 
+                                            height: '20px', 
+                                            backgroundColor: theme.palette.grey[400]
+                                        }} />
+                                        <Box sx={{
+                                            width: '10px',
+                                            height: '10px',
+                                            borderRadius: '50%',
+                                            backgroundColor: theme.palette.grey[400],
+                                            my: 1
+                                        }} />
                                         <StyledIdfButton 
                                             onClick={() => setCurrentIdf(index + 1)}
                                             isActive={currentIdf === index + 1}
