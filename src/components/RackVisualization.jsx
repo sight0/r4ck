@@ -18,7 +18,7 @@ const StyledRackContainer = styled(Box)({
     },
 });
 
-const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfData }) => {
+const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
     const theme = useTheme();
     const [components, setComponents] = useState([]);
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -76,13 +76,14 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfData }) =>
         });
     }, []);
 
-    const handleDialogClose = (name, capacity, units) => {
-        if (name && capacity && units) {
+    const handleDialogClose = (name, capacity, units, type) => {
+        if (name && capacity && units && type) {
             const newComp = {
                 ...newComponent,
                 name,
                 capacity,
                 units: parseInt(units),
+                type,
             };
             
             // Check if the component fits within the rack
@@ -111,7 +112,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfData }) =>
     };
 
     const handleNextIdf = () => {
-        if (currentIdf < totalIdfs) {
+        if (currentIdf < numIdfs) {
             setCurrentIdf(currentIdf + 1);
             setComponents([]);
         }
@@ -331,7 +332,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, totalIdfs, idfData }) =>
 RackVisualization.propTypes = {
     currentIdf: PropTypes.number.isRequired,
     setCurrentIdf: PropTypes.func.isRequired,
-    totalIdfs: PropTypes.number.isRequired,
+    numIdfs: PropTypes.number.isRequired,
     idfData: PropTypes.object.isRequired,
 };
 
