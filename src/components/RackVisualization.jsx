@@ -27,7 +27,9 @@ const StyledRackContainer = styled(Box)({
     },
 });
 
-const StyledIdfButton = styled(Button)(({ theme, isActive }) => ({
+const StyledIdfButton = styled(Button, {
+    shouldForwardProp: (prop) => prop !== 'isActive'
+})(({ theme, isActive }) => ({
     margin: theme.spacing(1),
     minWidth: '80px',
     backgroundColor: isActive ? theme.palette.primary.dark : theme.palette.primary.main,
@@ -53,7 +55,7 @@ const StyledLine = styled('div')(({ theme }) => ({
     margin: '0 auto',
 }));
 
-const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, setShowMdf }) => {
+const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
     const theme = useTheme();
     const [components, setComponents] = useState([]);
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -513,7 +515,6 @@ RackVisualization.propTypes = {
     setCurrentIdf: PropTypes.func.isRequired,
     numIdfs: PropTypes.number.isRequired,
     idfData: PropTypes.object.isRequired,
-    setShowMdf: PropTypes.func.isRequired,
 };
 
 export default RackVisualization;
