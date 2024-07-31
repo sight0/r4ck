@@ -350,7 +350,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
                                 <Box key={type} sx={{ display: 'flex', alignItems: 'center', mb: 1, justifyContent: 'space-between' }}>
                                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                         <Box sx={{ width: 20, height: 20, backgroundColor: color, mr: 1 }} />
-                                        <Typography>{type.charAt(0).toUpperCase() + type.slice(1).replace('_', ' ')} ({count})</Typography>
+                                        <Typography>{components.find(comp => comp.type === type)?.name || type} ({count})</Typography>
                                     </Box>
                                     <IconButton
                                         size="small"
