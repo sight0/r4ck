@@ -70,7 +70,7 @@ select:focus {
 }
 
 .rack-visualization-container {
-  background-color: var(--secondary-color);
+  background-color: #2b2b2b;
   padding: 20px;
   border-radius: 8px;
 }

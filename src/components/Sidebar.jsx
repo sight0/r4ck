@@ -6,6 +6,10 @@ import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 const components = [
     { id: 1, name: 'Rack', type: 'rack' },
     { id: 2, name: 'Switch', type: 'switch' },
+    { id: 3, name: 'Patch Panel', type: 'patchPanel' },
+    { id: 4, name: 'Firewall', type: 'firewall' },
+    { id: 5, name: 'Server', type: 'server' },
+    { id: 6, name: 'UPS', type: 'ups' },
 ];
 
 const Sidebar = ({ currentIdf }) => {
