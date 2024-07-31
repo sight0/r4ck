@@ -56,9 +56,8 @@ const App = () => {
                             <RackVisualization 
                                 currentIdf={currentIdf} 
                                 setCurrentIdf={setCurrentIdf}
-                                totalIdfs={networkInfo.idfs}
-                                idfUsers={networkInfo.idfUsers}
-                                numDevices={networkInfo.numDevices}
+                                numIdfs={networkInfo.numIdfs}
+                                idfData={networkInfo.idfData}
                                 onAddConnection={handleAddConnection}
                             />
                             <PatchSchedule connections={connections} />

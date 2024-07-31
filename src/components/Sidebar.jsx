@@ -14,7 +14,7 @@ const components = [
 
 const Sidebar = ({ currentIdf }) => {
     const handleDragStart = useCallback((e, component) => {
-        e.dataTransfer.setData('component', JSON.stringify(component));
+        e.dataTransfer.setData('text/plain', JSON.stringify(component));
     }, []);
 
     return (

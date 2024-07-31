@@ -36,8 +36,8 @@ const InitialSetupForm = ({ onSubmit }) => {
             return acc;
         }, {});
 
-        onSubmit({ 
-            idfs: numIdfs, 
+        onSubmit({
+            numIdfs: numIdfs,
             idfData: formattedIdfData
         });
     };
