@@ -4,6 +4,8 @@ import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, T
 import { styled } from '@mui/system';
 import { useTheme } from '@mui/material/styles';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import CloudIcon from '@mui/icons-material/Cloud';
+import ComputerIcon from '@mui/icons-material/Computer';
 import RackComponent from './RackComponent';
 import ComponentConfigDialog from './ComponentConfigDialog';
 
