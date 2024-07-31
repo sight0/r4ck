@@ -4,7 +4,7 @@ import { TextField, Button, Box, Typography } from '@mui/material';
 
 const InitialSetupForm = ({ onSubmit }) => {
     const [numIdfs, setNumIdfs] = useState(1);
-    const [idfData, setIdfData] = useState({1: {users: '', devices: ''}});
+    const [idfData, setIdfData] = useState({1: {devices: ''}});
 
     const handleIdfChange = (e) => {
         const value = Math.max(Math.min(parseInt(e.target.value) || 1, 10), 1);
@@ -13,17 +13,16 @@ const InitialSetupForm = ({ onSubmit }) => {
         // Update idfData object when numIdfs changes
         const newIdfData = {};
         for (let i = 1; i <= value; i++) {
-            newIdfData[i] = idfData[i] || {users: '', devices: ''};
+            newIdfData[i] = idfData[i] || {devices: ''};
         }
         setIdfData(newIdfData);
     };
 
-    const handleDataChange = (idf, field, value) => {
+    const handleDataChange = (idf, value) => {
         setIdfData(prevData => ({
             ...prevData,
             [idf]: {
-                ...prevData[idf],
-                [field]: value
+                devices: value
             }
         }));
     };
@@ -32,7 +31,6 @@ const InitialSetupForm = ({ onSubmit }) => {
         e.preventDefault();
         const formattedIdfData = Object.entries(idfData).reduce((acc, [idf, data]) => {
             acc[idf] = {
-                users: parseInt(data.users) || 0,
                 devices: parseInt(data.devices) || 0
             };
             return acc;
@@ -66,22 +64,11 @@ const InitialSetupForm = ({ onSubmit }) => {
                         <TextField
                             fullWidth
                             margin="normal"
-                            name={`idf-${idf}-users`}
-                            label={`Users for IDF ${idf}`}
-                            type="number"
-                            value={idfData[idf].users}
-                            onChange={(e) => handleDataChange(idf, 'users', e.target.value)}
-                            required
-                            inputProps={{ min: 0 }}
-                        />
-                        <TextField
-                            fullWidth
-                            margin="normal"
                             name={`idf-${idf}-devices`}
-                            label={`Devices for IDF ${idf}`}
+                            label={`End User Devices for IDF ${idf}`}
                             type="number"
                             value={idfData[idf].devices}
-                            onChange={(e) => handleDataChange(idf, 'devices', e.target.value)}
+                            onChange={(e) => handleDataChange(idf, e.target.value)}
                             required
                             inputProps={{ min: 0 }}
                         />
