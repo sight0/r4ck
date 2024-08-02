@@ -8,11 +8,11 @@ const ComponentConfigDialog = ({ open, onClose, component }) => {
 
     useEffect(() => {
         if (component) {
-            const initializePorts = (count) => Array.from({ length: count }, (_, i) => ({ label: `Port ${i + 1}`, note: '' }));
+            const initializePorts = (count) => Array.from({ length: count }, (_, i) => ({ label: `Port ${i + 1}`, cableSource: '' }));
             setEditedComponent({ 
                 ...component, 
-                frontPorts: component.frontPorts || initializePorts(component.capacity),
-                backPorts: component.backPorts || initializePorts(component.capacity)
+                externalPorts: component.externalPorts || initializePorts(component.capacity),
+                internalPorts: component.internalPorts || initializePorts(component.capacity)
             });
         }
     }, [component]);
@@ -23,9 +23,9 @@ const ComponentConfigDialog = ({ open, onClose, component }) => {
             const updatedComponent = { ...prev, [name]: value };
             if (name === 'capacity') {
                 const newCapacity = parseInt(value, 10);
-                const initializePorts = (count) => Array.from({ length: count }, (_, i) => ({ label: `Port ${i + 1}`, note: '' }));
-                updatedComponent.frontPorts = initializePorts(newCapacity);
-                updatedComponent.backPorts = initializePorts(newCapacity);
+                const initializePorts = (count) => Array.from({ length: count }, (_, i) => ({ label: `Port ${i + 1}`, cableSource: '' }));
+                updatedComponent.externalPorts = initializePorts(newCapacity);
+                updatedComponent.internalPorts = initializePorts(newCapacity);
             }
             return updatedComponent;
         });
@@ -56,13 +56,19 @@ const ComponentConfigDialog = ({ open, onClose, component }) => {
                             fullWidth
                             margin="dense"
                         />
-                        <TextField
-                            label="Note"
-                            value={port.note || ''}
-                            onChange={(e) => handlePortChange(side, index, 'note', e.target.value)}
-                            fullWidth
-                            margin="dense"
-                        />
+                        <FormControl fullWidth margin="dense">
+                            <InputLabel>Cable Source</InputLabel>
+                            <Select
+                                value={port.cableSource || ''}
+                                onChange={(e) => handlePortChange(side, index, 'cableSource', e.target.value)}
+                            >
+                                <MenuItem value="AP">Access Point</MenuItem>
+                                <MenuItem value="IP_PHONE">IP Telephone</MenuItem>
+                                <MenuItem value="IDF">Another IDF</MenuItem>
+                                <MenuItem value="MDF">MDF</MenuItem>
+                                <MenuItem value="OTHER">Other</MenuItem>
+                            </Select>
+                        </FormControl>
                     </Box>
                 ))}
             </Box>
@@ -77,8 +83,8 @@ const ComponentConfigDialog = ({ open, onClose, component }) => {
             <DialogContent>
                 <Tabs value={tabValue} onChange={(e, newValue) => setTabValue(newValue)}>
                     <Tab label="General" />
-                    <Tab label="Front Ports" />
-                    <Tab label="Back Ports" />
+                    <Tab label="External Ports" />
+                    <Tab label="Internal Ports" />
                 </Tabs>
                 {tabValue === 0 && (
                     <Box>
@@ -125,8 +131,8 @@ const ComponentConfigDialog = ({ open, onClose, component }) => {
                         </FormControl>
                     </Box>
                 )}
-                {tabValue === 1 && renderPorts('front')}
-                {tabValue === 2 && renderPorts('back')}
+                {tabValue === 1 && renderPorts('external')}
+                {tabValue === 2 && renderPorts('internal')}
             </DialogContent>
             <DialogActions>
                 <Button onClick={() => onClose(null)}>Cancel</Button>
