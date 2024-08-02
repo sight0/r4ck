@@ -35,6 +35,7 @@ const ComponentConfigDialog = ({ open, onClose, component }) => {
 
     const renderPorts = (side) => {
         const ports = editedComponent[`${side}Ports`];
+        alert(side);
         return (
             <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 2 }}>
                 {ports.map((port, index) => (
