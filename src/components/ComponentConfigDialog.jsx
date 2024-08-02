@@ -4,6 +4,7 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, S
 
 const ComponentConfigDialog = ({ open, onClose, component, numIdfs, idfData }) => {
     const [editedComponent, setEditedComponent] = useState(null);
+    const [showPortSetup, setShowPortSetup] = useState(false);
 
     useEffect(() => {
         if (component) {
@@ -69,8 +70,9 @@ const ComponentConfigDialog = ({ open, onClose, component, numIdfs, idfData }) =
                             >
                                 <MenuItem value="AP">Access Point</MenuItem>
                                 <MenuItem value="IP_PHONE">IP Telephone</MenuItem>
-                                {[...Array(numIdfs)].map((_, index) => (
-                                    <MenuItem key={index + 1} value={`IDF_${index + 1}`}>{`IDF ${index + 1}`}</MenuItem>
+                                {[...Array(numIdfs)].map((_, idx) => (
+                                    idx + 1 !== editedComponent.idf && 
+                                    <MenuItem key={idx + 1} value={`IDF_${idx + 1}`}>{`IDF ${idx + 1}`}</MenuItem>
                                 ))}
                                 <MenuItem value="MDF">MDF</MenuItem>
                                 <MenuItem value="OTHER">Other</MenuItem>
@@ -135,8 +137,15 @@ const ComponentConfigDialog = ({ open, onClose, component, numIdfs, idfData }) =
                             <MenuItem value="rack">Rack</MenuItem>
                         </Select>
                     </FormControl>
+                    <Button 
+                        onClick={() => setShowPortSetup(!showPortSetup)} 
+                        variant="outlined" 
+                        sx={{ mt: 2 }}
+                    >
+                        {showPortSetup ? 'Hide Port Setup' : 'Show Port Setup'}
+                    </Button>
                 </Box>
-                {renderPorts()}
+                {showPortSetup && renderPorts()}
             </DialogContent>
             <DialogActions>
                 <Button onClick={() => onClose(null)}>Cancel</Button>
