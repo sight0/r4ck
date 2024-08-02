@@ -57,7 +57,7 @@ const ComponentConfigDialog = ({ open, onClose, component }) => {
                             margin="dense"
                         />
                         <FormControl fullWidth margin="dense">
-                            <InputLabel>Cable Source</InputLabel>
+                            <InputLabel>Device</InputLabel>
                             <Select
                                 value={port.cableSource || ''}
                                 onChange={(e) => handlePortChange(side, index, 'cableSource', e.target.value)}
