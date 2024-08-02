@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Select, MenuItem, FormControl, InputLabel, Box } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Select, MenuItem, FormControl, InputLabel, Box, Typography } from '@mui/material';
 
-const ComponentConfigDialog = ({ open, onClose, component, idfs }) => {
+const ComponentConfigDialog = ({ open, onClose, component, idfs, mdfs, idfData }) => {
     const [editedComponent, setEditedComponent] = useState(null);
 
     useEffect(() => {
         if (component) {
-            const initializePorts = (count) => Array.from({ length: count }, (_, i) => ({ label: `Port ${i + 1}`, cableSource: '' }));
+            const initializePorts = (count) => Array.from({ length: count }, (_, i) => ({ label: `Port ${i + 1}`, cableSource: '', connectedTo: '' }));
             setEditedComponent({ 
                 ...component, 
                 ports: component.ports || initializePorts(component.capacity)
@@ -21,7 +21,7 @@ const ComponentConfigDialog = ({ open, onClose, component, idfs }) => {
             const updatedComponent = { ...prev, [name]: value };
             if (name === 'capacity') {
                 const newCapacity = parseInt(value, 10);
-                const initializePorts = (count) => Array.from({ length: count }, (_, i) => ({ label: `Port ${i + 1}`, cableSource: '' }));
+                const initializePorts = (count) => Array.from({ length: count }, (_, i) => ({ label: `Port ${i + 1}`, cableSource: '', connectedTo: '' }));
                 updatedComponent.ports = initializePorts(newCapacity);
             }
             return updatedComponent;
@@ -36,6 +36,14 @@ const ComponentConfigDialog = ({ open, onClose, component, idfs }) => {
         setEditedComponent(prev => {
             const ports = [...prev.ports];
             ports[index] = { ...ports[index], [field]: value };
+            
+            // If connecting to an IDF or MDF, update the connectedTo field
+            if (field === 'cableSource' && (value.startsWith('IDF_') || value === 'MDF')) {
+                ports[index].connectedTo = value;
+            } else if (field === 'cableSource') {
+                ports[index].connectedTo = '';
+            }
+            
             return { ...prev, ports: ports };
         });
     };
@@ -64,10 +72,17 @@ const ComponentConfigDialog = ({ open, onClose, component, idfs }) => {
                                 {idfs.map((idf) => (
                                     <MenuItem key={idf} value={`IDF_${idf}`}>{`IDF ${idf}`}</MenuItem>
                                 ))}
-                                <MenuItem value="MDF">MDF</MenuItem>
+                                {mdfs.map((mdf) => (
+                                    <MenuItem key={mdf} value={`MDF_${mdf}`}>{`MDF ${mdf}`}</MenuItem>
+                                ))}
                                 <MenuItem value="OTHER">Other</MenuItem>
                             </Select>
                         </FormControl>
+                        {port.connectedTo && (
+                            <Typography variant="caption" display="block" sx={{ mt: 1 }}>
+                                Connected to: {port.connectedTo}
+                            </Typography>
+                        )}
                     </Box>
                 ))}
             </Box>
@@ -139,6 +154,7 @@ ComponentConfigDialog.propTypes = {
     component: PropTypes.object,
     idfs: PropTypes.arrayOf(PropTypes.string).isRequired,
     mdfs: PropTypes.arrayOf(PropTypes.string).isRequired,
+    idfData: PropTypes.object.isRequired,
 };
 
 export default ComponentConfigDialog;
