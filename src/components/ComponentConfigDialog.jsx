@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Select, MenuItem, FormControl, InputLabel, Box } from '@mui/material';
 
-const ComponentConfigDialog = ({ open, onClose, component, idfs, mdfs }) => {
+const ComponentConfigDialog = ({ open, onClose, component, idfs }) => {
     const [editedComponent, setEditedComponent] = useState(null);
 
     useEffect(() => {
@@ -64,9 +64,7 @@ const ComponentConfigDialog = ({ open, onClose, component, idfs, mdfs }) => {
                                 {idfs.map((idf) => (
                                     <MenuItem key={idf} value={`IDF_${idf}`}>{`IDF ${idf}`}</MenuItem>
                                 ))}
-                                {mdfs.map((mdf) => (
-                                    <MenuItem key={mdf} value={`MDF_${mdf}`}>{`MDF ${mdf}`}</MenuItem>
-                                ))}
+                                <MenuItem value="MDF">MDF</MenuItem>
                                 <MenuItem value="OTHER">Other</MenuItem>
                             </Select>
                         </FormControl>
