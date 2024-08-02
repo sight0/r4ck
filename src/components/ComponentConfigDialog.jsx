@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Select, MenuItem, FormControl, InputLabel, Box, Typography } from '@mui/material';
 
-const ComponentConfigDialog = ({ open, onClose, component, idfs, mdfs, idfData }) => {
+const ComponentConfigDialog = ({ open, onClose, component, idfs, idfData }) => {
     const [editedComponent, setEditedComponent] = useState(null);
 
     useEffect(() => {
@@ -72,9 +72,7 @@ const ComponentConfigDialog = ({ open, onClose, component, idfs, mdfs, idfData }
                                 {idfs.map((idf) => (
                                     <MenuItem key={idf} value={`IDF_${idf}`}>{`IDF ${idf}`}</MenuItem>
                                 ))}
-                                {mdfs.map((mdf) => (
-                                    <MenuItem key={mdf} value={`MDF_${mdf}`}>{`MDF ${mdf}`}</MenuItem>
-                                ))}
+                                <MenuItem value="MDF">MDF</MenuItem>
                                 <MenuItem value="OTHER">Other</MenuItem>
                             </Select>
                         </FormControl>
@@ -153,7 +151,6 @@ ComponentConfigDialog.propTypes = {
     onClose: PropTypes.func.isRequired,
     component: PropTypes.object,
     idfs: PropTypes.arrayOf(PropTypes.string).isRequired,
-    mdfs: PropTypes.arrayOf(PropTypes.string).isRequired,
     idfData: PropTypes.object.isRequired,
 };
 
