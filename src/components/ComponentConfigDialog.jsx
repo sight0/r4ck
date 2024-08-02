@@ -8,17 +8,27 @@ const ComponentConfigDialog = ({ open, onClose, component }) => {
 
     useEffect(() => {
         if (component) {
+            const initializePorts = (count) => Array.from({ length: count }, (_, i) => ({ label: `Port ${i + 1}`, note: '' }));
             setEditedComponent({ 
                 ...component, 
-                frontPorts: component.frontPorts || [],
-                backPorts: component.backPorts || []
+                frontPorts: component.frontPorts || initializePorts(component.capacity),
+                backPorts: component.backPorts || initializePorts(component.capacity)
             });
         }
     }, [component]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setEditedComponent(prev => ({ ...prev, [name]: value }));
+        setEditedComponent(prev => {
+            const updatedComponent = { ...prev, [name]: value };
+            if (name === 'capacity') {
+                const newCapacity = parseInt(value, 10);
+                const initializePorts = (count) => Array.from({ length: count }, (_, i) => ({ label: `Port ${i + 1}`, note: '' }));
+                updatedComponent.frontPorts = initializePorts(newCapacity);
+                updatedComponent.backPorts = initializePorts(newCapacity);
+            }
+            return updatedComponent;
+        });
     };
 
     const handleSave = () => {
@@ -35,7 +45,6 @@ const ComponentConfigDialog = ({ open, onClose, component }) => {
 
     const renderPorts = (side) => {
         const ports = editedComponent[`${side}Ports`];
-        alert(side);
         return (
             <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 2 }}>
                 {ports.map((port, index) => (
