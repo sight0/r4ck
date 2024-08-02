@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Select, MenuItem, FormControl, InputLabel, Box, Typography } from '@mui/material';
 
-const ComponentConfigDialog = ({ open, onClose, component, idfs, idfData }) => {
+const ComponentConfigDialog = ({ open, onClose, component, numIdfs, idfData }) => {
     const [editedComponent, setEditedComponent] = useState(null);
 
     useEffect(() => {
@@ -69,8 +69,8 @@ const ComponentConfigDialog = ({ open, onClose, component, idfs, idfData }) => {
                             >
                                 <MenuItem value="AP">Access Point</MenuItem>
                                 <MenuItem value="IP_PHONE">IP Telephone</MenuItem>
-                                {idfs.map((idf) => (
-                                    <MenuItem key={idf} value={`IDF_${idf}`}>{`IDF ${idf}`}</MenuItem>
+                                {[...Array(numIdfs)].map((_, index) => (
+                                    <MenuItem key={index + 1} value={`IDF_${index + 1}`}>{`IDF ${index + 1}`}</MenuItem>
                                 ))}
                                 <MenuItem value="MDF">MDF</MenuItem>
                                 <MenuItem value="OTHER">Other</MenuItem>
@@ -150,7 +150,7 @@ ComponentConfigDialog.propTypes = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     component: PropTypes.object,
-    idfs: PropTypes.arrayOf(PropTypes.string).isRequired,
+    numIdfs: PropTypes.number.isRequired,
     idfData: PropTypes.object.isRequired,
 };
 
