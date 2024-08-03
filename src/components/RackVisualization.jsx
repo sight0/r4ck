@@ -324,21 +324,9 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
     return (
         <Box className="rack-visualization-container">
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                <Box>
-                    <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'text.primary' }}>
-                        {currentIdf === numIdfs + 1 ? 'MDF' : `IDF ${currentIdf}`} Rack Design
-                    </Typography>
-                    <Button
-                        variant="outlined"
-                        color="primary"
-                        onClick={() => {
-                            const issues = getIssues();
-                            alert(issues ? `Inter-IDF Connection Issues:\n${issues}` : 'No inter-IDF connection issues detected.');
-                        }}
-                    >
-                        View Inter-IDF Connection Issues
-                    </Button>
-                </Box>
+                <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'text.primary' }}>
+                    {currentIdf === numIdfs + 1 ? 'MDF' : `IDF ${currentIdf}`} Rack Design
+                </Typography>
                 <Box>
                     <IconButton onClick={handlePreviousIdf} disabled={currentIdf === 1}>
                         <ArrowBackIosNewIcon />
@@ -350,7 +338,8 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
             </Box>
             <Grid container spacing={2}>
                 <Grid item xs={12} md={8}>
-                    <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }} className="rack-visualization">
+                    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 2 }} className="rack-visualization">
+                        <IssuesPanel issues={getIssues()} />
                 <StyledRackContainer>
                     <Box className="rack-units">
                         {[...Array(rackSize)].map((_, index) => (
@@ -447,7 +436,6 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                 </Box>
                 </Grid>
                 <Grid item xs={12} md={4}>
-                    <IssuesPanel issues={getIssues()} />
                     <Box sx={{ border: '1px solid #ccc', borderRadius: '4px', p: 2, mb: 2 }}>
                         <Typography variant="h6" gutterBottom>Legend</Typography>
                         {Object.entries(componentColors).map(([type, color]) => {
