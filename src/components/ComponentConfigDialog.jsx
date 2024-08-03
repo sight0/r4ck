@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Select, MenuItem, FormControl, InputLabel, Box } from '@mui/material';
 import PortSetupDialog from './PortSetupDialog';
 
-const ComponentConfigDialog = ({ open, onClose, component, numIdfs, idfData }) => {
+const ComponentConfigDialog = ({ open, onClose, component, numIdfs, idfData, currentIdf }) => {
     const [editedComponent, setEditedComponent] = useState(null);
     const [showPortSetup, setShowPortSetup] = useState(false);
 
@@ -118,7 +118,7 @@ const ComponentConfigDialog = ({ open, onClose, component, numIdfs, idfData }) =
                 onClose={() => setShowPortSetup(false)}
                 ports={editedComponent.ports}
                 numIdfs={numIdfs}
-                idf={editedComponent.idf}
+                idf={currentIdf}
                 onPortChange={handlePortChange}
             />
         </>
@@ -131,6 +131,7 @@ ComponentConfigDialog.propTypes = {
     component: PropTypes.object,
     numIdfs: PropTypes.number.isRequired,
     idfData: PropTypes.object.isRequired,
+    currentIdf: PropTypes.number.isRequired,
 };
 
 export default ComponentConfigDialog;
