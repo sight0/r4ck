@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography, Box, Grid, Paper, Divider, IconButton } from '@mui/material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -57,7 +57,8 @@ const StyledLine = styled('div')(({ theme }) => ({
 
 const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
     const theme = useTheme();
-    const [components, setComponents] = useState([]);
+    const [allComponents, setAllComponents] = useState({});
+    const components = useMemo(() => allComponents[currentIdf] || [], [allComponents, currentIdf]);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [newComponent, setNewComponent] = useState(null);
     const [editComponent, setEditComponent] = useState(null);
@@ -143,7 +144,10 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
             );
 
             if (!overlap) {
-                setComponents(prevComponents => [...prevComponents, newComp]);
+                setAllComponents(prevAll => ({
+                    ...prevAll,
+                    [currentIdf]: [...(prevAll[currentIdf] || []), newComp]
+                }));
                 setDialogOpen(false);
                 setNewComponent(null);
             } else {
@@ -162,10 +166,28 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
         }
     };
 
+    const saveRackDesign = useCallback(() => {
+        localStorage.setItem('rackDesigns', JSON.stringify(allComponents));
+    }, [allComponents]);
+
+    const loadRackDesigns = useCallback(() => {
+        const savedDesigns = localStorage.getItem('rackDesigns');
+        if (savedDesigns) {
+            setAllComponents(JSON.parse(savedDesigns));
+        }
+    }, []);
+
+    useEffect(() => {
+        loadRackDesigns();
+    }, [loadRackDesigns]);
+
+    useEffect(() => {
+        saveRackDesign();
+    }, [allComponents, saveRackDesign]);
+
     const handleNextIdf = () => {
         if (currentIdf < numIdfs) {
             setCurrentIdf(currentIdf + 1);
-            setComponents([]);
         } else {
             alert("TODO: Implement MDF visualization");
         }
@@ -195,21 +217,22 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
         );
 
         if (!overlap) {
-            setComponents(prevComponents => 
-                prevComponents.map(comp => 
+            setAllComponents(prevAll => ({
+                ...prevAll,
+                [currentIdf]: prevAll[currentIdf].map(comp => 
                     comp.id === draggedComponent.id ? draggedComponent : comp
                 )
-            );
-        } else {
-            // If there's an overlap, revert to the original position
-            setComponents(prevComponents => prevComponents);
+            }));
         }
 
         setDraggedComponent(null);
-    }, [draggedComponent, components]);
+    }, [draggedComponent, components, currentIdf]);
 
     const handleDeleteComponent = (id) => {
-        setComponents(prevComponents => prevComponents.filter(comp => comp.id !== id));
+        setAllComponents(prevAll => ({
+            ...prevAll,
+            [currentIdf]: prevAll[currentIdf].filter(comp => comp.id !== id)
+        }));
     };
 
     const handleEditComponent = (component) => {
@@ -226,8 +249,8 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
             );
 
             if (!overlap) {
-                setComponents(prevComponents => {
-                    const newComponents = prevComponents.map(comp =>
+                setAllComponents(prevAll => {
+                    const newComponents = prevAll[currentIdf].map(comp =>
                         comp.id === updatedComponent.id ? updatedComponent : comp
                     );
                     
@@ -238,7 +261,10 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
                     const totalPorts = idfData[currentIdf]?.ports || 0;
                     setExhaustedPorts(Math.min(patchPanelPorts, totalPorts));
                     
-                    return newComponents;
+                    return {
+                        ...prevAll,
+                        [currentIdf]: newComponents
+                    };
                 });
             } else {
                 alert("The updated component overlaps with existing components. Please adjust the size or position.");
