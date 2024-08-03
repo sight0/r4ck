@@ -11,6 +11,7 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import RackComponent from './RackComponent';
 import ComponentConfigDialog from './ComponentConfigDialog';
+import IssuesPanel from './IssuesPanel';
 import { components } from './Sidebar';
 
 const componentColors = Object.fromEntries(components.map(comp => [comp.type, comp.color]));
@@ -295,23 +296,29 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
     const getIssues = () => {
         let issues = [];
 
+        // Check if patch panel ports satisfy the requirements from InitialSetupForm
+        const requiredPorts = (idfData[currentIdf]?.devices || []).reduce((sum, device) => sum + device.count, 0);
+        const patchPanelPorts = components
+            .filter(c => c.type === 'patch_panel')
+            .reduce((total, panel) => total + parseInt(panel.capacity), 0);
+
+        issues.push({
+            message: `Patch panel ports (${patchPanelPorts}) should meet or exceed required device ports (${requiredPorts})`,
+            isSatisfied: patchPanelPorts >= requiredPorts
+        });
+
         // Check for incoming connections from other IDFs
         Object.entries(interIdfConnections).forEach(([sourceIdf, connections]) => {
             if (sourceIdf !== currentIdf.toString() && connections.includes(`IDF_${currentIdf}`)) {
-                issues.push(`Incoming connection from IDF ${sourceIdf} needs to be connected to a patch panel.`);
+                const hasPatchPanel = components.some(c => c.type === 'patch_panel');
+                issues.push({
+                    message: `Incoming connection from IDF ${sourceIdf} needs a patch panel port`,
+                    isSatisfied: hasPatchPanel
+                });
             }
         });
 
-        // Check for outgoing connections to other IDFs
-        const outgoingConnections = interIdfConnections[currentIdf] || [];
-        outgoingConnections.forEach(connection => {
-            if (connection.startsWith('IDF_')) {
-                const targetIdf = connection.split('_')[1];
-                issues.push(`Outgoing connection to IDF ${targetIdf} from a patch panel.`);
-            }
-        });
-
-        return issues.join('\n');
+        return issues;
     };
 
     return (
@@ -440,6 +447,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                 </Box>
                 </Grid>
                 <Grid item xs={12} md={4}>
+                    <IssuesPanel issues={getIssues()} />
                     <Box sx={{ border: '1px solid #ccc', borderRadius: '4px', p: 2, mb: 2 }}>
                         <Typography variant="h6" gutterBottom>Legend</Typography>
                         {Object.entries(componentColors).map(([type, color]) => {
