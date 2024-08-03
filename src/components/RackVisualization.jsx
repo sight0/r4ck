@@ -294,24 +294,22 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
 
     const getIssues = () => {
         let issues = [];
-        const remainingPorts = (idfData[currentIdf]?.ports || 0) - exhaustedPorts - (interIdfConnections[currentIdf]?.length || 0);
 
-        if (remainingPorts < 5) {
-            issues.push(`Low on available ports: only ${remainingPorts} left.`);
-        }
+        // Check for incoming connections from other IDFs
+        Object.entries(interIdfConnections).forEach(([sourceIdf, connections]) => {
+            if (sourceIdf !== currentIdf.toString() && connections.includes(`IDF_${currentIdf}`)) {
+                issues.push(`Incoming connection from IDF ${sourceIdf} needs to be connected to a patch panel.`);
+            }
+        });
 
-        if (currentIdf !== numIdfs + 1) { // Not MDF
-            const connectedToMDF = interIdfConnections[currentIdf]?.includes('MDF') || false;
-            if (!connectedToMDF) {
-                issues.push("Not connected to MDF.");
+        // Check for outgoing connections to other IDFs
+        const outgoingConnections = interIdfConnections[currentIdf] || [];
+        outgoingConnections.forEach(connection => {
+            if (connection.startsWith('IDF_')) {
+                const targetIdf = connection.split('_')[1];
+                issues.push(`Outgoing connection to IDF ${targetIdf} from a patch panel.`);
             }
-        } else { // MDF
-            for (let i = 1; i <= numIdfs; i++) {
-                if (!interIdfConnections['MDF']?.includes(`IDF_${i}`)) {
-                    issues.push(`IDF ${i} not connected to MDF.`);
-                }
-            }
-        }
+        });
 
         return issues.join('\n');
     };
@@ -327,11 +325,11 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                         variant="outlined"
                         color="primary"
                         onClick={() => {
-                            // TODO: Implement a dialog or tooltip to show detailed information
-                            alert(`Remaining Ports: ${(idfData[currentIdf]?.ports || 0) - exhaustedPorts - (interIdfConnections[currentIdf]?.length || 0)}\n\nPotential Issues:\n${getIssues()}`);
+                            const issues = getIssues();
+                            alert(issues ? `Inter-IDF Connection Issues:\n${issues}` : 'No inter-IDF connection issues detected.');
                         }}
                     >
-                        View Port Status and Issues
+                        View Inter-IDF Connection Issues
                     </Button>
                 </Box>
                 <Box>
