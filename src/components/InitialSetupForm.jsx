@@ -1,13 +1,13 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import { TextField, Button, Box, Typography, Select, MenuItem, FormControl, InputLabel, IconButton } from '@mui/material';
+import { TextField, Button, Box, Typography, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 
 const InitialSetupForm = ({ onSubmit }) => {
     const [numIdfs, setNumIdfs] = useState(1);
     const [idfData, setIdfData] = useState({
-        1: { rackSize: 42, devices: [{ type: 'user_device', count: 0 }] }
+        1: { rackSize: 42, devices: [] }
     });
 
     const deviceTypes = [
@@ -22,7 +22,7 @@ const InitialSetupForm = ({ onSubmit }) => {
         
         const newIdfData = {};
         for (let i = 1; i <= value; i++) {
-            newIdfData[i] = idfData[i] || { rackSize: 42, devices: [{ type: 'user_device', count: 0 }] };
+            newIdfData[i] = idfData[i] || { rackSize: 42, devices: [] };
         }
         setIdfData(newIdfData);
     };
@@ -49,12 +49,12 @@ const InitialSetupForm = ({ onSubmit }) => {
         }));
     };
 
-    const addDevice = (idf) => {
+    const addDevice = (idf, type) => {
         setIdfData(prevData => ({
             ...prevData,
             [idf]: {
                 ...prevData[idf],
-                devices: [...prevData[idf].devices, { type: 'user_device', count: 0 }]
+                devices: [...prevData[idf].devices, { type, count: 1 }]
             }
         }));
     };
@@ -114,34 +114,34 @@ const InitialSetupForm = ({ onSubmit }) => {
                         <Typography variant="subtitle1" sx={{ mt: 2, mb: 1 }}>Devices</Typography>
                         {idfData[idf].devices.map((device, index) => (
                             <Box key={index} sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                                <FormControl sx={{ mr: 1, flexGrow: 1 }}>
-                                    <InputLabel>Device Type</InputLabel>
-                                    <Select
-                                        value={device.type}
-                                        onChange={(e) => handleDeviceChange(idf, index, 'type', e.target.value)}
-                                        label="Device Type"
-                                    >
-                                        {deviceTypes.map(type => (
-                                            <MenuItem key={type.value} value={type.value}>{type.label}</MenuItem>
-                                        ))}
-                                    </Select>
-                                </FormControl>
+                                <Typography sx={{ mr: 1, flexGrow: 1 }}>
+                                    {deviceTypes.find(t => t.value === device.type).label}
+                                </Typography>
                                 <TextField
                                     sx={{ mr: 1, flexGrow: 1 }}
                                     type="number"
                                     label="Count"
                                     value={device.count}
                                     onChange={(e) => handleDeviceChange(idf, index, 'count', parseInt(e.target.value) || 0)}
-                                    inputProps={{ min: 0 }}
+                                    inputProps={{ min: 1 }}
                                 />
-                                <IconButton onClick={() => removeDevice(idf, index)} disabled={idfData[idf].devices.length === 1}>
-                                    <RemoveIcon />
-                                </IconButton>
+                                <Button onClick={() => removeDevice(idf, index)} startIcon={<RemoveIcon />}>
+                                    Remove
+                                </Button>
                             </Box>
                         ))}
-                        <Button startIcon={<AddIcon />} onClick={() => addDevice(idf)} sx={{ mt: 1 }}>
-                            Add Device
-                        </Button>
+                        <Box sx={{ mt: 2 }}>
+                            {deviceTypes.map(type => (
+                                <Button 
+                                    key={type.value}
+                                    startIcon={<AddIcon />} 
+                                    onClick={() => addDevice(idf, type.value)} 
+                                    sx={{ mr: 1, mb: 1 }}
+                                >
+                                    Add {type.label}
+                                </Button>
+                            ))}
+                        </Box>
                     </Box>
                 ))}
             </Box>
