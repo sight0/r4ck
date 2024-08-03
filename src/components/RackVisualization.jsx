@@ -308,7 +308,8 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
         issues.push({
             message: `Ensure sufficient patch panel capacity: Current capacity (${patchPanelPorts} ports) should meet or exceed the required device ports (${requiredPorts} ports).`,
             isSatisfied: patchPanelPorts >= requiredPorts,
-            severity: 'high'
+            severity: 'high',
+            solutionHint: `Add more patch panels to increase capacity. You need at least ${Math.max(0, requiredPorts - patchPanelPorts)} more ports.`
         });
 
         // Check for incoming connections from other IDFs
