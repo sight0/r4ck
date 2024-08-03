@@ -13,6 +13,7 @@ const App = () => {
     const [currentIdf, setCurrentIdf] = useState(1);
     const [connections, setConnections] = useState([]);
     const [rackDesigns, setRackDesigns] = useState({});
+    const [interIdfConnections, setInterIdfConnections] = useState({});
 
     const theme = createTheme({
         palette: {
@@ -44,6 +45,10 @@ const App = () => {
             ...prevDesigns,
             [idf]: design
         }));
+    };
+
+    const handleUpdateInterIdfConnections = (newConnections) => {
+        setInterIdfConnections(newConnections);
     };
 
     useEffect(() => {
@@ -79,6 +84,8 @@ const App = () => {
                                 onAddConnection={handleAddConnection}
                                 rackDesign={rackDesigns[currentIdf] || []}
                                 onSaveRackDesign={(design) => handleSaveRackDesign(currentIdf, design)}
+                                interIdfConnections={interIdfConnections}
+                                onUpdateInterIdfConnections={handleUpdateInterIdfConnections}
                             />
                             <PatchSchedule connections={connections} />
                         </Box>

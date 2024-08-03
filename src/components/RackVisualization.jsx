@@ -55,7 +55,7 @@ const StyledLine = styled('div')(({ theme }) => ({
     margin: '0 auto',
 }));
 
-const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
+const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interIdfConnections, onUpdateInterIdfConnections }) => {
     const theme = useTheme();
     const [allComponents, setAllComponents] = useState({});
     const components = useMemo(() => allComponents[currentIdf] || [], [allComponents, currentIdf]);
@@ -266,6 +266,24 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
                         [currentIdf]: newComponents
                     };
                 });
+
+                // Update inter-IDF connections
+                const newInterIdfConnections = { ...interIdfConnections };
+                updatedComponent.ports.forEach(port => {
+                    if (port.cableSource.startsWith('IDF_') || port.cableSource === 'MDF') {
+                        if (!newInterIdfConnections[currentIdf]) {
+                            newInterIdfConnections[currentIdf] = [];
+                        }
+                        newInterIdfConnections[currentIdf].push(port.cableSource);
+
+                        const targetIdf = port.cableSource === 'MDF' ? 'MDF' : parseInt(port.cableSource.split('_')[1]);
+                        if (!newInterIdfConnections[targetIdf]) {
+                            newInterIdfConnections[targetIdf] = [];
+                        }
+                        newInterIdfConnections[targetIdf].push(`IDF_${currentIdf}`);
+                    }
+                });
+                onUpdateInterIdfConnections(newInterIdfConnections);
             } else {
                 alert("The updated component overlaps with existing components. Please adjust the size or position.");
             }
@@ -283,6 +301,9 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
                     </Typography>
                     <Typography variant="subtitle1" gutterBottom>
                         End User Devices Connected: {exhaustedPorts} / {idfData[currentIdf]?.ports || 0}
+                    </Typography>
+                    <Typography variant="subtitle1" gutterBottom>
+                        IDF Ports Exhausted: {interIdfConnections[currentIdf]?.length || 0}
                     </Typography>
                 </Box>
                 <Box>
