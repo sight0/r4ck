@@ -324,9 +324,29 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
     return (
         <Box className="rack-visualization-container">
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'text.primary' }}>
-                    {currentIdf === numIdfs + 1 ? 'MDF' : `IDF ${currentIdf}`} Rack Design
-                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'text.primary', mr: 2 }}>
+                        {currentIdf === numIdfs + 1 ? 'MDF' : `IDF ${currentIdf}`} Rack Design
+                    </Typography>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        size="large"
+                        sx={{
+                            fontWeight: 'bold',
+                            boxShadow: 3,
+                            '&:hover': {
+                                boxShadow: 5,
+                            },
+                        }}
+                        onClick={() => {
+                            // Add your action here, e.g., open a modal or navigate to a detailed view
+                            alert('Show IDF Rack Design Details');
+                        }}
+                    >
+                        Show Design
+                    </Button>
+                </Box>
                 <Box>
                     <IconButton onClick={handlePreviousIdf} disabled={currentIdf === 1}>
                         <ArrowBackIosNewIcon />
