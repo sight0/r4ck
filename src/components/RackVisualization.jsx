@@ -292,6 +292,30 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
         setEditComponent(null);
     };
 
+    const getIssues = () => {
+        let issues = [];
+        const remainingPorts = (idfData[currentIdf]?.ports || 0) - exhaustedPorts - (interIdfConnections[currentIdf]?.length || 0);
+
+        if (remainingPorts < 5) {
+            issues.push(`Low on available ports: only ${remainingPorts} left.`);
+        }
+
+        if (currentIdf !== numIdfs + 1) { // Not MDF
+            const connectedToMDF = interIdfConnections[currentIdf]?.includes('MDF') || false;
+            if (!connectedToMDF) {
+                issues.push("Not connected to MDF.");
+            }
+        } else { // MDF
+            for (let i = 1; i <= numIdfs; i++) {
+                if (!interIdfConnections['MDF']?.includes(`IDF_${i}`)) {
+                    issues.push(`IDF ${i} not connected to MDF.`);
+                }
+            }
+        }
+
+        return issues.join('\n');
+    };
+
     return (
         <Box className="rack-visualization-container">
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
@@ -299,12 +323,16 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                     <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'text.primary' }}>
                         {currentIdf === numIdfs + 1 ? 'MDF' : `IDF ${currentIdf}`} Rack Design
                     </Typography>
-                    <Typography variant="subtitle1" gutterBottom>
-                        End User Devices Connected: {exhaustedPorts} / {idfData[currentIdf]?.ports || 0}
-                    </Typography>
-                    <Typography variant="subtitle1" gutterBottom>
-                        IDF Ports Exhausted: {interIdfConnections[currentIdf]?.length || 0}
-                    </Typography>
+                    <Button
+                        variant="outlined"
+                        color="primary"
+                        onClick={() => {
+                            // TODO: Implement a dialog or tooltip to show detailed information
+                            alert(`Remaining Ports: ${(idfData[currentIdf]?.ports || 0) - exhaustedPorts - (interIdfConnections[currentIdf]?.length || 0)}\n\nPotential Issues:\n${getIssues()}`);
+                        }}
+                    >
+                        View Port Status and Issues
+                    </Button>
                 </Box>
                 <Box>
                     <IconButton onClick={handlePreviousIdf} disabled={currentIdf === 1}>
