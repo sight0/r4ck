@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography, Box, Grid, Paper, Divider, IconButton } from '@mui/material';
+import IssuesDialog from './IssuesDialog';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -577,6 +578,11 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                 idfData={idfData}
                 currentIdf={currentIdf}
                 numIdfs={numIdfs}
+            />
+            <IssuesDialog
+                open={issuesDialogOpen}
+                onClose={() => setIssuesDialogOpen(false)}
+                issues={getIssues()}
             />
         </Box>
     );
