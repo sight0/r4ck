@@ -505,6 +505,9 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData }) => {
                 open={configDialogOpen}
                 onClose={handleConfigDialogClose}
                 component={editComponent}
+                idfData={idfData}
+                currentIdf={currentIdf}
+                numIdfs={numIdfs}
             />
         </Box>
     );
