@@ -304,8 +304,9 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
             .reduce((total, panel) => total + parseInt(panel.capacity), 0);
 
         issues.push({
-            message: `Patch panel ports (${patchPanelPorts}) should meet or exceed required device ports (${requiredPorts})`,
-            isSatisfied: patchPanelPorts >= requiredPorts
+            message: `Ensure sufficient patch panel capacity: Current capacity (${patchPanelPorts} ports) should meet or exceed the required device ports (${requiredPorts} ports).`,
+            isSatisfied: patchPanelPorts >= requiredPorts,
+            severity: 'high'
         });
 
         // Check for incoming connections from other IDFs
@@ -313,11 +314,14 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
             if (sourceIdf !== currentIdf.toString() && connections.includes(`IDF_${currentIdf}`)) {
                 const hasPatchPanel = components.some(c => c.type === 'patch_panel');
                 issues.push({
-                    message: `Incoming connection from IDF ${sourceIdf} needs a patch panel port`,
-                    isSatisfied: hasPatchPanel
+                    message: `Allocate patch panel port for incoming connection: IDF ${sourceIdf} requires a dedicated patch panel port in the current IDF.`,
+                    isSatisfied: hasPatchPanel,
+                    severity: 'medium'
                 });
             }
         });
+
+        // Additional checks can be added here
 
         return issues;
     };
@@ -436,7 +440,15 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                 </Box>
                 </Grid>
                 <Grid item xs={12} md={4}>
-                    <IssuesPanel issues={getIssues()} />
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        size="large"
+                        onClick={() => setIssuesDialogOpen(true)}
+                        sx={{ width: '100%', mb: 2 }}
+                    >
+                        View Issues and Requirements
+                    </Button>
                     <Box sx={{ border: '1px solid #ccc', borderRadius: '4px', p: 2, mb: 2 }}>
                         <Typography variant="h6" gutterBottom>Legend</Typography>
                         {Object.entries(componentColors).map(([type, color]) => {
@@ -578,6 +590,11 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                 idfData={idfData}
                 currentIdf={currentIdf}
                 numIdfs={numIdfs}
+            />
+            <IssuesDialog
+                open={issuesDialogOpen}
+                onClose={() => setIssuesDialogOpen(false)}
+                issues={getIssues()}
             />
             <IssuesDialog
                 open={issuesDialogOpen}
