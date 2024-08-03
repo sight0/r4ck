@@ -92,7 +92,7 @@ const ComponentConfigDialog = ({ open, onClose, component, numIdfs, idfData, cur
                             >
                                 <MenuItem value="switch">Switch</MenuItem>
                                 <MenuItem value="fiber_switch">Fiber Switch</MenuItem>
-                                <MenuItem value="patchPanel">Patch Panel</MenuItem>
+                                <MenuItem value="patch_panel">Patch Panel</MenuItem>
                                 <MenuItem value="firewall">Firewall</MenuItem>
                                 <MenuItem value="ups">UPS</MenuItem>
                                 <MenuItem value="other">Other</MenuItem>
