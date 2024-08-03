@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Select, MenuItem, FormControl, InputLabel, Box, Typography } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Select, MenuItem, FormControl, InputLabel, Box } from '@mui/material';
+import PortSetupDialog from './PortSetupDialog';
 
 const ComponentConfigDialog = ({ open, onClose, component, numIdfs, idfData }) => {
     const [editedComponent, setEditedComponent] = useState(null);
@@ -49,109 +50,78 @@ const ComponentConfigDialog = ({ open, onClose, component, numIdfs, idfData }) =
         });
     };
 
-    const renderPorts = () => {
-        const ports = editedComponent.ports;
-        return (
-            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 2 }}>
-                {ports.map((port, index) => (
-                    <Box key={index} sx={{ border: '1px solid #ccc', padding: 1, borderRadius: 1 }}>
-                        <TextField
-                            label={`Port ${index + 1}`}
-                            value={port.label || ''}
-                            onChange={(e) => handlePortChange(index, 'label', e.target.value)}
-                            fullWidth
-                            margin="dense"
-                        />
-                        <FormControl fullWidth margin="dense">
-                            <InputLabel>Device</InputLabel>
-                            <Select
-                                value={port.cableSource || ''}
-                                onChange={(e) => handlePortChange(index, 'cableSource', e.target.value)}
-                            >
-                                <MenuItem value="AP">Access Point</MenuItem>
-                                <MenuItem value="IP_PHONE">IP Telephone</MenuItem>
-                                {[...Array(numIdfs)].map((_, idx) => (
-                                    idx + 1 !== editedComponent.idf && 
-                                    <MenuItem key={idx + 1} value={`IDF_${idx + 1}`}>{`IDF ${idx + 1}`}</MenuItem>
-                                ))}
-                                <MenuItem value="MDF">MDF</MenuItem>
-                                <MenuItem value="OTHER">Other</MenuItem>
-                            </Select>
-                        </FormControl>
-                        {port.connectedTo && (
-                            <Typography variant="caption" display="block" sx={{ mt: 1 }}>
-                                Connected to: {port.connectedTo}
-                            </Typography>
-                        )}
-                    </Box>
-                ))}
-            </Box>
-        );
-    };
-
     if (!editedComponent) return null;
 
     return (
-        <Dialog open={open} onClose={() => onClose(null)} maxWidth="md" fullWidth>
-            <DialogTitle>Edit Component: {editedComponent.name}</DialogTitle>
-            <DialogContent>
-                <Box>
-                    <TextField
-                        name="name"
-                        label="Name"
-                        value={editedComponent.name}
-                        onChange={handleChange}
-                        fullWidth
-                        margin="normal"
-                    />
-                    <TextField
-                        name="capacity"
-                        label="Capacity/Ports"
-                        value={editedComponent.capacity}
-                        onChange={handleChange}
-                        fullWidth
-                        margin="normal"
-                    />
-                    <TextField
-                        name="units"
-                        label="Units (U)"
-                        type="number"
-                        value={editedComponent.units}
-                        onChange={handleChange}
-                        fullWidth
-                        margin="normal"
-                    />
-                    <FormControl fullWidth margin="normal">
-                        <InputLabel>Type</InputLabel>
-                        <Select
-                            name="type"
-                            value={editedComponent.type}
+        <>
+            <Dialog open={open} onClose={() => onClose(null)} maxWidth="md" fullWidth>
+                <DialogTitle>Edit Component: {editedComponent.name}</DialogTitle>
+                <DialogContent>
+                    <Box>
+                        <TextField
+                            name="name"
+                            label="Name"
+                            value={editedComponent.name}
                             onChange={handleChange}
+                            fullWidth
+                            margin="normal"
+                        />
+                        <TextField
+                            name="capacity"
+                            label="Capacity/Ports"
+                            value={editedComponent.capacity}
+                            onChange={handleChange}
+                            fullWidth
+                            margin="normal"
+                        />
+                        <TextField
+                            name="units"
+                            label="Units (U)"
+                            type="number"
+                            value={editedComponent.units}
+                            onChange={handleChange}
+                            fullWidth
+                            margin="normal"
+                        />
+                        <FormControl fullWidth margin="normal">
+                            <InputLabel>Type</InputLabel>
+                            <Select
+                                name="type"
+                                value={editedComponent.type}
+                                onChange={handleChange}
+                            >
+                                <MenuItem value="switch">Switch</MenuItem>
+                                <MenuItem value="fiber_switch">Fiber Switch</MenuItem>
+                                <MenuItem value="patchPanel">Patch Panel</MenuItem>
+                                <MenuItem value="firewall">Firewall</MenuItem>
+                                <MenuItem value="ups">UPS</MenuItem>
+                                <MenuItem value="other">Other</MenuItem>
+                                <MenuItem value="rack">Rack</MenuItem>
+                            </Select>
+                        </FormControl>
+                        <Button 
+                            onClick={() => setShowPortSetup(true)} 
+                            variant="outlined" 
+                            sx={{ mt: 2 }}
                         >
-                            <MenuItem value="switch">Switch</MenuItem>
-                            <MenuItem value="fiber_switch">Fiber Switch</MenuItem>
-                            <MenuItem value="patchPanel">Patch Panel</MenuItem>
-                            <MenuItem value="firewall">Firewall</MenuItem>
-                            <MenuItem value="ups">UPS</MenuItem>
-                            <MenuItem value="other">Other</MenuItem>
-                            <MenuItem value="rack">Rack</MenuItem>
-                        </Select>
-                    </FormControl>
-                    <Button 
-                        onClick={() => setShowPortSetup(!showPortSetup)} 
-                        variant="outlined" 
-                        sx={{ mt: 2 }}
-                    >
-                        {showPortSetup ? 'Hide Port Setup' : 'Show Port Setup'}
-                    </Button>
-                </Box>
-                {showPortSetup && renderPorts()}
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={() => onClose(null)}>Cancel</Button>
-                <Button onClick={handleSave} color="primary">Save</Button>
-            </DialogActions>
-        </Dialog>
+                            Configure Ports
+                        </Button>
+                    </Box>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => onClose(null)}>Cancel</Button>
+                    <Button onClick={handleSave} color="primary">Save</Button>
+                </DialogActions>
+            </Dialog>
+            <PortSetupDialog
+                open={showPortSetup}
+                onClose={() => setShowPortSetup(false)}
+                ports={editedComponent.ports}
+                numIdfs={numIdfs}
+                idf={editedComponent.idf}
+                onPortChange={handlePortChange}
+            />
+        </>
     );
 };
 
