@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types';
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography, Box, Grid, Paper, Divider, IconButton } from '@mui/material';
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography, Box, Grid, Paper, Divider, IconButton, Badge } from '@mui/material';
 import IssuesDialog from './IssuesDialog';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { styled } from '@mui/system';
 import { useTheme } from '@mui/material/styles';
 import LanguageIcon from '@mui/icons-material/Language';
@@ -329,18 +330,38 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
 
     return (
         <Box className="rack-visualization-container">
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'text.primary' }}>
-                    {currentIdf === numIdfs + 1 ? 'MDF' : `IDF ${currentIdf}`} Rack Design
-                </Typography>
-                <Box>
-                    <IconButton onClick={handlePreviousIdf} disabled={currentIdf === 1}>
-                        <ArrowBackIosNewIcon />
-                    </IconButton>
-                    <IconButton onClick={handleNextIdf}>
-                        <ArrowForwardIosIcon />
-                    </IconButton>
+            <Box sx={{ mb: 2 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                    <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'text.primary' }}>
+                        {currentIdf === numIdfs + 1 ? 'MDF' : `IDF ${currentIdf}`} Rack Design
+                    </Typography>
+                    <Box>
+                        <IconButton onClick={handlePreviousIdf} disabled={currentIdf === 1}>
+                            <ArrowBackIosNewIcon />
+                        </IconButton>
+                        <IconButton onClick={handleNextIdf}>
+                            <ArrowForwardIosIcon />
+                        </IconButton>
+                    </Box>
                 </Box>
+                <Button
+                    variant="contained"
+                    color={getIssues().some(issue => !issue.isSatisfied) ? "error" : "primary"}
+                    size="large"
+                    onClick={() => setIssuesDialogOpen(true)}
+                    sx={{
+                        width: '100%',
+                        py: 1.5,
+                        fontWeight: 'bold',
+                        boxShadow: 3,
+                        '&:hover': {
+                            boxShadow: 5,
+                        },
+                    }}
+                    startIcon={getIssues().some(issue => !issue.isSatisfied) && <ErrorOutlineIcon />}
+                >
+                    {getIssues().some(issue => !issue.isSatisfied) ? "View Issues and Requirements" : "All Requirements Satisfied"}
+                </Button>
             </Box>
             <Grid container spacing={2}>
                 <Grid item xs={12} md={8}>
@@ -441,15 +462,6 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                 </Box>
                 </Grid>
                 <Grid item xs={12} md={4}>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        size="large"
-                        onClick={() => setIssuesDialogOpen(true)}
-                        sx={{ width: '100%', mb: 2 }}
-                    >
-                        View Issues and Requirements
-                    </Button>
                     <Box sx={{ border: '1px solid #ccc', borderRadius: '4px', p: 2, mb: 2 }}>
                         <Typography variant="h6" gutterBottom>Legend</Typography>
                         {Object.entries(componentColors).map(([type, color]) => {
