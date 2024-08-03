@@ -70,8 +70,9 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
     const [configDialogOpen, setConfigDialogOpen] = useState(false);
     const [exhaustedPorts, setExhaustedPorts] = useState(0);
     const [highlightedType, setHighlightedType] = useState(null);
+    const [issuesDialogOpen, setIssuesDialogOpen] = useState(false);
     const rackRef = useRef(null);
-
+    
     const rackSize = idfData[currentIdf]?.rackSize || 42; // Use the specified rack size or default to 42U
     const rackHeight = rackSize * 20; // Each U is 20px tall
     // const rackWidth = rackSize <= 24 ? 200 : 300; // Adjust width for smaller racks
