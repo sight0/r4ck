@@ -1,5 +1,5 @@
 import './App.css'
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Box, CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
@@ -12,6 +12,7 @@ const App = () => {
     const [networkInfo, setNetworkInfo] = useState(null);
     const [currentIdf, setCurrentIdf] = useState(1);
     const [connections, setConnections] = useState([]);
+    const [rackDesigns, setRackDesigns] = useState({});
 
     const theme = createTheme({
         palette: {
@@ -38,6 +39,23 @@ const App = () => {
         setConnections([...connections, connection]);
     };
 
+    const handleSaveRackDesign = (idf, design) => {
+        setRackDesigns(prevDesigns => ({
+            ...prevDesigns,
+            [idf]: design
+        }));
+    };
+
+    useEffect(() => {
+        if (networkInfo) {
+            const initialRackDesigns = {};
+            for (let i = 1; i <= networkInfo.numIdfs; i++) {
+                initialRackDesigns[i] = [];
+            }
+            setRackDesigns(initialRackDesigns);
+        }
+    }, [networkInfo]);
+
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
@@ -59,6 +77,8 @@ const App = () => {
                                 numIdfs={networkInfo.numIdfs}
                                 idfData={networkInfo.idfData}
                                 onAddConnection={handleAddConnection}
+                                rackDesign={rackDesigns[currentIdf] || []}
+                                onSaveRackDesign={(design) => handleSaveRackDesign(currentIdf, design)}
                             />
                             <PatchSchedule connections={connections} />
                         </Box>
