@@ -15,11 +15,8 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
     useEffect(() => {
         if (firstComponent) {
             const first = components.find(c => c.id === firstComponent);
-            if (first.type === 'patch_panel') {
-                setAvailableSecondComponents(components.filter(c => c.id !== firstComponent));
-            } else {
-                setAvailableSecondComponents(components.filter(c => c.type === 'patch_panel'));
-            }
+            // Allow connections between all types of components
+            setAvailableSecondComponents(components.filter(c => c.id !== firstComponent));
         }
     }, [firstComponent, components]);
 

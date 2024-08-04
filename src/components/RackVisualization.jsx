@@ -89,12 +89,14 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                 onPortChange(newConnection.deviceB.componentId, portBIndex, 'connectedTo', newConnection.deviceA.componentId);
                 onPortChange(newConnection.deviceB.componentId, portBIndex, 'connectedPort', newConnection.deviceA.port);
 
-                // Infer device type
-                const deviceAType = deviceA.type === 'patch_panel' ? deviceA.ports[portAIndex].cableSource : deviceA.type;
-                const deviceBType = deviceB.type === 'patch_panel' ? deviceB.ports[portBIndex].cableSource : deviceB.type;
+                // Set connection type
+                const connectionType = deviceA.type === deviceB.type ? 'stacking' : 'standard';
+                onPortChange(newConnection.deviceA.componentId, portAIndex, 'connectionType', connectionType);
+                onPortChange(newConnection.deviceB.componentId, portBIndex, 'connectionType', connectionType);
 
-                onPortChange(newConnection.deviceA.componentId, portAIndex, 'deviceType', deviceBType);
-                onPortChange(newConnection.deviceB.componentId, portBIndex, 'deviceType', deviceAType);
+                // Set device types
+                onPortChange(newConnection.deviceA.componentId, portAIndex, 'connectedDeviceType', deviceB.type);
+                onPortChange(newConnection.deviceB.componentId, portBIndex, 'connectedDeviceType', deviceA.type);
             }
         }
     };
