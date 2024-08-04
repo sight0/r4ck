@@ -312,25 +312,40 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
             solutionHint: 'Add patch panels and configure them to satisfy the incoming cables.'
         });
 
-        // Check for incoming connections from other IDFs
-        Object.entries(interIdfConnections).forEach(([sourceIdf, connections]) => {
-            if (sourceIdf !== currentIdf.toString() && connections.includes(`IDF_${currentIdf}`)) {
-                const allocatedPorts = components
-                    .filter(c => c.type === 'patch_panel')
-                    .flatMap(panel => panel.ports || [])
-                    .filter(port => port.cableSource === `IDF_${sourceIdf}`).length;
+        // Check for connections to other IDFs
+        const connectionsToOtherIdfs = interIdfConnections[currentIdf] || [];
+        connectionsToOtherIdfs.forEach((targetIdf) => {
+            const allocatedPorts = components
+                .filter(c => c.type === 'patch_panel')
+                .flatMap(panel => panel.ports || [])
+                .filter(port => port.cableSource === targetIdf).length;
 
-                const requiredConnections = connections.filter(conn => conn === `IDF_${currentIdf}`).length;
+            const requiredConnections = 1; // Assuming 1 connection per IDF pair
 
-                issues.push({
-                    message: `Allocate patch panel ports for incoming connections: IDF ${sourceIdf} requires ${requiredConnections} dedicated patch panel port(s) in the current IDF.`,
-                    isSatisfied: allocatedPorts >= requiredConnections,
-                    severity: 'medium',
-                    solutionHint: allocatedPorts >= requiredConnections
-                        ? `All required ports are allocated for IDF ${sourceIdf}.`
-                        : `Configure ${requiredConnections - allocatedPorts} more port(s) for connections from IDF ${sourceIdf}.`
-                });
-            }
+            issues.push({
+                message: `Allocate patch panel ports for outgoing connections: Current IDF requires ${requiredConnections} dedicated patch panel port(s) for connection to ${targetIdf}.`,
+                isSatisfied: allocatedPorts >= requiredConnections,
+                severity: 'medium',
+                solutionHint: allocatedPorts >= requiredConnections
+                    ? `All required ports are allocated for connection to ${targetIdf}.`
+                    : `Configure ${requiredConnections - allocatedPorts} more port(s) for connection to ${targetIdf}.`
+            });
+        });
+
+        // Check for reserved ports for access points
+        const accessPointCount = idfData[currentIdf]?.devices?.find(d => d.type === 'access_point')?.count || 0;
+        const reservedAccessPointPorts = components
+            .filter(c => c.type === 'patch_panel')
+            .flatMap(panel => panel.ports || [])
+            .filter(port => port.cableSource === 'Access Point').length;
+
+        issues.push({
+            message: `Reserve patch panel ports for access points: ${accessPointCount} port(s) should be reserved for access points.`,
+            isSatisfied: reservedAccessPointPorts >= accessPointCount,
+            severity: 'medium',
+            solutionHint: reservedAccessPointPorts >= accessPointCount
+                ? `All required ports are reserved for access points.`
+                : `Reserve ${accessPointCount - reservedAccessPointPorts} more port(s) for access points.`
         });
 
         // Additional checks can be added here
