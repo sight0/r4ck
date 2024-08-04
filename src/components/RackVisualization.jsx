@@ -16,9 +16,7 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import RackComponent from './RackComponent';
 import ComponentConfigDialog from './ComponentConfigDialog';
-import IssuesPanel from './IssuesPanel';
 import ConnectionWizard from './ConnectionWizard';
-import { useState } from 'react';
 import { components } from './Sidebar';
 
 const GreenButton = styled(Button)(({ theme }) => ({
