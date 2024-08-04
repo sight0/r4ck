@@ -23,9 +23,9 @@ const PortSetupDialog = ({ open, onClose, ports, numIdfs, idf, onPortChange }) =
                                     value={port.cableSource || ''}
                                     onChange={(e) => onPortChange(index, 'cableSource', e.target.value)}
                                 >
-                                    <MenuItem value="AP">Access Point</MenuItem>
-                                    <MenuItem value="IP_PHONE">IP Telephone</MenuItem>
-                                    <MenuItem value="END_USER_DEVICE">End-User Device</MenuItem>
+                                    <MenuItem value="access_point">Access Point</MenuItem>
+                                    <MenuItem value="ip_telephone">IP Telephone</MenuItem>
+                                    <MenuItem value="end_user_device">End-User Device</MenuItem>
                                     {[...Array(numIdfs)].map((_, idx) => (
                                         idx + 1 !== idf && 
                                         <MenuItem key={idx + 1} value={`IDF_${idx + 1}`}>{`IDF ${idx + 1}`}</MenuItem>
