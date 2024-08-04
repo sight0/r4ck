@@ -306,7 +306,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
             .reduce((total, panel) => total + parseInt(panel.capacity), 0);
 
         issues.push({
-            message: `Ensure satisfaction of incoming cables: The IDF currently has ${patchPanelPorts} patch panel ports which should meet or exceed ${requiredPorts} port(s).`,
+            message: `Ensure satisfaction of incoming cables: The IDF currently has ${patchPanelPorts} patch panel ports which should meet or exceed the requirement of ${requiredPorts} port(s).`,
             isSatisfied: patchPanelPorts >= requiredPorts,
             severity: 'high',
             solutionHint: 'Add patch panels and configure them to satisfy the incoming cables.'
@@ -323,7 +323,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
             const requiredConnections = 1; // Assuming 1 connection per IDF pair
 
             issues.push({
-                message: `Allocate patch panel ports for outgoing connections: Current IDF requires ${requiredConnections} dedicated patch panel port(s) for connection to ${targetIdf}.`,
+                message: `Allocate patch panel ports for cross-DF connections: Current IDF requires ${requiredConnections} dedicated patch panel port(s) for connection to ${targetIdf}.`,
                 isSatisfied: allocatedPorts >= requiredConnections,
                 severity: 'medium',
                 solutionHint: allocatedPorts >= requiredConnections
