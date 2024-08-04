@@ -381,24 +381,60 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                         </IconButton>
                     </Box>
                 </Box>
-                <Button
-                    variant="contained"
-                    color={getIssues().some(issue => !issue.isSatisfied) ? "error" : "primary"}
-                    size="large"
-                    onClick={() => setIssuesDialogOpen(true)}
-                    sx={{
-                        width: '100%',
-                        py: 1.5,
-                        fontWeight: 'bold',
-                        boxShadow: 3,
-                        '&:hover': {
-                            boxShadow: 5,
-                        },
-                    }}
-                    startIcon={getIssues().some(issue => !issue.isSatisfied) && <ErrorOutlineIcon />}
-                >
-                    {getIssues().some(issue => !issue.isSatisfied) ? "View Issues and Requirements" : "All Requirements Satisfied"}
-                </Button>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', gap: 2 }}>
+                    <Button
+                        variant="contained"
+                        color={getIssues().some(issue => !issue.isSatisfied) ? "error" : "primary"}
+                        onClick={() => setIssuesDialogOpen(true)}
+                        sx={{
+                            flex: 1,
+                            py: 1.5,
+                            fontWeight: 'bold',
+                            boxShadow: 3,
+                            '&:hover': {
+                                boxShadow: 5,
+                            },
+                        }}
+                        startIcon={<ErrorOutlineIcon />}
+                    >
+                        {getIssues().some(issue => !issue.isSatisfied) ? "View Issues" : "All Satisfied"}
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={() => setConnectionWizardOpen(true)}
+                        disabled={getIssues().some(issue => !issue.isSatisfied)}
+                        sx={{
+                            flex: 1,
+                            py: 1.5,
+                            fontWeight: 'bold',
+                            boxShadow: 3,
+                            '&:hover': {
+                                boxShadow: 5,
+                            },
+                        }}
+                        startIcon={<CableIcon />}
+                    >
+                        Connection Wizard
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="info"
+                        onClick={handleGetRecommendations}
+                        sx={{
+                            flex: 1,
+                            py: 1.5,
+                            fontWeight: 'bold',
+                            boxShadow: 3,
+                            '&:hover': {
+                                boxShadow: 5,
+                            },
+                        }}
+                        startIcon={<RecommendIcon />}
+                    >
+                        Get Recommendations
+                    </Button>
+                </Box>
             </Box>
             <Grid container spacing={2}>
                 <Grid item xs={12} md={8}>
