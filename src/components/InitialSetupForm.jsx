@@ -106,7 +106,7 @@ const InitialSetupForm = ({ onSubmit }) => {
             </Paper>
             <Box sx={{ flexGrow: 1, overflowY: 'auto', mt: 2, mb: 2 }}>
                 {Object.keys(idfData).map((idf) => (
-                    <Paper key={idf} elevation={2} sx={{ mb: 4, p: 2, backgroundColor: '#f5f5f5' }}>
+                    <Paper key={idf} elevation={2} sx={{ mb: 4, p: 2, backgroundColor: '#0f0f0f' }}>
                         <Typography variant="h6" gutterBottom>IDF {idf}</Typography>
                         <FormControl fullWidth margin="normal">
                             <InputLabel>Rack Size</InputLabel>
@@ -151,7 +151,7 @@ const InitialSetupForm = ({ onSubmit }) => {
                                 </Button>
                             ))}
                         </Box>
-                    </Box>
+                    </Paper>
                 ))}
             </Box>
             <Paper elevation={3} sx={{ p: 2, mt: 'auto' }}>
