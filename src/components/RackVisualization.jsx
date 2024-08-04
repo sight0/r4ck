@@ -73,10 +73,8 @@ const StyledLine = styled('div')(({ theme }) => ({
 }));
 
 const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interIdfConnections, onUpdateInterIdfConnections, onPortChange }) => {
-    // ... existing code ...
 
     const handleConnectionCreate = (newConnection) => {
-        // Update the components with the new connection
         setRackComponents(prevComponents => {
             return prevComponents.map(component => {
                 if (component.id === newConnection.sourceComponentId) {
@@ -736,7 +734,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
             <ConnectionWizard
                 open={connectionWizardOpen}
                 onClose={() => setConnectionWizardOpen(false)}
-                components={rackComponents}
+                components={components}
                 currentIdf={currentIdf}
                 onConnectionCreate={handleConnectionCreate}
             />
