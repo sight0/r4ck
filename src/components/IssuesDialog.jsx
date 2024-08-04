@@ -20,28 +20,28 @@ const getPriorityColor = (severity) => {
 const IssueBlock = ({ issue }) => (
   <Box
     sx={{
-      backgroundColor: issue.isSatisfied ? '#f0f0f0' : '#e0e0e0',
+      backgroundColor: issue.isSatisfied ? '#e8f5e9' : '#fff3e0',
       borderRadius: 2,
       p: 2,
       mb: 2,
       boxShadow: 1,
-      border: `1px solid ${issue.isSatisfied ? '#d0d0d0' : '#c0c0c0'}`,
+      border: `1px solid ${issue.isSatisfied ? '#c8e6c9' : '#ffe0b2'}`,
     }}
   >
     <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
       {issue.isSatisfied ? (
-        <CheckCircleOutlineIcon sx={{ mr: 1, color: '#4a4a4a' }} />
+        <CheckCircleOutlineIcon sx={{ mr: 1, color: '#4caf50' }} />
       ) : (
-        <ErrorOutlineIcon sx={{ mr: 1, color: '#DAA520' }} />
+        <ErrorOutlineIcon sx={{ mr: 1, color: getPriorityColor(issue.severity) }} />
       )}
-      <Typography variant="h6" color={issue.isSatisfied ? '#4a4a4a' : getPriorityColor(issue.severity)}>
+      <Typography variant="h6" color={issue.isSatisfied ? '#4caf50' : getPriorityColor(issue.severity)}>
         {issue.isSatisfied ? 'Requirement Satisfied' : `${issue.severity.charAt(0).toUpperCase() + issue.severity.slice(1)} Priority Issue`}
       </Typography>
     </Box>
     <Typography variant="body1" sx={{ mb: 1, color: '#333' }}>{issue.message}</Typography>
     {!issue.isSatisfied && (
-      <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, backgroundColor: 'rgba(218, 165, 32, 0.1)', p: 1, borderRadius: 1 }}>
-        <LightbulbOutlinedIcon sx={{ mr: 1, color: '#DAA520' }} />
+      <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, backgroundColor: 'rgba(255, 152, 0, 0.1)', p: 1, borderRadius: 1 }}>
+        <LightbulbOutlinedIcon sx={{ mr: 1, color: '#ff9800' }} />
         <Typography variant="body2" color="#4a4a4a">
           <strong>Solution Hint:</strong> {issue.solutionHint || "Review the requirement and adjust your rack design accordingly."}
         </Typography>
@@ -62,7 +62,7 @@ const IssuesDialog = ({ open, onClose, issues }) => {
           Rack Design Issues and Requirements
         </Typography>
       </DialogTitle>
-      <DialogContent sx={{ maxHeight: '70vh', overflowY: 'auto' }}>
+      <DialogContent sx={{ maxHeight: '70vh', overflowY: 'auto', backgroundColor: '#fafafa' }}>
         <Box sx={{ mt: 2, mb: 2 }}>
           <FormControlLabel
             control={
@@ -82,7 +82,7 @@ const IssuesDialog = ({ open, onClose, issues }) => {
         </Box>
       </DialogContent>
       <DialogActions sx={{ backgroundColor: '#f5f5f5', borderTop: '1px solid #e0e0e0' }}>
-        <Button onClick={onClose} sx={{ color: '#DAA520', '&:hover': { backgroundColor: 'rgba(218, 165, 32, 0.1)' } }}>
+        <Button onClick={onClose} sx={{ color: '#1976d2', '&:hover': { backgroundColor: 'rgba(25, 118, 210, 0.1)' } }}>
           Close
         </Button>
       </DialogActions>
