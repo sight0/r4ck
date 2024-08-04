@@ -75,21 +75,28 @@ const StyledLine = styled('div')(({ theme }) => ({
 const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interIdfConnections, onUpdateInterIdfConnections, onPortChange }) => {
 
     const handleConnectionCreate = (newConnection) => {
-        const sourceComponent = components.find(c => c.id === newConnection.sourceComponentId);
-        const destinationComponent = components.find(c => c.id === newConnection.destinationComponentId);
+        const deviceA = components.find(c => c.id === newConnection.deviceA.componentId);
+        const deviceB = components.find(c => c.id === newConnection.deviceB.componentId);
 
-        if (sourceComponent && destinationComponent) {
-            const sourcePortIndex = sourceComponent.ports.findIndex(p => p.label === newConnection.sourcePort);
-            const destPortIndex = destinationComponent.ports.findIndex(p => p.label === newConnection.destinationPort);
+        if (deviceA && deviceB) {
+            const portAIndex = deviceA.ports.findIndex(p => p.label === newConnection.deviceA.port);
+            const portBIndex = deviceB.ports.findIndex(p => p.label === newConnection.deviceB.port);
 
-            if (sourcePortIndex !== -1 && destPortIndex !== -1) {
-                onPortChange(newConnection.sourceComponentId, sourcePortIndex, 'connectedTo', newConnection.destinationComponentId);
-                onPortChange(newConnection.sourceComponentId, sourcePortIndex, 'connectedPort', newConnection.destinationPort);
-                onPortChange(newConnection.sourceComponentId, sourcePortIndex, 'deviceType', newConnection.sourceDeviceType);
+            if (portAIndex !== -1 && portBIndex !== -1) {
+                onPortChange(newConnection.deviceA.componentId, portAIndex, 'connectedTo', newConnection.deviceB.componentId);
+                onPortChange(newConnection.deviceA.componentId, portAIndex, 'connectedPort', newConnection.deviceB.port);
 
-                onPortChange(newConnection.destinationComponentId, destPortIndex, 'connectedTo', newConnection.sourceComponentId);
-                onPortChange(newConnection.destinationComponentId, destPortIndex, 'connectedPort', newConnection.sourcePort);
-                onPortChange(newConnection.destinationComponentId, destPortIndex, 'deviceType', newConnection.destinationDeviceType);
+                onPortChange(newConnection.deviceB.componentId, portBIndex, 'connectedTo', newConnection.deviceA.componentId);
+                onPortChange(newConnection.deviceB.componentId, portBIndex, 'connectedPort', newConnection.deviceA.port);
+
+                // Infer device type if one of the devices is a patch panel
+                if (deviceA.type === 'patch_panel') {
+                    const deviceType = deviceA.ports[portAIndex].cableSource;
+                    onPortChange(newConnection.deviceB.componentId, portBIndex, 'deviceType', deviceType);
+                } else if (deviceB.type === 'patch_panel') {
+                    const deviceType = deviceB.ports[portBIndex].cableSource;
+                    onPortChange(newConnection.deviceA.componentId, portAIndex, 'deviceType', deviceType);
+                }
             }
         }
     };

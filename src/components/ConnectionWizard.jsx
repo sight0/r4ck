@@ -4,24 +4,24 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Stepper, Ste
 
 const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionCreate }) => {
     const [activeStep, setActiveStep] = useState(0);
-    const [sourceComponent, setSourceComponent] = useState('');
-    const [sourcePort, setSourcePort] = useState('');
-    const [destinationComponent, setDestinationComponent] = useState('');
-    const [destinationPort, setDestinationPort] = useState('');
-    const [availableDestinations, setAvailableDestinations] = useState([]);
+    const [firstComponent, setFirstComponent] = useState('');
+    const [firstPort, setFirstPort] = useState('');
+    const [secondComponent, setSecondComponent] = useState('');
+    const [secondPort, setSecondPort] = useState('');
+    const [availableSecondComponents, setAvailableSecondComponents] = useState([]);
 
-    const steps = ['Select Source', 'Select Source Port', 'Source Device Type', 'Select Destination', 'Select Destination Port', 'Destination Device Type', 'Review'];
+    const steps = ['Select First Device', 'Select First Port', 'Select Second Device', 'Select Second Port', 'Review'];
 
     useEffect(() => {
-        if (sourceComponent) {
-            const source = components.find(c => c.id === sourceComponent);
-            if (source.type === 'patch_panel') {
-                setAvailableDestinations(components.filter(c => c.id !== sourceComponent));
+        if (firstComponent) {
+            const first = components.find(c => c.id === firstComponent);
+            if (first.type === 'patch_panel') {
+                setAvailableSecondComponents(components.filter(c => c.id !== firstComponent));
             } else {
-                setAvailableDestinations(components.filter(c => c.type === 'patch_panel'));
+                setAvailableSecondComponents(components.filter(c => c.type === 'patch_panel'));
             }
         }
-    }, [sourceComponent, components]);
+    }, [firstComponent, components]);
 
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -31,17 +31,16 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
-    const [sourceDeviceType, setSourceDeviceType] = useState('');
-    const [destinationDeviceType, setDestinationDeviceType] = useState('');
-
     const handleFinish = () => {
         const newConnection = {
-            sourceComponentId: sourceComponent,
-            sourcePort: sourcePort,
-            sourceDeviceType: sourceDeviceType,
-            destinationComponentId: destinationComponent,
-            destinationPort: destinationPort,
-            destinationDeviceType: destinationDeviceType,
+            deviceA: {
+                componentId: firstComponent,
+                port: firstPort
+            },
+            deviceB: {
+                componentId: secondComponent,
+                port: secondPort
+            },
             idf: currentIdf
         };
         onConnectionCreate(newConnection);
@@ -53,10 +52,10 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
             case 0:
                 return (
                     <FormControl fullWidth>
-                        <InputLabel>Source Component</InputLabel>
+                        <InputLabel>First Device</InputLabel>
                         <Select
-                            value={sourceComponent}
-                            onChange={(e) => setSourceComponent(e.target.value)}
+                            value={firstComponent}
+                            onChange={(e) => setFirstComponent(e.target.value)}
                         >
                             {components.map((component) => (
                                 <MenuItem key={component.id} value={component.id}>
@@ -67,15 +66,15 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
                     </FormControl>
                 );
             case 1:
-                const sourcePorts = components.find(c => c.id === sourceComponent)?.ports || [];
+                const firstPorts = components.find(c => c.id === firstComponent)?.ports || [];
                 return (
                     <FormControl fullWidth>
-                        <InputLabel>Source Port</InputLabel>
+                        <InputLabel>First Port</InputLabel>
                         <Select
-                            value={sourcePort}
-                            onChange={(e) => setSourcePort(e.target.value)}
+                            value={firstPort}
+                            onChange={(e) => setFirstPort(e.target.value)}
                         >
-                            {sourcePorts.map((port, index) => (
+                            {firstPorts.map((port, index) => (
                                 <MenuItem key={index} value={port.label}>
                                     {port.label}
                                 </MenuItem>
@@ -86,12 +85,12 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
             case 2:
                 return (
                     <FormControl fullWidth>
-                        <InputLabel>Destination Component</InputLabel>
+                        <InputLabel>Second Device</InputLabel>
                         <Select
-                            value={destinationComponent}
-                            onChange={(e) => setDestinationComponent(e.target.value)}
+                            value={secondComponent}
+                            onChange={(e) => setSecondComponent(e.target.value)}
                         >
-                            {availableDestinations.map((component) => (
+                            {availableSecondComponents.map((component) => (
                                 <MenuItem key={component.id} value={component.id}>
                                     {component.name} ({component.type})
                                 </MenuItem>
@@ -100,15 +99,15 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
                     </FormControl>
                 );
             case 3:
-                const destPorts = components.find(c => c.id === destinationComponent)?.ports || [];
+                const secondPorts = components.find(c => c.id === secondComponent)?.ports || [];
                 return (
                     <FormControl fullWidth>
-                        <InputLabel>Destination Port</InputLabel>
+                        <InputLabel>Second Port</InputLabel>
                         <Select
-                            value={destinationPort}
-                            onChange={(e) => setDestinationPort(e.target.value)}
+                            value={secondPort}
+                            onChange={(e) => setSecondPort(e.target.value)}
                         >
-                            {destPorts.map((port, index) => (
+                            {secondPorts.map((port, index) => (
                                 <MenuItem key={index} value={port.label}>
                                     {port.label}
                                 </MenuItem>
@@ -116,47 +115,15 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
                         </Select>
                     </FormControl>
                 );
-            case 2:
-                return (
-                    <FormControl fullWidth>
-                        <InputLabel>Source Device Type</InputLabel>
-                        <Select
-                            value={sourceDeviceType}
-                            onChange={(e) => setSourceDeviceType(e.target.value)}
-                        >
-                            <MenuItem value="IPT">IPT</MenuItem>
-                            <MenuItem value="AP">AP</MenuItem>
-                            <MenuItem value="End User Device">End User Device</MenuItem>
-                            <MenuItem value="Other">Other</MenuItem>
-                        </Select>
-                    </FormControl>
-                );
-            case 5:
-                return (
-                    <FormControl fullWidth>
-                        <InputLabel>Destination Device Type</InputLabel>
-                        <Select
-                            value={destinationDeviceType}
-                            onChange={(e) => setDestinationDeviceType(e.target.value)}
-                        >
-                            <MenuItem value="IPT">IPT</MenuItem>
-                            <MenuItem value="AP">AP</MenuItem>
-                            <MenuItem value="End User Device">End User Device</MenuItem>
-                            <MenuItem value="Other">Other</MenuItem>
-                        </Select>
-                    </FormControl>
-                );
-            case 6:
-                const sourceComp = components.find(c => c.id === sourceComponent);
-                const destComp = components.find(c => c.id === destinationComponent);
+            case 4:
+                const firstComp = components.find(c => c.id === firstComponent);
+                const secondComp = components.find(c => c.id === secondComponent);
                 return (
                     <Box>
-                        <Typography>Source: {sourceComp?.name} ({sourceComp?.type})</Typography>
-                        <Typography>Source Port: {sourcePort}</Typography>
-                        <Typography>Source Device Type: {sourceDeviceType}</Typography>
-                        <Typography>Destination: {destComp?.name} ({destComp?.type})</Typography>
-                        <Typography>Destination Port: {destinationPort}</Typography>
-                        <Typography>Destination Device Type: {destinationDeviceType}</Typography>
+                        <Typography>First Device: {firstComp?.name} ({firstComp?.type})</Typography>
+                        <Typography>First Port: {firstPort}</Typography>
+                        <Typography>Second Device: {secondComp?.name} ({secondComp?.type})</Typography>
+                        <Typography>Second Port: {secondPort}</Typography>
                     </Box>
                 );
             default:
