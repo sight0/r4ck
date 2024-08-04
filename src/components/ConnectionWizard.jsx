@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Stepper, Step, StepLabel, Typography, Box, Select, MenuItem, FormControl, InputLabel, List, ListItem, ListItemText, Divider, IconButton, Tooltip, TextField } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Stepper, Step, StepLabel, Typography, Box, Select, MenuItem, FormControl, InputLabel, List, ListItem, ListItemText, Divider, IconButton, Tooltip, TextField, Chip } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import InfoIcon from '@mui/icons-material/Info';
+import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 
 const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionCreate, existingConnections, onConnectionUpdate, onConnectionDelete }) => {
     const [activeStep, setActiveStep] = useState(0);
@@ -103,10 +104,19 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
     };
 
     const renderExistingConnections = () => (
-        <List>
+        <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
             {existingConnections.map((connection, index) => (
                 <React.Fragment key={connection.id}>
                     <ListItem
+                        alignItems="flex-start"
+                        sx={{
+                            borderRadius: '8px',
+                            mb: 1,
+                            bgcolor: 'rgba(255, 255, 255, 0.08)',
+                            '&:hover': {
+                                bgcolor: 'rgba(255, 255, 255, 0.12)',
+                            },
+                        }}
                         secondaryAction={
                             <Box>
                                 <IconButton edge="end" aria-label="edit" onClick={() => handleEdit(connection)}>
@@ -120,17 +130,54 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
                     >
                         <ListItemText
                             primary={
-                                <Typography>
-                                    {`${getComponentName(connection.deviceA.componentId)} (${connection.deviceA.port}) - ${getComponentName(connection.deviceB.componentId)} (${connection.deviceB.port})`}
-                                    <Tooltip title={`Type: ${connection.type || 'N/A'}, Speed: ${connection.speed || 'N/A'}, Notes: ${connection.notes || 'N/A'}`}>
-                                        <InfoIcon fontSize="small" style={{ marginLeft: '8px', verticalAlign: 'middle' }} />
-                                    </Tooltip>
+                                <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
+                                    Connection {index + 1}
                                 </Typography>
                             }
-                            secondary={`IDF ${connection.idf}`}
+                            secondary={
+                                <React.Fragment>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                                        <Typography variant="body2" sx={{ fontWeight: 'medium', mr: 1 }}>
+                                            {getComponentName(connection.deviceA.componentId)}
+                                        </Typography>
+                                        <ArrowRightAltIcon sx={{ mx: 1 }} />
+                                        <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
+                                            {getComponentName(connection.deviceB.componentId)}
+                                        </Typography>
+                                    </Box>
+                                    <Typography variant="body2" color="text.secondary">
+                                        Port {connection.deviceA.port} → Port {connection.deviceB.port}
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary">
+                                        IDF {connection.idf}
+                                    </Typography>
+                                    <Box sx={{ mt: 1 }}>
+                                        <Chip
+                                            label={`Type: ${connection.type || 'N/A'}`}
+                                            size="small"
+                                            sx={{ mr: 1, mb: 1 }}
+                                        />
+                                        <Chip
+                                            label={`Speed: ${connection.speed || 'N/A'}`}
+                                            size="small"
+                                            sx={{ mr: 1, mb: 1 }}
+                                        />
+                                        {connection.notes && (
+                                            <Tooltip title={connection.notes}>
+                                                <Chip
+                                                    icon={<InfoIcon />}
+                                                    label="Notes"
+                                                    size="small"
+                                                    sx={{ mb: 1 }}
+                                                />
+                                            </Tooltip>
+                                        )}
+                                    </Box>
+                                </React.Fragment>
+                            }
                         />
                     </ListItem>
-                    {index < existingConnections.length - 1 && <Divider />}
+                    {index < existingConnections.length - 1 && <Divider sx={{ my: 1 }} />}
                 </React.Fragment>
             ))}
         </List>
