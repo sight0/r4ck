@@ -305,8 +305,13 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
             const { type, count } = requirement;
             const allocatedPorts = patchPanelPorts.filter(port => port.cableSource === type).length;
 
+            // This is terrible (should be passed with the idfData):
+            const name = type.split('_')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ');
+
             issues.push({
-                message: `Allocate patch panel ports for ${type}: This IDF requires ${count} dedicated patch panel port(s) for ${type}.`,
+                message: `Allocate patch panel ports for ${type}: This IDF requires ${count} dedicated patch panel port(s) for ${name}(s).`,
                 isSatisfied: allocatedPorts >= count,
                 severity: 'high',
                 solutionHint: allocatedPorts >= count

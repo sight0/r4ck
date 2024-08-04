@@ -5,7 +5,7 @@ import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 
 // This could be fetched from an API in a real-world scenario
 export const components = [
-    { id: 1, name: 'Rack', type: 'rack', color: '#795548' },
+    { id: 1, name: 'Router', type: 'router', color: '#795548' },
     { id: 2, name: 'Switch', type: 'switch', color: '#4CAF50' },
     { id: 3, name: 'Fiber Switch', type: 'fiber_switch', color: '#2196F3' },
     { id: 4, name: 'Patch Panel', type: 'patch_panel', color: '#9C27B0' },
