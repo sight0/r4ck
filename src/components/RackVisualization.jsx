@@ -9,6 +9,16 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CableIcon from '@mui/icons-material/Cable';
 import RecommendIcon from '@mui/icons-material/Recommend';
+import { styled } from '@mui/system';
+import { useTheme } from '@mui/material/styles';
+import LanguageIcon from '@mui/icons-material/Language';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import RackComponent from './RackComponent';
+import ComponentConfigDialog from './ComponentConfigDialog';
+import IssuesPanel from './IssuesPanel';
+import ConnectionWizard from './ConnectionWizard';
+import { components } from './Sidebar';
 
 const GreenButton = styled(Button)(({ theme }) => ({
     backgroundColor: theme.palette.success.main,
@@ -19,15 +29,6 @@ const GreenButton = styled(Button)(({ theme }) => ({
         backgroundColor: theme.palette.action.disabledBackground,
     },
 }));
-import { styled } from '@mui/system';
-import { useTheme } from '@mui/material/styles';
-import LanguageIcon from '@mui/icons-material/Language';
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import RackComponent from './RackComponent';
-import ComponentConfigDialog from './ComponentConfigDialog';
-import IssuesPanel from './IssuesPanel';
-import { components } from './Sidebar';
 
 const componentColors = Object.fromEntries(components.map(comp => [comp.type, comp.color]));
 
@@ -72,6 +73,42 @@ const StyledLine = styled('div')(({ theme }) => ({
 }));
 
 const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interIdfConnections, onUpdateInterIdfConnections, onPortChange }) => {
+    // ... existing code ...
+
+    const handleConnectionCreate = (newConnection) => {
+        // Update the components with the new connection
+        setRackComponents(prevComponents => {
+            return prevComponents.map(component => {
+                if (component.id === newConnection.sourceComponentId) {
+                    const updatedPorts = component.ports.map(port => {
+                        if (port.label === newConnection.sourcePort) {
+                            return { ...port, connectedTo: newConnection.destinationComponentId };
+                        }
+                        return port;
+                    });
+                    return { ...component, ports: updatedPorts };
+                }
+                if (component.id === newConnection.destinationComponentId) {
+                    const updatedPorts = component.ports.map(port => {
+                        if (port.label === newConnection.destinationPort) {
+                            return { ...port, connectedTo: newConnection.sourceComponentId };
+                        }
+                        return port;
+                    });
+                    return { ...component, ports: updatedPorts };
+                }
+                return component;
+            });
+        });
+
+        // If the connection involves a patch panel, update the interIdfConnections
+        const sourceComponent = rackComponents.find(c => c.id === newConnection.sourceComponentId);
+        const destComponent = rackComponents.find(c => c.id === newConnection.destinationComponentId);
+        if (sourceComponent.type === 'patch_panel' || destComponent.type === 'patch_panel') {
+            const newInterIdfConnections = calculateInterIdfConnections(rackComponents, currentIdf);
+            onUpdateInterIdfConnections(newInterIdfConnections);
+        }
+    };
     const theme = useTheme();
     const [allComponents, setAllComponents] = useState({});
     const components = useMemo(() => allComponents[currentIdf] || [], [allComponents, currentIdf]);
@@ -86,6 +123,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
     const [highlightedType, setHighlightedType] = useState(null);
     const [issuesDialogOpen, setIssuesDialogOpen] = useState(false);
     const [connectionWizardOpen, setConnectionWizardOpen] = useState(false);
+    const [rackComponents, setRackComponents] = useState([]);
     const [recommendationsDialogOpen, setRecommendationsDialogOpen] = useState(false);
     const rackRef = useRef(null);
     
@@ -695,21 +733,13 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                 onClose={() => setIssuesDialogOpen(false)}
                 issues={getIssues()}
             />
-            {/* Placeholder for Connection Wizard */}
-            <Dialog
+            <ConnectionWizard
                 open={connectionWizardOpen}
                 onClose={() => setConnectionWizardOpen(false)}
-                maxWidth="md"
-                fullWidth
-            >
-                <DialogTitle>Connection Wizard</DialogTitle>
-                <DialogContent>
-                    <Typography>Connection Wizard content will go here.</Typography>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setConnectionWizardOpen(false)}>Close</Button>
-                </DialogActions>
-            </Dialog>
+                components={rackComponents}
+                currentIdf={currentIdf}
+                onConnectionCreate={handleConnectionCreate}
+            />
             {/* Placeholder for Recommendations Dialog */}
             <Dialog
                 open={recommendationsDialogOpen}
