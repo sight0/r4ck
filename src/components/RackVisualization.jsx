@@ -315,35 +315,19 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
             });
         });
 
-        // Check for outgoing connections to other IDFs or MDF
-        Object.entries(interIdfConnections[currentIdf] || {}).forEach(([targetIdf, connectionCount]) => {
-            if (targetIdf !== `IDF_${currentIdf}` && targetIdf !== 'MDF') {
-                const allocatedPorts = patchPanelPorts.filter(port => port.cableSource === targetIdf).length;
-
-                if (allocatedPorts < connectionCount) {
-                    issues.push({
-                        message: `Allocate patch panel ports for outgoing connections to ${targetIdf}: This IDF requires ${connectionCount} dedicated patch panel port(s) to send connections to ${targetIdf}.`,
-                        isSatisfied: false,
-                        severity: 'high',
-                        solutionHint: `Configure ${connectionCount - allocatedPorts} more port(s) for sending connections to ${targetIdf}.`
-                    });
-                }
-            }
-        });
-
         // Check for MDF connections
         const mdfConnections = interIdfConnections[currentIdf]?.MDF || 0;
         if (mdfConnections > 0) {
             const allocatedMdfPorts = patchPanelPorts.filter(port => port.cableSource === 'MDF').length;
 
-            if (allocatedMdfPorts < mdfConnections) {
-                issues.push({
-                    message: `Allocate patch panel ports for outgoing connections to MDF: This IDF requires ${mdfConnections} dedicated patch panel port(s) to send connections to MDF.`,
-                    isSatisfied: false,
-                    severity: 'high',
-                    solutionHint: `Configure ${mdfConnections - allocatedMdfPorts} more port(s) for sending connections to MDF.`
-                });
-            }
+            issues.push({
+                message: `Allocate patch panel ports for connections to MDF: This IDF requires ${mdfConnections} dedicated patch panel port(s) for MDF connections.`,
+                isSatisfied: allocatedMdfPorts >= mdfConnections,
+                severity: 'high',
+                solutionHint: allocatedMdfPorts >= mdfConnections
+                    ? `All required ports are allocated for MDF connections.`
+                    : `Configure ${mdfConnections - allocatedMdfPorts} more port(s) for MDF connections.`
+            });
         }
 
         // Check for incoming connections from other IDFs
@@ -352,14 +336,14 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                 const incomingConnections = connections[`IDF_${currentIdf}`] || 0;
                 if (incomingConnections > 0) {
                     const allocatedIncomingPorts = patchPanelPorts.filter(port => port.cableSource === `IDF_${sourceIdf}`).length;
-                    if (allocatedIncomingPorts < incomingConnections) {
-                        issues.push({
-                            message: `Allocate patch panel ports for incoming connections from IDF ${sourceIdf}: This IDF needs to implement ${incomingConnections} dedicated patch panel port(s) to receive connections from IDF ${sourceIdf}.`,
-                            isSatisfied: false,
-                            severity: 'high',
-                            solutionHint: `Configure ${incomingConnections - allocatedIncomingPorts} more port(s) for receiving connections from IDF ${sourceIdf}.`
-                        });
-                    }
+                    issues.push({
+                        message: `Allocate patch panel ports for incoming connections from IDF ${sourceIdf}: This IDF needs to implement ${incomingConnections} dedicated patch panel port(s) to receive connections from IDF ${sourceIdf}.`,
+                        isSatisfied: allocatedIncomingPorts >= incomingConnections,
+                        severity: 'high',
+                        solutionHint: allocatedIncomingPorts >= incomingConnections
+                            ? `All required ports are allocated for incoming connections from IDF ${sourceIdf}.`
+                            : `Configure ${incomingConnections - allocatedIncomingPorts} more port(s) for receiving connections from IDF ${sourceIdf}.`
+                    });
                 }
             }
         });
