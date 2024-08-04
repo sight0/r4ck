@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import { TextField, Button, Box, Typography, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import { TextField, Button, Box, Typography, Select, MenuItem, FormControl, InputLabel, Paper } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 
@@ -80,24 +80,33 @@ const InitialSetupForm = ({ onSubmit }) => {
     const rackSizes = [18, 20, 22, 24, 27, 30, 32, 36, 38, 42];
 
     return (
-        <Box component="form" onSubmit={handleSubmit} sx={{ width: {xs:'100%',sm:'90%',md:'70%',lg:'50%'}, margin: 'auto', mt: 4 }}>
-            <Typography variant="h5" gutterBottom>
-                Initial Setup
-            </Typography>
-            <TextField
-                fullWidth
-                margin="normal"
-                name="idfs"
-                label="Number of IDFs (max 10)"
-                type="number"
-                value={numIdfs}
-                onChange={handleIdfChange}
-                required
-                inputProps={{ min: 1, max: 10 }}
-            />
-            <Box sx={{ maxHeight: '60vh', overflowY: 'auto', mt: 2 }}>
+        <Box component="form" onSubmit={handleSubmit} sx={{ 
+            width: {xs:'100%',sm:'90%',md:'70%',lg:'50%'}, 
+            margin: 'auto', 
+            mt: 4,
+            display: 'flex',
+            flexDirection: 'column',
+            height: 'calc(100vh - 100px)', // Adjust based on your layout
+        }}>
+            <Paper elevation={3} sx={{ p: 3, mb: 2 }}>
+                <Typography variant="h5" gutterBottom>
+                    Initial Setup
+                </Typography>
+                <TextField
+                    fullWidth
+                    margin="normal"
+                    name="idfs"
+                    label="Number of IDFs (max 10)"
+                    type="number"
+                    value={numIdfs}
+                    onChange={handleIdfChange}
+                    required
+                    inputProps={{ min: 1, max: 10 }}
+                />
+            </Paper>
+            <Box sx={{ flexGrow: 1, overflowY: 'auto', mt: 2, mb: 2 }}>
                 {Object.keys(idfData).map((idf) => (
-                    <Box key={idf} sx={{ mb: 4, p: 2, border: '1px solid #ccc', borderRadius: '4px' }}>
+                    <Paper key={idf} elevation={2} sx={{ mb: 4, p: 2, backgroundColor: '#f5f5f5' }}>
                         <Typography variant="h6" gutterBottom>IDF {idf}</Typography>
                         <FormControl fullWidth margin="normal">
                             <InputLabel>Rack Size</InputLabel>
@@ -145,9 +154,11 @@ const InitialSetupForm = ({ onSubmit }) => {
                     </Box>
                 ))}
             </Box>
-            <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
-                Start Design
-            </Button>
+            <Paper elevation={3} sx={{ p: 2, mt: 'auto' }}>
+                <Button type="submit" variant="contained" color="primary" fullWidth>
+                    Start Design
+                </Button>
+            </Paper>
         </Box>
     );
 };
