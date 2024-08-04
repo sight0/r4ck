@@ -7,6 +7,8 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import CableIcon from '@mui/icons-material/Cable';
+import RecommendIcon from '@mui/icons-material/Recommend';
 import { styled } from '@mui/system';
 import { useTheme } from '@mui/material/styles';
 import LanguageIcon from '@mui/icons-material/Language';
@@ -73,13 +75,20 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
     const [exhaustedPorts, setExhaustedPorts] = useState(0);
     const [highlightedType, setHighlightedType] = useState(null);
     const [issuesDialogOpen, setIssuesDialogOpen] = useState(false);
+    const [connectionWizardOpen, setConnectionWizardOpen] = useState(false);
+    const [recommendationsDialogOpen, setRecommendationsDialogOpen] = useState(false);
     const rackRef = useRef(null);
     
     const rackSize = idfData[currentIdf]?.rackSize || 42; // Use the specified rack size or default to 42U
     const rackHeight = rackSize * 20; // Each U is 20px tall
-    // const rackWidth = rackSize <= 24 ? 200 : 300; // Adjust width for smaller racks
     const rackWidth = 298; // Adjust width for smaller racks
     const accentColor = theme.palette.secondary.main;
+
+    const handleGetRecommendations = () => {
+        // This function would analyze the current setup and requirements
+        // and generate recommendations for switch models, etc.
+        setRecommendationsDialogOpen(true);
+    };
 
     const handleHighlight = (type) => {
         setHighlightedType(type);
@@ -637,6 +646,36 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                 onClose={() => setIssuesDialogOpen(false)}
                 issues={getIssues()}
             />
+            {/* Placeholder for Connection Wizard */}
+            <Dialog
+                open={connectionWizardOpen}
+                onClose={() => setConnectionWizardOpen(false)}
+                maxWidth="md"
+                fullWidth
+            >
+                <DialogTitle>Connection Wizard</DialogTitle>
+                <DialogContent>
+                    <Typography>Connection Wizard content will go here.</Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setConnectionWizardOpen(false)}>Close</Button>
+                </DialogActions>
+            </Dialog>
+            {/* Placeholder for Recommendations Dialog */}
+            <Dialog
+                open={recommendationsDialogOpen}
+                onClose={() => setRecommendationsDialogOpen(false)}
+                maxWidth="md"
+                fullWidth
+            >
+                <DialogTitle>Recommendations</DialogTitle>
+                <DialogContent>
+                    <Typography>Recommendations content will go here.</Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setRecommendationsDialogOpen(false)}>Close</Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 }
