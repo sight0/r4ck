@@ -8,89 +8,98 @@ import InfoIcon from '@mui/icons-material/Info';
 
 const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionCreate, existingConnections, onConnectionUpdate, onConnectionDelete }) => {
     const [activeStep, setActiveStep] = useState(0);
-    const [firstComponent, setFirstComponent] = useState('');
-    const [firstPort, setFirstPort] = useState('');
-    const [secondComponent, setSecondComponent] = useState('');
-    const [secondPort, setSecondPort] = useState('');
+    const [connection, setConnection] = useState({
+        firstComponent: '',
+        firstPort: '',
+        secondComponent: '',
+        secondPort: '',
+        type: '',
+        speed: '',
+        notes: ''
+    });
     const [availableSecondComponents, setAvailableSecondComponents] = useState([]);
     const [isAddingConnection, setIsAddingConnection] = useState(false);
     const [editingConnection, setEditingConnection] = useState(null);
-    const [connectionType, setConnectionType] = useState('');
-    const [connectionSpeed, setConnectionSpeed] = useState('');
-    const [connectionNotes, setConnectionNotes] = useState('');
 
-    const steps = ['Select First Device', 'Select First Port', 'Select Second Device', 'Select Second Port', 'Connection Details', 'Review'];
+    const steps = [
+        { label: 'Select Devices', fields: ['firstComponent', 'secondComponent'] },
+        { label: 'Select Ports', fields: ['firstPort', 'secondPort'] },
+        { label: 'Connection Details', fields: ['type', 'speed', 'notes'] },
+        { label: 'Review', fields: [] }
+    ];
 
     useEffect(() => {
-        if (firstComponent) {
-            const first = components.find(c => c.id === firstComponent);
-            // Allow connections between all types of components
-            setAvailableSecondComponents(components.filter(c => c.id !== firstComponent));
+        if (connection.firstComponent) {
+            setAvailableSecondComponents(components.filter(c => c.id !== connection.firstComponent));
         }
-    }, [firstComponent, components]);
+    }, [connection.firstComponent, components]);
 
-    const handleNext = () => {
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    };
-
-    const handleBack = () => {
-        setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    };
+    const handleNext = () => setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    const handleBack = () => setActiveStep((prevActiveStep) => prevActiveStep - 1);
 
     const handleAddConnectionClick = () => {
         setIsAddingConnection(true);
-        resetConnectionForm();
-    };
-
-    const resetConnectionForm = () => {
+        setConnection({
+            firstComponent: '',
+            firstPort: '',
+            secondComponent: '',
+            secondPort: '',
+            type: '',
+            speed: '',
+            notes: ''
+        });
         setActiveStep(0);
-        setFirstComponent('');
-        setFirstPort('');
-        setSecondComponent('');
-        setSecondPort('');
     };
 
     const handleFinish = () => {
         const newConnection = {
             id: editingConnection ? editingConnection.id : Date.now(),
-            deviceA: {
-                componentId: firstComponent,
-                port: firstPort
-            },
-            deviceB: {
-                componentId: secondComponent,
-                port: secondPort
-            },
+            deviceA: { componentId: connection.firstComponent, port: connection.firstPort },
+            deviceB: { componentId: connection.secondComponent, port: connection.secondPort },
             idf: currentIdf,
-            type: connectionType,
-            speed: connectionSpeed,
-            notes: connectionNotes
+            type: connection.type,
+            speed: connection.speed,
+            notes: connection.notes
         };
+        
         if (editingConnection) {
             onConnectionUpdate(newConnection);
         } else {
             onConnectionCreate(newConnection);
         }
-        resetConnectionForm();
+        
         setIsAddingConnection(false);
         setEditingConnection(null);
+        setConnection({
+            firstComponent: '',
+            firstPort: '',
+            secondComponent: '',
+            secondPort: '',
+            type: '',
+            speed: '',
+            notes: ''
+        });
     };
 
-    const handleEdit = (connection) => {
-        setEditingConnection(connection);
-        setFirstComponent(connection.deviceA.componentId);
-        setFirstPort(connection.deviceA.port);
-        setSecondComponent(connection.deviceB.componentId);
-        setSecondPort(connection.deviceB.port);
-        setConnectionType(connection.type || '');
-        setConnectionSpeed(connection.speed || '');
-        setConnectionNotes(connection.notes || '');
+    const handleEdit = (conn) => {
+        setEditingConnection(conn);
+        setConnection({
+            firstComponent: conn.deviceA.componentId,
+            firstPort: conn.deviceA.port,
+            secondComponent: conn.deviceB.componentId,
+            secondPort: conn.deviceB.port,
+            type: conn.type || '',
+            speed: conn.speed || '',
+            notes: conn.notes || ''
+        });
         setIsAddingConnection(true);
         setActiveStep(0);
     };
 
-    const handleDelete = (connectionId) => {
-        onConnectionDelete(connectionId);
+    const handleDelete = (connectionId) => onConnectionDelete(connectionId);
+
+    const handleChange = (field, value) => {
+        setConnection(prev => ({ ...prev, [field]: value }));
     };
 
     const renderExistingConnections = () => (
@@ -133,170 +142,180 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
     };
 
     const renderStepContent = (step) => {
-        switch (step) {
-            case 0:
-                return (
-                    <FormControl fullWidth>
-                        <InputLabel>First Device</InputLabel>
-                        <Select
-                            value={firstComponent}
-                            onChange={(e) => setFirstComponent(e.target.value)}
-                        >
-                            {components.map((component) => (
-                                <MenuItem key={component.id} value={component.id}>
-                                    {component.name} ({component.type})
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                );
-            case 1:
-                const firstPorts = components.find(c => c.id === firstComponent)?.ports || [];
-                return (
-                    <FormControl fullWidth>
-                        <InputLabel>First Port</InputLabel>
-                        <Select
-                            value={firstPort}
-                            onChange={(e) => setFirstPort(e.target.value)}
-                        >
-                            {firstPorts.map((port, index) => (
-                                <MenuItem key={index} value={port.label}>
-                                    {port.label} - {port.cableSource || 'Unknown'}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                );
-            case 2:
-                return (
-                    <FormControl fullWidth>
-                        <InputLabel>Second Device</InputLabel>
-                        <Select
-                            value={secondComponent}
-                            onChange={(e) => setSecondComponent(e.target.value)}
-                        >
-                            {availableSecondComponents.map((component) => (
-                                <MenuItem key={component.id} value={component.id}>
-                                    {component.name} ({component.type})
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                );
-            case 3:
-                const secondPorts = components.find(c => c.id === secondComponent)?.ports || [];
-                return (
-                    <FormControl fullWidth>
-                        <InputLabel>Second Port</InputLabel>
-                        <Select
-                            value={secondPort}
-                            onChange={(e) => setSecondPort(e.target.value)}
-                        >
-                            {secondPorts.map((port, index) => (
-                                <MenuItem key={index} value={port.label}>
-                                    {port.label} - {port.deviceType || 'Unknown'}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                );
-            case 4:
-                return (
-                    <Box>
-                        <FormControl fullWidth sx={{ mb: 2 }}>
-                            <InputLabel>Connection Type</InputLabel>
-                            <Select
-                                value={connectionType}
-                                onChange={(e) => setConnectionType(e.target.value)}
-                            >
-                                <MenuItem value="copper">Copper</MenuItem>
-                                <MenuItem value="fiber">Fiber</MenuItem>
-                                <MenuItem value="wireless">Wireless</MenuItem>
-                            </Select>
-                        </FormControl>
-                        <FormControl fullWidth sx={{ mb: 2 }}>
-                            <InputLabel>Connection Speed</InputLabel>
-                            <Select
-                                value={connectionSpeed}
-                                onChange={(e) => setConnectionSpeed(e.target.value)}
-                            >
-                                <MenuItem value="10Mbps">10 Mbps</MenuItem>
-                                <MenuItem value="100Mbps">100 Mbps</MenuItem>
-                                <MenuItem value="1Gbps">1 Gbps</MenuItem>
-                                <MenuItem value="10Gbps">10 Gbps</MenuItem>
-                            </Select>
-                        </FormControl>
-                        <TextField
-                            fullWidth
-                            label="Notes"
-                            multiline
-                            rows={4}
-                            value={connectionNotes}
-                            onChange={(e) => setConnectionNotes(e.target.value)}
-                        />
+        const currentStep = steps[step];
+        return (
+            <Box sx={{ mt: 2 }}>
+                {currentStep.fields.map((field) => {
+                    switch (field) {
+                        case 'firstComponent':
+                        case 'secondComponent':
+                            return (
+                                <FormControl fullWidth key={field} sx={{ mb: 2 }}>
+                                    <InputLabel>{field === 'firstComponent' ? 'First Device' : 'Second Device'}</InputLabel>
+                                    <Select
+                                        value={connection[field]}
+                                        onChange={(e) => handleChange(field, e.target.value)}
+                                    >
+                                        {(field === 'firstComponent' ? components : availableSecondComponents).map((component) => (
+                                            <MenuItem key={component.id} value={component.id}>
+                                                {component.name} ({component.type})
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            );
+                        case 'firstPort':
+                        case 'secondPort':
+                            const ports = components.find(c => c.id === connection[field === 'firstPort' ? 'firstComponent' : 'secondComponent'])?.ports || [];
+                            return (
+                                <FormControl fullWidth key={field} sx={{ mb: 2 }}>
+                                    <InputLabel>{field === 'firstPort' ? 'First Port' : 'Second Port'}</InputLabel>
+                                    <Select
+                                        value={connection[field]}
+                                        onChange={(e) => handleChange(field, e.target.value)}
+                                    >
+                                        {ports.map((port, index) => (
+                                            <MenuItem key={index} value={port.label}>
+                                                {port.label} - {port.cableSource || port.deviceType || 'Unknown'}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            );
+                        case 'type':
+                            return (
+                                <FormControl fullWidth key={field} sx={{ mb: 2 }}>
+                                    <InputLabel>Connection Type</InputLabel>
+                                    <Select
+                                        value={connection.type}
+                                        onChange={(e) => handleChange('type', e.target.value)}
+                                    >
+                                        <MenuItem value="copper">Copper</MenuItem>
+                                        <MenuItem value="fiber">Fiber</MenuItem>
+                                        <MenuItem value="wireless">Wireless</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            );
+                        case 'speed':
+                            return (
+                                <FormControl fullWidth key={field} sx={{ mb: 2 }}>
+                                    <InputLabel>Connection Speed</InputLabel>
+                                    <Select
+                                        value={connection.speed}
+                                        onChange={(e) => handleChange('speed', e.target.value)}
+                                    >
+                                        <MenuItem value="10Mbps">10 Mbps</MenuItem>
+                                        <MenuItem value="100Mbps">100 Mbps</MenuItem>
+                                        <MenuItem value="1Gbps">1 Gbps</MenuItem>
+                                        <MenuItem value="10Gbps">10 Gbps</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            );
+                        case 'notes':
+                            return (
+                                <TextField
+                                    key={field}
+                                    fullWidth
+                                    label="Notes"
+                                    multiline
+                                    rows={4}
+                                    value={connection.notes}
+                                    onChange={(e) => handleChange('notes', e.target.value)}
+                                    sx={{ mb: 2 }}
+                                />
+                            );
+                        default:
+                            return null;
+                    }
+                })}
+                {step === steps.length - 1 && (
+                    <Box sx={{ mt: 2 }}>
+                        <Typography variant="h6" gutterBottom>Connection Summary</Typography>
+                        <Typography>First Device: {components.find(c => c.id === connection.firstComponent)?.name} ({components.find(c => c.id === connection.firstComponent)?.type})</Typography>
+                        <Typography>First Port: {connection.firstPort}</Typography>
+                        <Typography>Second Device: {components.find(c => c.id === connection.secondComponent)?.name} ({components.find(c => c.id === connection.secondComponent)?.type})</Typography>
+                        <Typography>Second Port: {connection.secondPort}</Typography>
+                        <Typography>Connection Type: {connection.type}</Typography>
+                        <Typography>Connection Speed: {connection.speed}</Typography>
+                        <Typography>Notes: {connection.notes}</Typography>
                     </Box>
-                );
-            case 5:
-                const firstComp = components.find(c => c.id === firstComponent);
-                const secondComp = components.find(c => c.id === secondComponent);
-                return (
-                    <Box>
-                        <Typography>First Device: {firstComp?.name} ({firstComp?.type})</Typography>
-                        <Typography>First Port: {firstPort}</Typography>
-                        <Typography>Second Device: {secondComp?.name} ({secondComp?.type})</Typography>
-                        <Typography>Second Port: {secondPort}</Typography>
-                        <Typography>Connection Type: {connectionType}</Typography>
-                        <Typography>Connection Speed: {connectionSpeed}</Typography>
-                        <Typography>Notes: {connectionNotes}</Typography>
-                    </Box>
-                );
-            default:
-                return null;
-        }
+                )}
+            </Box>
+        );
     };
 
     return (
         <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-            <DialogTitle>Connection Wizard</DialogTitle>
-            <DialogContent>
+            <DialogTitle sx={{ borderBottom: '1px solid #333', pb: 2 }}>
+                Connection Wizard
+            </DialogTitle>
+            <DialogContent sx={{ mt: 2 }}>
                 {!isAddingConnection ? (
                     <Box>
                         <Typography variant="h6" gutterBottom>Existing Connections</Typography>
                         {renderExistingConnections()}
                         <Button
                             variant="contained"
-                            color="primary"
                             startIcon={<AddIcon />}
                             onClick={handleAddConnectionClick}
-                            sx={{ mt: 2 }}
+                            sx={{ 
+                                mt: 2, 
+                                backgroundColor: '#FFD700',
+                                color: '#000',
+                                '&:hover': {
+                                    backgroundColor: '#FFC700',
+                                }
+                            }}
                         >
                             Add New Connection
                         </Button>
                     </Box>
                 ) : (
                     <Box>
-                        <Stepper activeStep={activeStep}>
-                            {steps.map((label) => (
+                        <Stepper activeStep={activeStep} alternativeLabel>
+                            {steps.map(({ label }) => (
                                 <Step key={label}>
                                     <StepLabel>{label}</StepLabel>
                                 </Step>
                             ))}
                         </Stepper>
-                        <Box sx={{ mt: 2 }}>
-                            {renderStepContent(activeStep)}
-                        </Box>
+                        {renderStepContent(activeStep)}
                     </Box>
                 )}
             </DialogContent>
-            <DialogActions>
-                <Button onClick={onClose}>Close</Button>
+            <DialogActions sx={{ borderTop: '1px solid #333', pt: 2 }}>
+                <Button onClick={onClose} sx={{ color: '#fff' }}>Close</Button>
                 {isAddingConnection && (
                     <>
-                        <Button disabled={activeStep === 0} onClick={handleBack}>Back</Button>
+                        <Button disabled={activeStep === 0} onClick={handleBack} sx={{ color: '#fff' }}>
+                            Back
+                        </Button>
                         {activeStep === steps.length - 1 ? (
-                            <Button onClick={handleFinish}>Finish</Button>
+                            <Button 
+                                onClick={handleFinish}
+                                sx={{ 
+                                    backgroundColor: '#FFD700',
+                                    color: '#000',
+                                    '&:hover': {
+                                        backgroundColor: '#FFC700',
+                                    }
+                                }}
+                            >
+                                Finish
+                            </Button>
                         ) : (
-                            <Button onClick={handleNext}>Next</Button>
+                            <Button 
+                                onClick={handleNext}
+                                sx={{ 
+                                    backgroundColor: '#FFD700',
+                                    color: '#000',
+                                    '&:hover': {
+                                        backgroundColor: '#FFC700',
+                                    }
+                                }}
+                            >
+                                Next
+                            </Button>
                         )}
                     </>
                 )}

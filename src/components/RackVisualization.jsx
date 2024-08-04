@@ -600,18 +600,33 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                         {Object.entries(componentColors).map(([type, color]) => {
                             const count = components.filter(comp => comp.type === type).length;
                             return (
-                                <Box key={type} sx={{ display: 'flex', alignItems: 'center', mb: 1, justifyContent: 'space-between' }}>
+                                <Box key={type} sx={{ display: 'flex', alignItems: 'center', mb: 2, justifyContent: 'space-between' }}>
                                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                        <Box sx={{ width: 20, height: 20, backgroundColor: color, mr: 1 }} />
                                         <Typography>{type} ({count})</Typography>
                                     </Box>
-                                    <IconButton
-                                        size="small"
-                                        onMouseEnter={() => handleHighlight(type)}
-                                        onMouseLeave={() => handleHighlight(null)}
-                                    >
-                                        <VisibilityIcon fontSize="small" />
-                                    </IconButton>
+                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                        <Box 
+                                            sx={{ 
+                                                width: 30, 
+                                                height: 30, 
+                                                backgroundColor: color, 
+                                                mr: 1,
+                                                borderRadius: '50%',
+                                                display: 'flex',
+                                                justifyContent: 'center',
+                                                alignItems: 'center',
+                                                cursor: 'pointer',
+                                                transition: 'all 0.3s ease',
+                                                '&:hover': {
+                                                    transform: 'scale(1.1)',
+                                                },
+                                            }}
+                                            onMouseEnter={() => handleHighlight(type)}
+                                            onMouseLeave={() => handleHighlight(null)}
+                                        >
+                                            <VisibilityIcon fontSize="small" sx={{ color: '#fff' }} />
+                                        </Box>
+                                    </Box>
                                 </Box>
                             );
                         })}
