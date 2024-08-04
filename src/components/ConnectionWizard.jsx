@@ -8,6 +8,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 
 const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionCreate, existingConnections, onConnectionUpdate, onConnectionDelete }) => {
+    const theme = useTheme();
     const [activeStep, setActiveStep] = useState(0);
     const [connection, setConnection] = useState({
         firstComponent: '',
@@ -103,41 +104,50 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
         setConnection(prev => ({ ...prev, [field]: value }));
     };
 
-    const renderExistingConnections = () => (
-        <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
-            {existingConnections.map((connection, index) => (
-                <React.Fragment key={connection.id}>
+    const renderExistingConnections = () => {
+        if (existingConnections.length === 0) {
+            return (
+                <Typography variant="body1" sx={{ textAlign: 'center', py: 2 }}>
+                    No connections yet.
+                </Typography>
+            );
+        }
+
+        return (
+            <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
+                {existingConnections.map((connection, index) => (
                     <ListItem
+                        key={connection.id}
                         alignItems="flex-start"
                         sx={{
                             borderRadius: '8px',
                             mb: 1,
-                            bgcolor: 'rgba(255, 255, 255, 0.08)',
+                            bgcolor: theme.palette.background.default,
                             '&:hover': {
-                                bgcolor: 'rgba(255, 255, 255, 0.12)',
+                                bgcolor: theme.palette.action.hover,
                             },
                         }}
-                        secondaryAction={
-                            <Box>
-                                <IconButton edge="end" aria-label="edit" onClick={() => handleEdit(connection)}>
-                                    <EditIcon />
-                                </IconButton>
-                                <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(connection.id)}>
-                                    <DeleteIcon />
-                                </IconButton>
-                            </Box>
-                        }
                     >
                         <ListItemText
                             primary={
-                                <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
-                                    Connection {index + 1}
-                                </Typography>
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                                        Connection {index + 1}
+                                    </Typography>
+                                    <Box>
+                                        <IconButton size="small" onClick={() => handleEdit(connection)}>
+                                            <EditIcon fontSize="small" />
+                                        </IconButton>
+                                        <IconButton size="small" onClick={() => handleDelete(connection.id)}>
+                                            <DeleteIcon fontSize="small" />
+                                        </IconButton>
+                                    </Box>
+                                </Box>
                             }
                             secondary={
-                                <React.Fragment>
+                                <Box sx={{ mt: 1 }}>
                                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                                        <Typography variant="body2" sx={{ fontWeight: 'medium', mr: 1 }}>
+                                        <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
                                             {getComponentName(connection.deviceA.componentId)}
                                         </Typography>
                                         <ArrowRightAltIcon sx={{ mx: 1 }} />
@@ -148,40 +158,24 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
                                     <Typography variant="body2" color="text.secondary">
                                         Port {connection.deviceA.port} → Port {connection.deviceB.port}
                                     </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        IDF {connection.idf}
-                                    </Typography>
-                                    <Box sx={{ mt: 1 }}>
-                                        <Chip
-                                            label={`Type: ${connection.type || 'N/A'}`}
-                                            size="small"
-                                            sx={{ mr: 1, mb: 1 }}
-                                        />
-                                        <Chip
-                                            label={`Speed: ${connection.speed || 'N/A'}`}
-                                            size="small"
-                                            sx={{ mr: 1, mb: 1 }}
-                                        />
+                                    <Box sx={{ mt: 1, display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                        <Chip label={`IDF ${connection.idf}`} size="small" />
+                                        <Chip label={`Type: ${connection.type || 'N/A'}`} size="small" />
+                                        <Chip label={`Speed: ${connection.speed || 'N/A'}`} size="small" />
                                         {connection.notes && (
                                             <Tooltip title={connection.notes}>
-                                                <Chip
-                                                    icon={<InfoIcon />}
-                                                    label="Notes"
-                                                    size="small"
-                                                    sx={{ mb: 1 }}
-                                                />
+                                                <Chip icon={<InfoIcon />} label="Notes" size="small" />
                                             </Tooltip>
                                         )}
                                     </Box>
-                                </React.Fragment>
+                                </Box>
                             }
                         />
                     </ListItem>
-                    {index < existingConnections.length - 1 && <Divider sx={{ my: 1 }} />}
-                </React.Fragment>
-            ))}
-        </List>
-    );
+                ))}
+            </List>
+        );
+    };
 
     const getComponentName = (componentId) => {
         const component = components.find(c => c.id === componentId);
@@ -292,11 +286,11 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
     };
 
     return (
-        <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-            <DialogTitle sx={{ borderBottom: '1px solid #333', pb: 2 }}>
+        <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth>
+            <DialogTitle sx={{ borderBottom: `1px solid ${theme.palette.divider}`, pb: 2 }}>
                 Connection Wizard
             </DialogTitle>
-            <DialogContent sx={{ mt: 2 }}>
+            <DialogContent sx={{ mt: 2, minHeight: '60vh' }}>
                 {!isAddingConnection ? (
                     <Box>
                         <Typography variant="h6" gutterBottom>Existing Connections</Typography>
