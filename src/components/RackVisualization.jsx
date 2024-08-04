@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
+import { calculateInterIdfConnections } from '../utils/rackUtils';
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography, Box, Grid, Paper, Divider, IconButton, Badge } from '@mui/material';
 import IssuesDialog from './IssuesDialog';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -265,29 +266,15 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                     const totalPorts = idfData[currentIdf]?.ports || 0;
                     setExhaustedPorts(Math.min(patchPanelPorts, totalPorts));
                     
+                    // Recalculate inter-IDF connections
+                    const newInterIdfConnections = calculateInterIdfConnections(newComponents, currentIdf);
+                    onUpdateInterIdfConnections(newInterIdfConnections);
+                    
                     return {
                         ...prevAll,
                         [currentIdf]: newComponents
                     };
                 });
-
-                // Update inter-IDF connections
-                const newInterIdfConnections = { ...interIdfConnections };
-                updatedComponent.ports.forEach(port => {
-                    if (port.cableSource.startsWith('IDF_') || port.cableSource === 'MDF') {
-                        if (!newInterIdfConnections[currentIdf]) {
-                            newInterIdfConnections[currentIdf] = [];
-                        }
-                        newInterIdfConnections[currentIdf].push(port.cableSource);
-
-                        const targetIdf = port.cableSource === 'MDF' ? 'MDF' : parseInt(port.cableSource.split('_')[1]);
-                        if (!newInterIdfConnections[targetIdf]) {
-                            newInterIdfConnections[targetIdf] = [];
-                        }
-                        newInterIdfConnections[targetIdf].push(`IDF_${currentIdf}`);
-                    }
-                });
-                onUpdateInterIdfConnections(newInterIdfConnections);
             } else {
                 alert("The updated component overlaps with existing components. Please adjust the size or position.");
             }
