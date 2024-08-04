@@ -100,13 +100,15 @@ const ComponentConfigDialog = ({ open, onClose, component, numIdfs, idfData, cur
                                 <MenuItem value="other">Other</MenuItem>
                             </Select>
                         </FormControl>
-                        <Button 
-                            onClick={() => setShowPortSetup(true)} 
-                            variant="outlined" 
-                            sx={{ mt: 2 }}
-                        >
-                            Configure Ports
-                        </Button>
+                        {editedComponent.type === 'patch_panel' && (
+                            <Button 
+                                onClick={() => setShowPortSetup(true)} 
+                                variant="outlined" 
+                                sx={{ mt: 2 }}
+                            >
+                                Configure Ports
+                            </Button>
+                        )}
                     </Box>
                 </DialogContent>
                 <DialogActions>
@@ -114,14 +116,16 @@ const ComponentConfigDialog = ({ open, onClose, component, numIdfs, idfData, cur
                     <Button onClick={handleSave} color="primary">Save</Button>
                 </DialogActions>
             </Dialog>
-            <PortSetupDialog
-                open={showPortSetup}
-                onClose={() => setShowPortSetup(false)}
-                ports={editedComponent.ports}
-                numIdfs={numIdfs}
-                idf={currentIdf}
-                onPortChange={handlePortChange}
-            />
+            {editedComponent.type === 'patch_panel' && (
+                <PortSetupDialog
+                    open={showPortSetup}
+                    onClose={() => setShowPortSetup(false)}
+                    ports={editedComponent.ports}
+                    numIdfs={numIdfs}
+                    idf={currentIdf}
+                    onPortChange={handlePortChange}
+                />
+            )}
         </>
     );
 };
