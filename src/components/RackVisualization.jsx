@@ -291,7 +291,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
     };
 
     const handleConfigDialogClose = (updatedComponent) => {
-        console.log('handleConfigDialogClose called with:', updatedComponent);
+        // console.log('handleConfigDialogClose called with:', updatedComponent);
         if (updatedComponent) {
             const overlap = components.some(comp => 
                 comp.id !== updatedComponent.id &&
@@ -301,7 +301,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
 
             if (!overlap) {
                 setAllComponents(prevAll => {
-                    console.log('Previous allComponents:', prevAll);
+                    // console.log('Previous allComponents:', prevAll);
                     const newComponents = prevAll[currentIdf].map(comp =>
                         comp.id === updatedComponent.id ? updatedComponent : comp
                     );
@@ -309,7 +309,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                     // Recalculate inter-IDF connections for the current IDF
                     const newInterIdfConnections = calculateInterIdfConnections(newComponents, currentIdf);
                     
-                    console.log('New interIdfConnections:', newInterIdfConnections);
+                    // console.log('New interIdfConnections:', newInterIdfConnections);
                     onUpdateInterIdfConnections({
                         ...interIdfConnections,
                         [currentIdf]: newInterIdfConnections
@@ -319,7 +319,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                         ...prevAll,
                         [currentIdf]: newComponents
                     };
-                    console.log('New allComponents:', result);
+                    // console.log('New allComponents:', result);
                     return result;
                 });
             } else {
