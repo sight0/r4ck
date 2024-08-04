@@ -146,7 +146,7 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
                                 </Box>
                             }
                             secondary={
-                                <Box sx={{ mt: 1 }}>
+                                <>
                                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                                         <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
                                             {getComponentName(connection.deviceA.componentId)}
@@ -169,7 +169,7 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
                                             </Tooltip>
                                         )}
                                     </Box>
-                                </Box>
+                                </>
                             }
                         />
                     </ListItem>
