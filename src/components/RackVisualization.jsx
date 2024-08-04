@@ -332,20 +332,25 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
             });
         });
 
-        // Check for reserved ports for access points
-        const accessPointCount = idfData[currentIdf]?.devices?.find(d => d.type === 'access_point')?.count || 0;
-        const reservedAccessPointPorts = components
-            .filter(c => c.type === 'patch_panel')
-            .flatMap(panel => panel.ports || [])
-            .filter(port => port.cableSource === 'Access Point').length;
+        // Check for reserved ports for specific device types
+        const deviceTypes = ['access_point', 'ip_telephone', 'end_user_device'];
+        deviceTypes.forEach(deviceType => {
+            const deviceCount = idfData[currentIdf]?.devices?.find(d => d.type === deviceType)?.count || 0;
+            const reservedPorts = components
+                .filter(c => c.type === 'patch_panel')
+                .flatMap(panel => panel.ports || [])
+                .filter(port => port.cableSource === deviceType).length;
 
-        issues.push({
-            message: `Reserve patch panel ports for access points: ${accessPointCount} port(s) should be reserved for access points.`,
-            isSatisfied: reservedAccessPointPorts >= accessPointCount,
-            severity: 'medium',
-            solutionHint: reservedAccessPointPorts >= accessPointCount
-                ? `All required ports are reserved for access points.`
-                : `Reserve ${accessPointCount - reservedAccessPointPorts} more port(s) for access points.`
+            const deviceLabel = deviceType.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+
+            issues.push({
+                message: `Reserve patch panel ports for ${deviceLabel}s: ${deviceCount} port(s) should be reserved for ${deviceLabel}s.`,
+                isSatisfied: reservedPorts >= deviceCount,
+                severity: 'medium',
+                solutionHint: reservedPorts >= deviceCount
+                    ? `All required ports are reserved for ${deviceLabel}s.`
+                    : `Reserve ${deviceCount - reservedPorts} more port(s) for ${deviceLabel}s.`
+            });
         });
 
         // Additional checks can be added here

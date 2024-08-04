@@ -11,9 +11,9 @@ const InitialSetupForm = ({ onSubmit }) => {
     });
 
     const deviceTypes = [
-        { value: 'user_device', label: 'User Device' },
         { value: 'access_point', label: 'Access Point' },
         { value: 'ip_telephone', label: 'IP Telephone' },
+        { value: 'end_user_device', label: 'End-User Device' },
     ];
 
     const handleIdfChange = (e) => {
