@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Stepper, Step, StepLabel, Typography, Box, Select, MenuItem, FormControl, InputLabel, List, ListItem, ListItemText, Divider, IconButton, Tooltip, TextField, Chip } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Stepper, Step, StepLabel, Typography, Box, Select, MenuItem, FormControl, InputLabel, List, ListItem, IconButton, Tooltip, TextField, Chip, Card, CardContent, Grid } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import InfoIcon from '@mui/icons-material/Info';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
-import {useTheme} from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
 
 const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionCreate, existingConnections, onConnectionUpdate, onConnectionDelete }) => {
     const theme = useTheme();
@@ -115,24 +115,13 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
         }
 
         return (
-            <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
+            <Grid container spacing={2}>
                 {existingConnections.map((connection, index) => (
-                    <ListItem
-                        key={connection.id}
-                        alignItems="flex-start"
-                        sx={{
-                            borderRadius: '8px',
-                            mb: 1,
-                            bgcolor: theme.palette.background.default,
-                            '&:hover': {
-                                bgcolor: theme.palette.action.hover,
-                            },
-                        }}
-                    >
-                        <ListItemText
-                            primary={
-                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                    <Grid item xs={12} sm={6} md={4} key={connection.id}>
+                        <Card sx={{ height: '100%' }}>
+                            <CardContent>
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                                    <Typography variant="h6">
                                         Connection {index + 1}
                                     </Typography>
                                     <Box>
@@ -144,37 +133,33 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
                                         </IconButton>
                                     </Box>
                                 </Box>
-                            }
-                            secondary={
-                                <>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                                        <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
-                                            {getComponentName(connection.deviceA.componentId)}
-                                        </Typography>
-                                        <ArrowRightAltIcon sx={{ mx: 1 }} />
-                                        <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
-                                            {getComponentName(connection.deviceB.componentId)}
-                                        </Typography>
-                                    </Box>
-                                    <Typography variant="body2" color="text.secondary">
-                                        Port {connection.deviceA.port} → Port {connection.deviceB.port}
+                                <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                                    <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
+                                        {getComponentName(connection.deviceA.componentId)}
                                     </Typography>
-                                    <Box sx={{ mt: 1, display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                                        <Chip label={`IDF ${connection.idf}`} size="small" />
-                                        <Chip label={`Type: ${connection.type || 'N/A'}`} size="small" />
-                                        <Chip label={`Speed: ${connection.speed || 'N/A'}`} size="small" />
-                                        {connection.notes && (
-                                            <Tooltip title={connection.notes}>
-                                                <Chip icon={<InfoIcon />} label="Notes" size="small" />
-                                            </Tooltip>
-                                        )}
-                                    </Box>
-                                </>
-                            }
-                        />
-                    </ListItem>
+                                    <ArrowRightAltIcon sx={{ mx: 1 }} />
+                                    <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
+                                        {getComponentName(connection.deviceB.componentId)}
+                                    </Typography>
+                                </Box>
+                                <Typography variant="body2" color="text.secondary">
+                                    Port {connection.deviceA.port} → Port {connection.deviceB.port}
+                                </Typography>
+                                <Box sx={{ mt: 2, display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                    <Chip label={`IDF ${connection.idf}`} size="small" />
+                                    <Chip label={`Type: ${connection.type || 'N/A'}`} size="small" />
+                                    <Chip label={`Speed: ${connection.speed || 'N/A'}`} size="small" />
+                                    {connection.notes && (
+                                        <Tooltip title={connection.notes}>
+                                            <Chip icon={<InfoIcon />} label="Notes" size="small" />
+                                        </Tooltip>
+                                    )}
+                                </Box>
+                            </CardContent>
+                        </Card>
+                    </Grid>
                 ))}
-            </List>
+            </Grid>
         );
     };
 
