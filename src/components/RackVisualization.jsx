@@ -79,7 +79,12 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
             if (component.id === newConnection.sourceComponentId) {
                 const updatedPorts = component.ports.map(port => {
                     if (port.label === newConnection.sourcePort) {
-                        return { ...port, connectedTo: newConnection.destinationComponentId };
+                        return { 
+                            ...port, 
+                            connectedTo: newConnection.destinationComponentId,
+                            connectedPort: newConnection.destinationPort,
+                            deviceType: newConnection.sourceDeviceType
+                        };
                     }
                     return port;
                 });
@@ -88,7 +93,12 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
             if (component.id === newConnection.destinationComponentId) {
                 const updatedPorts = component.ports.map(port => {
                     if (port.label === newConnection.destinationPort) {
-                        return { ...port, connectedTo: newConnection.sourceComponentId };
+                        return { 
+                            ...port, 
+                            connectedTo: newConnection.sourceComponentId,
+                            connectedPort: newConnection.sourcePort,
+                            deviceType: newConnection.destinationDeviceType
+                        };
                     }
                     return port;
                 });
@@ -97,16 +107,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
             return component;
         });
 
-        // If the connection involves a patch panel, update the interIdfConnections
-        const sourceComponent = components.find(c => c.id === newConnection.sourceComponentId);
-        const destComponent = components.find(c => c.id === newConnection.destinationComponentId);
-        if (sourceComponent.type === 'patch_panel' || destComponent.type === 'patch_panel') {
-            const newInterIdfConnections = calculateInterIdfConnections(updatedComponents, currentIdf);
-            onUpdateInterIdfConnections(newInterIdfConnections);
-        }
-
-        // Update the components in the parent component
-        onUpdateComponents(updatedComponents);
+        setComponents(updatedComponents);
     };
     const theme = useTheme();
     const [allComponents, setAllComponents] = useState({});

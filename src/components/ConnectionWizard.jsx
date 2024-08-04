@@ -10,7 +10,7 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
     const [destinationPort, setDestinationPort] = useState('');
     const [availableDestinations, setAvailableDestinations] = useState([]);
 
-    const steps = ['Select Source', 'Select Source Port', 'Select Destination', 'Select Destination Port', 'Review'];
+    const steps = ['Select Source', 'Select Source Port', 'Source Device Type', 'Select Destination', 'Select Destination Port', 'Destination Device Type', 'Review'];
 
     useEffect(() => {
         if (sourceComponent) {
@@ -31,12 +31,17 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
+    const [sourceDeviceType, setSourceDeviceType] = useState('');
+    const [destinationDeviceType, setDestinationDeviceType] = useState('');
+
     const handleFinish = () => {
         const newConnection = {
             sourceComponentId: sourceComponent,
             sourcePort: sourcePort,
+            sourceDeviceType: sourceDeviceType,
             destinationComponentId: destinationComponent,
             destinationPort: destinationPort,
+            destinationDeviceType: destinationDeviceType,
             idf: currentIdf
         };
         onConnectionCreate(newConnection);
@@ -111,15 +116,47 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
                         </Select>
                     </FormControl>
                 );
-            case 4:
+            case 2:
+                return (
+                    <FormControl fullWidth>
+                        <InputLabel>Source Device Type</InputLabel>
+                        <Select
+                            value={sourceDeviceType}
+                            onChange={(e) => setSourceDeviceType(e.target.value)}
+                        >
+                            <MenuItem value="IPT">IPT</MenuItem>
+                            <MenuItem value="AP">AP</MenuItem>
+                            <MenuItem value="End User Device">End User Device</MenuItem>
+                            <MenuItem value="Other">Other</MenuItem>
+                        </Select>
+                    </FormControl>
+                );
+            case 5:
+                return (
+                    <FormControl fullWidth>
+                        <InputLabel>Destination Device Type</InputLabel>
+                        <Select
+                            value={destinationDeviceType}
+                            onChange={(e) => setDestinationDeviceType(e.target.value)}
+                        >
+                            <MenuItem value="IPT">IPT</MenuItem>
+                            <MenuItem value="AP">AP</MenuItem>
+                            <MenuItem value="End User Device">End User Device</MenuItem>
+                            <MenuItem value="Other">Other</MenuItem>
+                        </Select>
+                    </FormControl>
+                );
+            case 6:
                 const sourceComp = components.find(c => c.id === sourceComponent);
                 const destComp = components.find(c => c.id === destinationComponent);
                 return (
                     <Box>
                         <Typography>Source: {sourceComp?.name} ({sourceComp?.type})</Typography>
                         <Typography>Source Port: {sourcePort}</Typography>
+                        <Typography>Source Device Type: {sourceDeviceType}</Typography>
                         <Typography>Destination: {destComp?.name} ({destComp?.type})</Typography>
                         <Typography>Destination Port: {destinationPort}</Typography>
+                        <Typography>Destination Device Type: {destinationDeviceType}</Typography>
                     </Box>
                 );
             default:
