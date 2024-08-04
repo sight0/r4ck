@@ -246,6 +246,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
     };
 
     const handleConfigDialogClose = (updatedComponent) => {
+        console.log('handleConfigDialogClose called with:', updatedComponent);
         if (updatedComponent) {
             const overlap = components.some(comp => 
                 comp.id !== updatedComponent.id &&
@@ -255,6 +256,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
 
             if (!overlap) {
                 setAllComponents(prevAll => {
+                    console.log('Previous allComponents:', prevAll);
                     const newComponents = prevAll[currentIdf].map(comp =>
                         comp.id === updatedComponent.id ? updatedComponent : comp
                     );
@@ -268,12 +270,15 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                         )[idf];
                     });
                     
+                    console.log('New interIdfConnections:', newInterIdfConnections);
                     onUpdateInterIdfConnections(newInterIdfConnections);
                     
-                    return {
+                    const result = {
                         ...prevAll,
                         [currentIdf]: newComponents
                     };
+                    console.log('New allComponents:', result);
+                    return result;
                 });
             } else {
                 alert("The updated component overlaps with existing components. Please adjust the size or position.");

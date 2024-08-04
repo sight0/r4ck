@@ -61,10 +61,15 @@ const App = () => {
     };
 
     const handleUpdateInterIdfConnections = (newConnections) => {
-        setInterIdfConnections(prevConnections => ({
-            ...prevConnections,
-            ...newConnections
-        }));
+        console.log('handleUpdateInterIdfConnections called with:', newConnections);
+        setInterIdfConnections(prevConnections => {
+            const result = {
+                ...prevConnections,
+                ...newConnections
+            };
+            console.log('New interIdfConnections state:', result);
+            return result;
+        });
     };
 
     const handlePortChange = (idf, componentId, portIndex, field, value) => {
