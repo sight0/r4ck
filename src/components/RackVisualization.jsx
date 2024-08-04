@@ -265,9 +265,15 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                         .reduce((total, panel) => total + parseInt(panel.capacity), 0);
                     const totalPorts = idfData[currentIdf]?.ports || 0;
                     setExhaustedPorts(Math.min(patchPanelPorts, totalPorts));
-                    
-                    // Recalculate inter-IDF connections
-                    const newInterIdfConnections = calculateInterIdfConnections(newComponents, currentIdf);
+
+                    // Recalculate inter-IDF connections for all IDFs
+                    const newInterIdfConnections = {};
+                    Object.keys(prevAll).forEach(idf => {
+                        newInterIdfConnections[idf] = calculateInterIdfConnections(
+                            idf === currentIdf.toString() ? newComponents : prevAll[idf],
+                            parseInt(idf)
+                        );
+                    });
                     onUpdateInterIdfConnections(newInterIdfConnections);
                     
                     return {
@@ -309,6 +315,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
 
             const requiredConnections = 1; // Assuming 1 connection per IDF pair
 
+            
             issues.push({
                 message: `Allocate patch panel ports for cross-DF connections: Current IDF requires ${requiredConnections} dedicated patch panel port(s) for connection to ${targetIdf}.`,
                 isSatisfied: allocatedPorts >= requiredConnections,
@@ -622,11 +629,6 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                 idfData={idfData}
                 currentIdf={currentIdf}
                 numIdfs={numIdfs}
-            />
-            <IssuesDialog
-                open={issuesDialogOpen}
-                onClose={() => setIssuesDialogOpen(false)}
-                issues={getIssues()}
             />
             <IssuesDialog
                 open={issuesDialogOpen}
