@@ -75,39 +75,23 @@ const StyledLine = styled('div')(({ theme }) => ({
 const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interIdfConnections, onUpdateInterIdfConnections, onPortChange }) => {
 
     const handleConnectionCreate = (newConnection) => {
-        const updatedComponents = components.map(component => {
-            if (component.id === newConnection.sourceComponentId) {
-                const updatedPorts = component.ports.map(port => {
-                    if (port.label === newConnection.sourcePort) {
-                        return { 
-                            ...port, 
-                            connectedTo: newConnection.destinationComponentId,
-                            connectedPort: newConnection.destinationPort,
-                            deviceType: newConnection.sourceDeviceType
-                        };
-                    }
-                    return port;
-                });
-                return { ...component, ports: updatedPorts };
-            }
-            if (component.id === newConnection.destinationComponentId) {
-                const updatedPorts = component.ports.map(port => {
-                    if (port.label === newConnection.destinationPort) {
-                        return { 
-                            ...port, 
-                            connectedTo: newConnection.sourceComponentId,
-                            connectedPort: newConnection.sourcePort,
-                            deviceType: newConnection.destinationDeviceType
-                        };
-                    }
-                    return port;
-                });
-                return { ...component, ports: updatedPorts };
-            }
-            return component;
-        });
+        const sourceComponent = components.find(c => c.id === newConnection.sourceComponentId);
+        const destinationComponent = components.find(c => c.id === newConnection.destinationComponentId);
 
-        setComponents(updatedComponents);
+        if (sourceComponent && destinationComponent) {
+            const sourcePortIndex = sourceComponent.ports.findIndex(p => p.label === newConnection.sourcePort);
+            const destPortIndex = destinationComponent.ports.findIndex(p => p.label === newConnection.destinationPort);
+
+            if (sourcePortIndex !== -1 && destPortIndex !== -1) {
+                onPortChange(newConnection.sourceComponentId, sourcePortIndex, 'connectedTo', newConnection.destinationComponentId);
+                onPortChange(newConnection.sourceComponentId, sourcePortIndex, 'connectedPort', newConnection.destinationPort);
+                onPortChange(newConnection.sourceComponentId, sourcePortIndex, 'deviceType', newConnection.sourceDeviceType);
+
+                onPortChange(newConnection.destinationComponentId, destPortIndex, 'connectedTo', newConnection.sourceComponentId);
+                onPortChange(newConnection.destinationComponentId, destPortIndex, 'connectedPort', newConnection.sourcePort);
+                onPortChange(newConnection.destinationComponentId, destPortIndex, 'deviceType', newConnection.destinationDeviceType);
+            }
+        }
     };
     const theme = useTheme();
     const [allComponents, setAllComponents] = useState({});
