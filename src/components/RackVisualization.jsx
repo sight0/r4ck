@@ -259,15 +259,13 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                         comp.id === updatedComponent.id ? updatedComponent : comp
                     );
                     
-                    // Recalculate inter-IDF connections for all IDFs
-                    const newInterIdfConnections = {};
-                    Object.keys(prevAll).forEach(idf => {
-                        newInterIdfConnections[idf] = calculateInterIdfConnections(
-                            idf === currentIdf.toString() ? newComponents : prevAll[idf],
-                            parseInt(idf)
-                        );
-                    });
-                    onUpdateInterIdfConnections(newInterIdfConnections);
+                    // Recalculate inter-IDF connections for the current IDF
+                    const newInterIdfConnections = calculateInterIdfConnections(newComponents, currentIdf);
+                    
+                    onUpdateInterIdfConnections(prevConnections => ({
+                        ...prevConnections,
+                        [currentIdf]: newInterIdfConnections[currentIdf]
+                    }));
                     
                     return {
                         ...prevAll,
@@ -312,38 +310,35 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
             });
         });
 
-        // Check for incoming connections from other IDFs or MDF
-        Object.entries(interIdfConnections).forEach(([sourceIdf, connections]) => {
-            if (sourceIdf !== currentIdf.toString()) {
-                const incomingConnections = connections[`IDF_${currentIdf}`] || 0;
-                if (incomingConnections > 0) {
-                    const allocatedPorts = patchPanelPorts.filter(port => port.cableSource === `IDF_${sourceIdf}`).length;
+        // Check for outgoing connections to other IDFs or MDF
+        Object.entries(interIdfConnections[currentIdf] || {}).forEach(([targetIdf, connectionCount]) => {
+            if (targetIdf !== `IDF_${currentIdf}` && targetIdf !== 'MDF') {
+                const allocatedPorts = patchPanelPorts.filter(port => port.cableSource === targetIdf).length;
 
+                if (allocatedPorts < connectionCount) {
                     issues.push({
-                        message: `Allocate patch panel ports for incoming connections from IDF_${sourceIdf}: This IDF requires ${incomingConnections} dedicated patch panel port(s) to receive connections from IDF_${sourceIdf}.`,
-                        isSatisfied: allocatedPorts >= incomingConnections,
+                        message: `Allocate patch panel ports for outgoing connections to ${targetIdf}: This IDF requires ${connectionCount} dedicated patch panel port(s) to send connections to ${targetIdf}.`,
+                        isSatisfied: false,
                         severity: 'high',
-                        solutionHint: allocatedPorts >= incomingConnections
-                            ? `All required ports are allocated for receiving connections from IDF_${sourceIdf}.`
-                            : `Configure ${incomingConnections - allocatedPorts} more port(s) for receiving connections from IDF_${sourceIdf}.`
+                        solutionHint: `Configure ${connectionCount - allocatedPorts} more port(s) for sending connections to ${targetIdf}.`
                     });
                 }
             }
         });
 
         // Check for MDF connections
-        const mdfConnections = interIdfConnections['MDF'] ? (interIdfConnections['MDF'][`IDF_${currentIdf}`] || 0) : 0;
+        const mdfConnections = interIdfConnections[currentIdf]?.MDF || 0;
         if (mdfConnections > 0) {
             const allocatedMdfPorts = patchPanelPorts.filter(port => port.cableSource === 'MDF').length;
 
-            issues.push({
-                message: `Allocate patch panel ports for incoming connections from MDF: This IDF requires ${mdfConnections} dedicated patch panel port(s) to receive connections from MDF.`,
-                isSatisfied: allocatedMdfPorts >= mdfConnections,
-                severity: 'high',
-                solutionHint: allocatedMdfPorts >= mdfConnections
-                    ? `All required ports are allocated for receiving connections from MDF.`
-                    : `Configure ${mdfConnections - allocatedMdfPorts} more port(s) for receiving connections from MDF.`
-            });
+            if (allocatedMdfPorts < mdfConnections) {
+                issues.push({
+                    message: `Allocate patch panel ports for outgoing connections to MDF: This IDF requires ${mdfConnections} dedicated patch panel port(s) to send connections to MDF.`,
+                    isSatisfied: false,
+                    severity: 'high',
+                    solutionHint: `Configure ${mdfConnections - allocatedMdfPorts} more port(s) for sending connections to MDF.`
+                });
+            }
         }
 
         return issues;
