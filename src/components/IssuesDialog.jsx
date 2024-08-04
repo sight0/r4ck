@@ -1,8 +1,21 @@
-import React from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Box, Typography, Divider } from '@mui/material';
+import React, { useState } from 'react';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Box, Typography, Divider, Switch, FormControlLabel } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import LightbulbOutlinedIcon from '@mui/icons-material/LightbulbOutlined';
+
+const getPriorityColor = (severity) => {
+  switch (severity) {
+    case 'high':
+      return '#ff4d4d';
+    case 'medium':
+      return '#ffa500';
+    case 'low':
+      return '#4caf50';
+    default:
+      return '#4a4a4a';
+  }
+};
 
 const IssueBlock = ({ issue }) => (
   <Box
@@ -21,7 +34,7 @@ const IssueBlock = ({ issue }) => (
       ) : (
         <ErrorOutlineIcon sx={{ mr: 1, color: '#DAA520' }} />
       )}
-      <Typography variant="h6" color={issue.isSatisfied ? '#4a4a4a' : '#DAA520'}>
+      <Typography variant="h6" color={issue.isSatisfied ? '#4a4a4a' : getPriorityColor(issue.severity)}>
         {issue.isSatisfied ? 'Requirement Satisfied' : `${issue.severity.charAt(0).toUpperCase() + issue.severity.slice(1)} Priority Issue`}
       </Typography>
     </Box>
@@ -38,6 +51,10 @@ const IssueBlock = ({ issue }) => (
 );
 
 const IssuesDialog = ({ open, onClose, issues }) => {
+  const [showOnlyUnsatisfied, setShowOnlyUnsatisfied] = useState(false);
+
+  const filteredIssues = showOnlyUnsatisfied ? issues.filter(issue => !issue.isSatisfied) : issues;
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle sx={{ backgroundColor: '#f5f5f5', borderBottom: '1px solid #e0e0e0' }}>
@@ -46,8 +63,20 @@ const IssuesDialog = ({ open, onClose, issues }) => {
         </Typography>
       </DialogTitle>
       <DialogContent sx={{ maxHeight: '70vh', overflowY: 'auto' }}>
+        <Box sx={{ mt: 2, mb: 2 }}>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={showOnlyUnsatisfied}
+                onChange={(e) => setShowOnlyUnsatisfied(e.target.checked)}
+                color="primary"
+              />
+            }
+            label="Show only unsatisfied issues"
+          />
+        </Box>
         <Box sx={{ mt: 2 }}>
-          {issues.map((issue, index) => (
+          {filteredIssues.map((issue, index) => (
             <IssueBlock key={index} issue={issue} />
           ))}
         </Box>
