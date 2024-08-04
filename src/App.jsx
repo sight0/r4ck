@@ -6,6 +6,7 @@ import Sidebar from './components/Sidebar';
 import RackVisualization from './components/RackVisualization';
 import InitialSetupForm from './components/InitialSetupForm';
 import PatchSchedule from './components/PatchSchedule';
+import { calculateInterIdfConnections } from './utils/rackUtils';
 
 const App = () => {
     const [setupComplete, setSetupComplete] = useState(false);
@@ -14,6 +15,7 @@ const App = () => {
     const [connections, setConnections] = useState([]);
     const [rackDesigns, setRackDesigns] = useState({});
     const [interIdfConnections, setInterIdfConnections] = useState({});
+    const [allComponents, setAllComponents] = useState({});
 
     const theme = createTheme({
         palette: {
@@ -45,10 +47,48 @@ const App = () => {
             ...prevDesigns,
             [idf]: design
         }));
+        setAllComponents(prevAll => ({
+            ...prevAll,
+            [idf]: design
+        }));
+        
+        // Recalculate inter-IDF connections
+        const newInterIdfConnections = calculateInterIdfConnections(design, idf);
+        setInterIdfConnections(prev => ({
+            ...prev,
+            [idf]: newInterIdfConnections[idf]
+        }));
     };
 
     const handleUpdateInterIdfConnections = (newConnections) => {
         setInterIdfConnections(newConnections);
+    };
+
+    const handlePortChange = (idf, componentId, portIndex, field, value) => {
+        setAllComponents(prevAll => {
+            const newComponents = prevAll[idf].map(comp => {
+                if (comp.id === componentId) {
+                    const newPorts = [...comp.ports];
+                    newPorts[portIndex] = { ...newPorts[portIndex], [field]: value };
+                    return { ...comp, ports: newPorts };
+                }
+                return comp;
+            });
+
+            // Recalculate inter-IDF connections
+            const newInterIdfConnections = calculateInterIdfConnections(newComponents, idf);
+
+            // Update the inter-IDF connections state
+            setInterIdfConnections(prev => ({
+                ...prev,
+                [idf]: newInterIdfConnections[idf]
+            }));
+
+            return {
+                ...prevAll,
+                [idf]: newComponents
+            };
+        });
     };
 
     useEffect(() => {
@@ -86,6 +126,8 @@ const App = () => {
                                 onSaveRackDesign={(design) => handleSaveRackDesign(currentIdf, design)}
                                 interIdfConnections={interIdfConnections}
                                 onUpdateInterIdfConnections={handleUpdateInterIdfConnections}
+                                onPortChange={(componentId, portIndex, field, value) => 
+                                    handlePortChange(currentIdf, componentId, portIndex, field, value)}
                             />
                             <PatchSchedule connections={connections} />
                         </Box>
