@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { calculateInterIdfConnections } from '../utils/rackUtils';
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography, Box, Grid, Paper, Divider, IconButton, Badge, Tooltip, styled } from '@mui/material';
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography, Box, Grid, Paper, Divider, IconButton, Badge, Tooltip } from '@mui/material';
 import IssuesDialog from './IssuesDialog';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
