@@ -89,14 +89,12 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                 onPortChange(newConnection.deviceB.componentId, portBIndex, 'connectedTo', newConnection.deviceA.componentId);
                 onPortChange(newConnection.deviceB.componentId, portBIndex, 'connectedPort', newConnection.deviceA.port);
 
-                // Infer device type if one of the devices is a patch panel
-                if (deviceA.type === 'patch_panel') {
-                    const deviceType = deviceA.ports[portAIndex].cableSource;
-                    onPortChange(newConnection.deviceB.componentId, portBIndex, 'deviceType', deviceType);
-                } else if (deviceB.type === 'patch_panel') {
-                    const deviceType = deviceB.ports[portBIndex].cableSource;
-                    onPortChange(newConnection.deviceA.componentId, portAIndex, 'deviceType', deviceType);
-                }
+                // Infer device type
+                const deviceAType = deviceA.type === 'patch_panel' ? deviceA.ports[portAIndex].cableSource : deviceA.type;
+                const deviceBType = deviceB.type === 'patch_panel' ? deviceB.ports[portBIndex].cableSource : deviceB.type;
+
+                onPortChange(newConnection.deviceA.componentId, portAIndex, 'deviceType', deviceBType);
+                onPortChange(newConnection.deviceB.componentId, portBIndex, 'deviceType', deviceAType);
             }
         }
     };

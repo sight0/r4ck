@@ -76,7 +76,7 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
                         >
                             {firstPorts.map((port, index) => (
                                 <MenuItem key={index} value={port.label}>
-                                    {port.label}
+                                    {port.label} - {port.deviceType || 'Unknown'}
                                 </MenuItem>
                             ))}
                         </Select>
@@ -109,7 +109,7 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
                         >
                             {secondPorts.map((port, index) => (
                                 <MenuItem key={index} value={port.label}>
-                                    {port.label}
+                                    {port.label} - {port.deviceType || 'Unknown'}
                                 </MenuItem>
                             ))}
                         </Select>
