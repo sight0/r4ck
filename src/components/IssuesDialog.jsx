@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Box, Typography, Divider, Switch, FormControlLabel } from '@mui/material';
+import React from 'react';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Box, Typography, Divider } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import LightbulbOutlinedIcon from '@mui/icons-material/LightbulbOutlined';
@@ -51,10 +51,6 @@ const IssueBlock = ({ issue }) => (
 );
 
 const IssuesDialog = ({ open, onClose, issues }) => {
-  const [showOnlyUnsatisfied, setShowOnlyUnsatisfied] = useState(false);
-
-  const filteredIssues = showOnlyUnsatisfied ? issues.filter(issue => !issue.isSatisfied) : issues;
-
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle sx={{ backgroundColor: '#f5f5f5', borderBottom: '1px solid #e0e0e0' }}>
@@ -63,20 +59,8 @@ const IssuesDialog = ({ open, onClose, issues }) => {
         </Typography>
       </DialogTitle>
       <DialogContent sx={{ maxHeight: '70vh', overflowY: 'auto', backgroundColor: '#fafafa' }}>
-        <Box sx={{ mt: 2, mb: 2 }}>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={showOnlyUnsatisfied}
-                onChange={(e) => setShowOnlyUnsatisfied(e.target.checked)}
-                color="primary"
-              />
-            }
-            label="Show only unsatisfied issues"
-          />
-        </Box>
         <Box sx={{ mt: 2 }}>
-          {filteredIssues.map((issue, index) => (
+          {issues.map((issue, index) => (
             <IssueBlock key={index} issue={issue} />
           ))}
         </Box>
