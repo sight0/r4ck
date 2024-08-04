@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Stepper, Step, StepLabel, Typography, Box, Select, MenuItem, FormControl, InputLabel, List, ListItem, ListItemText, Divider } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Stepper, Step, StepLabel, Typography, Box, Select, MenuItem, FormControl, InputLabel, List, ListItem, ListItemText, Divider, IconButton, Tooltip, TextField } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import InfoIcon from '@mui/icons-material/Info';
 
-const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionCreate, existingConnections }) => {
+const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionCreate, existingConnections, onConnectionUpdate, onConnectionDelete }) => {
     const [activeStep, setActiveStep] = useState(0);
     const [firstComponent, setFirstComponent] = useState('');
     const [firstPort, setFirstPort] = useState('');
@@ -11,8 +14,12 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
     const [secondPort, setSecondPort] = useState('');
     const [availableSecondComponents, setAvailableSecondComponents] = useState([]);
     const [isAddingConnection, setIsAddingConnection] = useState(false);
+    const [editingConnection, setEditingConnection] = useState(null);
+    const [connectionType, setConnectionType] = useState('');
+    const [connectionSpeed, setConnectionSpeed] = useState('');
+    const [connectionNotes, setConnectionNotes] = useState('');
 
-    const steps = ['Select First Device', 'Select First Port', 'Select Second Device', 'Select Second Port', 'Review'];
+    const steps = ['Select First Device', 'Select First Port', 'Select Second Device', 'Select Second Port', 'Connection Details', 'Review'];
 
     useEffect(() => {
         if (firstComponent) {
@@ -45,6 +52,7 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
 
     const handleFinish = () => {
         const newConnection = {
+            id: editingConnection ? editingConnection.id : Date.now(),
             deviceA: {
                 componentId: firstComponent,
                 port: firstPort
@@ -53,20 +61,63 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
                 componentId: secondComponent,
                 port: secondPort
             },
-            idf: currentIdf
+            idf: currentIdf,
+            type: connectionType,
+            speed: connectionSpeed,
+            notes: connectionNotes
         };
-        onConnectionCreate(newConnection);
+        if (editingConnection) {
+            onConnectionUpdate(newConnection);
+        } else {
+            onConnectionCreate(newConnection);
+        }
         resetConnectionForm();
         setIsAddingConnection(false);
+        setEditingConnection(null);
+    };
+
+    const handleEdit = (connection) => {
+        setEditingConnection(connection);
+        setFirstComponent(connection.deviceA.componentId);
+        setFirstPort(connection.deviceA.port);
+        setSecondComponent(connection.deviceB.componentId);
+        setSecondPort(connection.deviceB.port);
+        setConnectionType(connection.type || '');
+        setConnectionSpeed(connection.speed || '');
+        setConnectionNotes(connection.notes || '');
+        setIsAddingConnection(true);
+        setActiveStep(0);
+    };
+
+    const handleDelete = (connectionId) => {
+        onConnectionDelete(connectionId);
     };
 
     const renderExistingConnections = () => (
         <List>
             {existingConnections.map((connection, index) => (
-                <React.Fragment key={index}>
-                    <ListItem>
+                <React.Fragment key={connection.id}>
+                    <ListItem
+                        secondaryAction={
+                            <Box>
+                                <IconButton edge="end" aria-label="edit" onClick={() => handleEdit(connection)}>
+                                    <EditIcon />
+                                </IconButton>
+                                <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(connection.id)}>
+                                    <DeleteIcon />
+                                </IconButton>
+                            </Box>
+                        }
+                    >
                         <ListItemText
-                            primary={`${getComponentName(connection.deviceA.componentId)} (${connection.deviceA.port}) - ${getComponentName(connection.deviceB.componentId)} (${connection.deviceB.port})`}
+                            primary={
+                                <Typography>
+                                    {`${getComponentName(connection.deviceA.componentId)} (${connection.deviceA.port}) - ${getComponentName(connection.deviceB.componentId)} (${connection.deviceB.port})`}
+                                    <Tooltip title={`Type: ${connection.type || 'N/A'}, Speed: ${connection.speed || 'N/A'}, Notes: ${connection.notes || 'N/A'}`}>
+                                        <InfoIcon fontSize="small" style={{ marginLeft: '8px', verticalAlign: 'middle' }} />
+                                    </Tooltip>
+                                </Typography>
+                            }
                             secondary={`IDF ${connection.idf}`}
                         />
                     </ListItem>
@@ -150,6 +201,42 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
                     </FormControl>
                 );
             case 4:
+                return (
+                    <Box>
+                        <FormControl fullWidth sx={{ mb: 2 }}>
+                            <InputLabel>Connection Type</InputLabel>
+                            <Select
+                                value={connectionType}
+                                onChange={(e) => setConnectionType(e.target.value)}
+                            >
+                                <MenuItem value="copper">Copper</MenuItem>
+                                <MenuItem value="fiber">Fiber</MenuItem>
+                                <MenuItem value="wireless">Wireless</MenuItem>
+                            </Select>
+                        </FormControl>
+                        <FormControl fullWidth sx={{ mb: 2 }}>
+                            <InputLabel>Connection Speed</InputLabel>
+                            <Select
+                                value={connectionSpeed}
+                                onChange={(e) => setConnectionSpeed(e.target.value)}
+                            >
+                                <MenuItem value="10Mbps">10 Mbps</MenuItem>
+                                <MenuItem value="100Mbps">100 Mbps</MenuItem>
+                                <MenuItem value="1Gbps">1 Gbps</MenuItem>
+                                <MenuItem value="10Gbps">10 Gbps</MenuItem>
+                            </Select>
+                        </FormControl>
+                        <TextField
+                            fullWidth
+                            label="Notes"
+                            multiline
+                            rows={4}
+                            value={connectionNotes}
+                            onChange={(e) => setConnectionNotes(e.target.value)}
+                        />
+                    </Box>
+                );
+            case 5:
                 const firstComp = components.find(c => c.id === firstComponent);
                 const secondComp = components.find(c => c.id === secondComponent);
                 return (
@@ -158,6 +245,9 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
                         <Typography>First Port: {firstPort}</Typography>
                         <Typography>Second Device: {secondComp?.name} ({secondComp?.type})</Typography>
                         <Typography>Second Port: {secondPort}</Typography>
+                        <Typography>Connection Type: {connectionType}</Typography>
+                        <Typography>Connection Speed: {connectionSpeed}</Typography>
+                        <Typography>Notes: {connectionNotes}</Typography>
                     </Box>
                 );
             default:
@@ -221,6 +311,8 @@ ConnectionWizard.propTypes = {
     components: PropTypes.array.isRequired,
     currentIdf: PropTypes.number.isRequired,
     onConnectionCreate: PropTypes.func.isRequired,
+    onConnectionUpdate: PropTypes.func.isRequired,
+    onConnectionDelete: PropTypes.func.isRequired,
     existingConnections: PropTypes.array.isRequired,
 };
 

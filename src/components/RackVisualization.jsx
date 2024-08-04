@@ -18,6 +18,7 @@ import RackComponent from './RackComponent';
 import ComponentConfigDialog from './ComponentConfigDialog';
 import IssuesPanel from './IssuesPanel';
 import ConnectionWizard from './ConnectionWizard';
+import { useState } from 'react';
 import { components } from './Sidebar';
 
 const GreenButton = styled(Button)(({ theme }) => ({
@@ -103,6 +104,22 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                 setConnections(prevConnections => [...prevConnections, newConnection]);
             }
         }
+    };
+
+    const handleConnectionUpdate = (updatedConnection) => {
+        setConnections(prevConnections => 
+            prevConnections.map(conn => 
+                conn.id === updatedConnection.id ? updatedConnection : conn
+            )
+        );
+        // You may need to update the port connections here as well
+    };
+
+    const handleConnectionDelete = (connectionId) => {
+        setConnections(prevConnections => 
+            prevConnections.filter(conn => conn.id !== connectionId)
+        );
+        // You may need to update the port connections here as well
     };
     const theme = useTheme();
     const [allComponents, setAllComponents] = useState({});
@@ -733,6 +750,8 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                 components={components}
                 currentIdf={currentIdf}
                 onConnectionCreate={handleConnectionCreate}
+                onConnectionUpdate={handleConnectionUpdate}
+                onConnectionDelete={handleConnectionDelete}
                 existingConnections={connections}
             />
             {/* Placeholder for Recommendations Dialog */}
