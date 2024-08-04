@@ -315,11 +315,20 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
         // Check for incoming connections from other IDFs
         Object.entries(interIdfConnections).forEach(([sourceIdf, connections]) => {
             if (sourceIdf !== currentIdf.toString() && connections.includes(`IDF_${currentIdf}`)) {
-                const hasPatchPanel = components.some(c => c.type === 'patch_panel');
+                const allocatedPorts = components
+                    .filter(c => c.type === 'patch_panel')
+                    .flatMap(panel => panel.ports || [])
+                    .filter(port => port.cableSource === `IDF_${sourceIdf}`).length;
+
+                const requiredConnections = connections.filter(conn => conn === `IDF_${currentIdf}`).length;
+
                 issues.push({
-                    message: `Allocate patch panel port for incoming connection: IDF ${sourceIdf} requires a dedicated patch panel port in the current IDF.`,
-                    isSatisfied: hasPatchPanel,
-                    severity: 'medium'
+                    message: `Allocate patch panel ports for incoming connections: IDF ${sourceIdf} requires ${requiredConnections} dedicated patch panel port(s) in the current IDF.`,
+                    isSatisfied: allocatedPorts >= requiredConnections,
+                    severity: 'medium',
+                    solutionHint: allocatedPorts >= requiredConnections
+                        ? `All required ports are allocated for IDF ${sourceIdf}.`
+                        : `Configure ${requiredConnections - allocatedPorts} more port(s) for connections from IDF ${sourceIdf}.`
                 });
             }
         });
