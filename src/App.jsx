@@ -36,6 +36,13 @@ const App = () => {
     const handleSetupSubmit = (formData) => {
         setNetworkInfo(formData);
         setSetupComplete(true);
+    
+        // Initialize allComponents for all IDFs
+        const initialComponents = {};
+        for (let i = 1; i <= formData.numIdfs; i++) {
+            initialComponents[i] = [];
+        }
+        setAllComponents(initialComponents);
     };
 
     const handleAddConnection = (connection) => {
@@ -51,7 +58,7 @@ const App = () => {
             ...prevAll,
             [idf]: design
         }));
-        
+    
         // Recalculate inter-IDF connections
         const newInterIdfConnections = calculateInterIdfConnections(design, idf);
         setInterIdfConnections(prev => ({
@@ -74,9 +81,10 @@ const App = () => {
 
     const handlePortChange = (idf, componentId, portIndex, field, value) => {
         setAllComponents(prevAll => {
-            const newComponents = prevAll[idf].map(comp => {
+            const idfComponents = prevAll[idf] || [];
+            const newComponents = idfComponents.map(comp => {
                 if (comp.id === componentId) {
-                    const newPorts = [...comp.ports];
+                    const newPorts = [...(comp.ports || [])];
                     newPorts[portIndex] = { ...newPorts[portIndex], [field]: value };
                     return { ...comp, ports: newPorts };
                 }
