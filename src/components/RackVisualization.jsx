@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { calculateInterIdfConnections } from '../utils/rackUtils';
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography, Box, Grid, Paper, Divider, IconButton, Badge } from '@mui/material';
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography, Box, Grid, Paper, Divider, IconButton, Badge, Tooltip } from '@mui/material';
 import IssuesDialog from './IssuesDialog';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -59,7 +59,7 @@ const StyledLine = styled('div')(({ theme }) => ({
     margin: '0 auto',
 }));
 
-const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interIdfConnections, onUpdateInterIdfConnections }) => {
+const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interIdfConnections, onUpdateInterIdfConnections, onPortChange }) => {
     const theme = useTheme();
     const [allComponents, setAllComponents] = useState({});
     const components = useMemo(() => allComponents[currentIdf] || [], [allComponents, currentIdf]);
@@ -289,6 +289,10 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
         setEditComponent(null);
     };
 
+    const handlePortChange = (componentId, portIndex, field, value) => {
+        onPortChange(componentId, portIndex, field, value);
+    };
+
     const getIssues = () => {
         let issues = [];
 
@@ -306,18 +310,15 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
         });
 
         // Check for connections to other IDFs
-        const connectionsToOtherIdfs = interIdfConnections[currentIdf] || [];
-        connectionsToOtherIdfs.forEach((targetIdf) => {
+        const connectionsToOtherIdfs = interIdfConnections[currentIdf] || {};
+        Object.entries(connectionsToOtherIdfs).forEach(([targetIdf, requiredConnections]) => {
             const allocatedPorts = components
                 .filter(c => c.type === 'patch_panel')
                 .flatMap(panel => panel.ports || [])
                 .filter(port => port.cableSource === targetIdf).length;
 
-            const requiredConnections = 1; // Assuming 1 connection per IDF pair
-
-            
             issues.push({
-                message: `Allocate patch panel ports for cross-DF connections: Current IDF requires ${requiredConnections} dedicated patch panel port(s) for connection to ${targetIdf}.`,
+                message: `Allocate patch panel ports for cross-IDF connections: Current IDF requires ${requiredConnections} dedicated patch panel port(s) for connection to ${targetIdf}.`,
                 isSatisfied: allocatedPorts >= requiredConnections,
                 severity: 'medium',
                 solutionHint: allocatedPorts >= requiredConnections
@@ -348,8 +349,6 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                 });
             }
         });
-
-        // Additional checks can be added here
 
         return issues;
     };
@@ -644,6 +643,9 @@ RackVisualization.propTypes = {
     setCurrentIdf: PropTypes.func.isRequired,
     numIdfs: PropTypes.number.isRequired,
     idfData: PropTypes.object.isRequired,
+    interIdfConnections: PropTypes.object.isRequired,
+    onUpdateInterIdfConnections: PropTypes.func.isRequired,
+    onPortChange: PropTypes.func.isRequired,
 };
 
 export default RackVisualization;
