@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Stepper, Step, StepLabel, Typography, Box, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Stepper, Step, StepLabel, Typography, Box, Select, MenuItem, FormControl, InputLabel, List, ListItem, ListItemText, Divider } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 
-const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionCreate }) => {
+const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionCreate, existingConnections }) => {
     const [activeStep, setActiveStep] = useState(0);
     const [firstComponent, setFirstComponent] = useState('');
     const [firstPort, setFirstPort] = useState('');
     const [secondComponent, setSecondComponent] = useState('');
     const [secondPort, setSecondPort] = useState('');
     const [availableSecondComponents, setAvailableSecondComponents] = useState([]);
+    const [isAddingConnection, setIsAddingConnection] = useState(false);
 
     const steps = ['Select First Device', 'Select First Port', 'Select Second Device', 'Select Second Port', 'Review'];
 
@@ -28,6 +30,19 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
+    const handleAddConnectionClick = () => {
+        setIsAddingConnection(true);
+        resetConnectionForm();
+    };
+
+    const resetConnectionForm = () => {
+        setActiveStep(0);
+        setFirstComponent('');
+        setFirstPort('');
+        setSecondComponent('');
+        setSecondPort('');
+    };
+
     const handleFinish = () => {
         const newConnection = {
             deviceA: {
@@ -41,7 +56,29 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
             idf: currentIdf
         };
         onConnectionCreate(newConnection);
-        onClose();
+        resetConnectionForm();
+        setIsAddingConnection(false);
+    };
+
+    const renderExistingConnections = () => (
+        <List>
+            {existingConnections.map((connection, index) => (
+                <React.Fragment key={index}>
+                    <ListItem>
+                        <ListItemText
+                            primary={`${getComponentName(connection.deviceA.componentId)} (${connection.deviceA.port}) - ${getComponentName(connection.deviceB.componentId)} (${connection.deviceB.port})`}
+                            secondary={`IDF ${connection.idf}`}
+                        />
+                    </ListItem>
+                    {index < existingConnections.length - 1 && <Divider />}
+                </React.Fragment>
+            ))}
+        </List>
+    );
+
+    const getComponentName = (componentId) => {
+        const component = components.find(c => c.id === componentId);
+        return component ? component.name : 'Unknown';
     };
 
     const renderStepContent = (step) => {
@@ -132,24 +169,46 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
         <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
             <DialogTitle>Connection Wizard</DialogTitle>
             <DialogContent>
-                <Stepper activeStep={activeStep}>
-                    {steps.map((label) => (
-                        <Step key={label}>
-                            <StepLabel>{label}</StepLabel>
-                        </Step>
-                    ))}
-                </Stepper>
-                <Box sx={{ mt: 2 }}>
-                    {renderStepContent(activeStep)}
-                </Box>
+                {!isAddingConnection ? (
+                    <Box>
+                        <Typography variant="h6" gutterBottom>Existing Connections</Typography>
+                        {renderExistingConnections()}
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            startIcon={<AddIcon />}
+                            onClick={handleAddConnectionClick}
+                            sx={{ mt: 2 }}
+                        >
+                            Add New Connection
+                        </Button>
+                    </Box>
+                ) : (
+                    <Box>
+                        <Stepper activeStep={activeStep}>
+                            {steps.map((label) => (
+                                <Step key={label}>
+                                    <StepLabel>{label}</StepLabel>
+                                </Step>
+                            ))}
+                        </Stepper>
+                        <Box sx={{ mt: 2 }}>
+                            {renderStepContent(activeStep)}
+                        </Box>
+                    </Box>
+                )}
             </DialogContent>
             <DialogActions>
-                <Button onClick={onClose}>Cancel</Button>
-                <Button disabled={activeStep === 0} onClick={handleBack}>Back</Button>
-                {activeStep === steps.length - 1 ? (
-                    <Button onClick={handleFinish}>Finish</Button>
-                ) : (
-                    <Button onClick={handleNext}>Next</Button>
+                <Button onClick={onClose}>Close</Button>
+                {isAddingConnection && (
+                    <>
+                        <Button disabled={activeStep === 0} onClick={handleBack}>Back</Button>
+                        {activeStep === steps.length - 1 ? (
+                            <Button onClick={handleFinish}>Finish</Button>
+                        ) : (
+                            <Button onClick={handleNext}>Next</Button>
+                        )}
+                    </>
                 )}
             </DialogActions>
         </Dialog>
@@ -162,6 +221,7 @@ ConnectionWizard.propTypes = {
     components: PropTypes.array.isRequired,
     currentIdf: PropTypes.number.isRequired,
     onConnectionCreate: PropTypes.func.isRequired,
+    existingConnections: PropTypes.array.isRequired,
 };
 
 export default ConnectionWizard;

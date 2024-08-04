@@ -18,6 +18,7 @@ import RackComponent from './RackComponent';
 import ComponentConfigDialog from './ComponentConfigDialog';
 import IssuesPanel from './IssuesPanel';
 import ConnectionWizard from './ConnectionWizard';
+import { useState } from 'react';
 import { components } from './Sidebar';
 
 const GreenButton = styled(Button)(({ theme }) => ({
@@ -73,6 +74,7 @@ const StyledLine = styled('div')(({ theme }) => ({
 }));
 
 const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interIdfConnections, onUpdateInterIdfConnections, onPortChange }) => {
+    const [connections, setConnections] = useState([]);
 
     const handleConnectionCreate = (newConnection) => {
         const deviceA = components.find(c => c.id === newConnection.deviceA.componentId);
@@ -97,6 +99,9 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                 // Set device types
                 onPortChange(newConnection.deviceA.componentId, portAIndex, 'connectedDeviceType', deviceB.type);
                 onPortChange(newConnection.deviceB.componentId, portBIndex, 'connectedDeviceType', deviceA.type);
+
+                // Add the new connection to the connections state
+                setConnections(prevConnections => [...prevConnections, newConnection]);
             }
         }
     };
@@ -729,6 +734,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                 components={components}
                 currentIdf={currentIdf}
                 onConnectionCreate={handleConnectionCreate}
+                existingConnections={connections}
             />
             {/* Placeholder for Recommendations Dialog */}
             <Dialog
