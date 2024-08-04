@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { calculateInterIdfConnections } from '../utils/rackUtils';
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography, Box, Grid, Paper, Divider, IconButton, Badge, Tooltip } from '@mui/material';
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography, Box, Grid, Paper, Divider, IconButton, Badge, Tooltip, styled } from '@mui/material';
 import IssuesDialog from './IssuesDialog';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -9,6 +9,16 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CableIcon from '@mui/icons-material/Cable';
 import RecommendIcon from '@mui/icons-material/Recommend';
+
+const GreenButton = styled(Button)(({ theme }) => ({
+    backgroundColor: theme.palette.success.main,
+    '&:hover': {
+        backgroundColor: theme.palette.success.dark,
+    },
+    '&.Mui-disabled': {
+        backgroundColor: theme.palette.action.disabledBackground,
+    },
+}));
 import { styled } from '@mui/system';
 import { useTheme } from '@mui/material/styles';
 import LanguageIcon from '@mui/icons-material/Language';
@@ -399,24 +409,27 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                     >
                         {getIssues().some(issue => !issue.isSatisfied) ? "View Issues" : "All Satisfied"}
                     </Button>
-                    <Button
-                        variant="contained"
-                        color="secondary"
-                        onClick={() => setConnectionWizardOpen(true)}
-                        disabled={getIssues().some(issue => !issue.isSatisfied)}
-                        sx={{
-                            flex: 1,
-                            py: 1.5,
-                            fontWeight: 'bold',
-                            boxShadow: 3,
-                            '&:hover': {
-                                boxShadow: 5,
-                            },
-                        }}
-                        startIcon={<CableIcon />}
-                    >
-                        Connection Wizard
-                    </Button>
+                    <Tooltip title={getIssues().some(issue => !issue.isSatisfied) ? "Satisfy all requirements to enable Connection Wizard" : "Open Connection Wizard"}>
+                        <span>
+                            <GreenButton
+                                variant="contained"
+                                onClick={() => setConnectionWizardOpen(true)}
+                                disabled={getIssues().some(issue => !issue.isSatisfied)}
+                                sx={{
+                                    flex: 1,
+                                    py: 1.5,
+                                    fontWeight: 'bold',
+                                    boxShadow: 3,
+                                    '&:hover': {
+                                        boxShadow: 5,
+                                    },
+                                }}
+                                startIcon={<CableIcon />}
+                            >
+                                Connection Wizard
+                            </GreenButton>
+                        </span>
+                    </Tooltip>
                     <Button
                         variant="contained"
                         color="info"
