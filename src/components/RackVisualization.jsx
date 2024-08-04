@@ -309,25 +309,23 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
             solutionHint: 'Add patch panels and configure them to satisfy the incoming cables.'
         });
 
-        // Check for connections from other IDFs
+        // Check for incoming connections to this IDF from other IDFs or MDF
         Object.entries(interIdfConnections).forEach(([sourceIdf, connections]) => {
-            if (sourceIdf != currentIdf) {
-                const requiredConnections = connections[`IDF_${currentIdf}`] || connections['MDF'] || 0;
-                if (requiredConnections > 0) {
-                    const allocatedPorts = components
-                        .filter(c => c.type === 'patch_panel')
-                        .flatMap(panel => panel.ports || [])
-                        .filter(port => port.cableSource === `IDF_${sourceIdf}`).length;
+            const requiredConnections = connections[`IDF_${currentIdf}`] || (sourceIdf === 'MDF' ? connections[`IDF_${currentIdf}`] : 0);
+            if (requiredConnections > 0) {
+                const allocatedPorts = components
+                    .filter(c => c.type === 'patch_panel')
+                    .flatMap(panel => panel.ports || [])
+                    .filter(port => port.cableSource === (sourceIdf === 'MDF' ? 'MDF' : `IDF_${sourceIdf}`)).length;
 
-                    issues.push({
-                        message: `Allocate patch panel ports for cross-IDF connections: Current IDF requires ${requiredConnections} dedicated patch panel port(s) for connection from ${sourceIdf === 'MDF' ? 'MDF' : `IDF ${sourceIdf}`}.`,
-                        isSatisfied: allocatedPorts >= requiredConnections,
-                        severity: 'medium',
-                        solutionHint: allocatedPorts >= requiredConnections
-                            ? `All required ports are allocated for connection from ${sourceIdf === 'MDF' ? 'MDF' : `IDF ${sourceIdf}`}.`
-                            : `Configure ${requiredConnections - allocatedPorts} more port(s) for connection from ${sourceIdf === 'MDF' ? 'MDF' : `IDF ${sourceIdf}`}.`
-                    });
-                }
+                issues.push({
+                    message: `Allocate patch panel ports for incoming connections: This IDF requires ${requiredConnections} dedicated patch panel port(s) for connection from ${sourceIdf === 'MDF' ? 'MDF' : `IDF ${sourceIdf}`}.`,
+                    isSatisfied: allocatedPorts >= requiredConnections,
+                    severity: 'medium',
+                    solutionHint: allocatedPorts >= requiredConnections
+                        ? `All required ports are allocated for connection from ${sourceIdf === 'MDF' ? 'MDF' : `IDF ${sourceIdf}`}.`
+                        : `Configure ${requiredConnections - allocatedPorts} more port(s) for connection from ${sourceIdf === 'MDF' ? 'MDF' : `IDF ${sourceIdf}`}.`
+                });
             }
         });
 
