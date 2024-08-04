@@ -261,17 +261,14 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                         comp.id === updatedComponent.id ? updatedComponent : comp
                     );
                     
-                    // Recalculate inter-IDF connections for all IDFs
-                    const newInterIdfConnections = {};
-                    Object.keys(prevAll).forEach(idf => {
-                        newInterIdfConnections[idf] = calculateInterIdfConnections(
-                            idf === currentIdf.toString() ? newComponents : prevAll[idf],
-                            parseInt(idf)
-                        )[idf];
-                    });
+                    // Recalculate inter-IDF connections for the current IDF
+                    const newInterIdfConnections = calculateInterIdfConnections(newComponents, currentIdf);
                     
                     console.log('New interIdfConnections:', newInterIdfConnections);
-                    onUpdateInterIdfConnections(newInterIdfConnections);
+                    onUpdateInterIdfConnections({
+                        ...interIdfConnections,
+                        [currentIdf]: newInterIdfConnections
+                    });
                     
                     const result = {
                         ...prevAll,
