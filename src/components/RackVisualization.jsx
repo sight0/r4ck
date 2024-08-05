@@ -307,7 +307,8 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
     };
 
     const handleEditComponent = (component) => {
-        setEditComponent(component);
+        const deviceSequence = components.filter(c => c.type === component.type).indexOf(component) + 1;
+        setEditComponent({...component, deviceSequence});
         setConfigDialogOpen(true);
     };
 

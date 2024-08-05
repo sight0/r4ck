@@ -3,21 +3,21 @@ import PropTypes from 'prop-types';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Select, MenuItem, FormControl, InputLabel, Box, Typography } from '@mui/material';
 import { generateSmartIdentifier, isEndUserDeviceType } from '../utils/identifierUtils';
 
-const PortSetupDialog = ({ open, onClose, ports, numIdfs, idf, onPortChange, component }) => {
+const PortSetupDialog = ({ open, onClose, ports, numIdfs, idf, onPortChange, component, deviceSequence }) => {
     const componentType = component.type;
-    const componentNumber = component.id;
     const [localPorts, setLocalPorts] = useState(ports);
 
     useEffect(() => {
         setLocalPorts(ports);
     }, [ports]);
+
     const handleCableSourceChange = (index, value) => {
         const updatedPorts = [...localPorts];
         updatedPorts[index].cableSource = value;
         updatedPorts[index].identifier = generateSmartIdentifier(
             value,
             idf,
-            componentNumber,
+            deviceSequence,
             index + 1
         );
         setLocalPorts(updatedPorts);

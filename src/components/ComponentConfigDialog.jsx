@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Select, MenuItem, FormControl, InputLabel, Box } from '@mui/material';
 import PortSetupDialog from './PortSetupDialog';
 
-const ComponentConfigDialog = ({ open, onClose, component, numIdfs, idfData, currentIdf }) => {
+const ComponentConfigDialog = ({ open, onClose, component, numIdfs, idfData, currentIdf, deviceSequence }) => {
     const [editedComponent, setEditedComponent] = useState(null);
     const [showPortSetup, setShowPortSetup] = useState(false);
 
