@@ -56,28 +56,21 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
     };
 
     const handleFinish = () => {
+        const getPortDetails = (componentId, portLabel) => {
+            const component = components.find(c => c.id === componentId);
+            const port = component.ports.find(p => p.label === portLabel);
+            return {
+                componentId,
+                port: portLabel,
+                identifier: port.identifier,
+                deviceType: component.type === 'patch_panel' ? 'Patch Panel' : undefined
+            };
+        };
+
         const newConnection = {
             id: editingConnection ? editingConnection.id : Date.now(),
-            deviceA: { 
-                componentId: connection.firstComponent, 
-                port: connection.firstPort,
-                identifier: generateSmartIdentifier(
-                    components.find(c => c.id === connection.firstComponent)?.type,
-                    currentIdf,
-                    components.find(c => c.id === connection.firstComponent)?.sequence,
-                    parseInt(connection.firstPort.replace('Port ', ''))
-                )
-            },
-            deviceB: { 
-                componentId: connection.secondComponent, 
-                port: connection.secondPort,
-                identifier: generateSmartIdentifier(
-                    components.find(c => c.id === connection.secondComponent)?.type,
-                    currentIdf,
-                    components.find(c => c.id === connection.secondComponent)?.sequence,
-                    parseInt(connection.secondPort.replace('Port ', ''))
-                )
-            },
+            deviceA: getPortDetails(connection.firstComponent, connection.firstPort),
+            deviceB: getPortDetails(connection.secondComponent, connection.secondPort),
             idf: currentIdf,
             type: connection.type,
             speed: connection.speed,
