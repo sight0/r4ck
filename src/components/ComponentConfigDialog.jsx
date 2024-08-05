@@ -13,10 +13,10 @@ const ComponentConfigDialog = ({ open, onClose, component, numIdfs, idfData, cur
             setEditedComponent({ 
                 ...component, 
                 ports: component.ports || initializePorts(component.capacity),
-                deviceSequence: deviceSequence
+                sequence: component.sequence
             });
         }
-    }, [component, deviceSequence]);
+    }, [component]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -126,7 +126,6 @@ const ComponentConfigDialog = ({ open, onClose, component, numIdfs, idfData, cur
                     idf={currentIdf}
                     onPortChange={handlePortChange}
                     component={editedComponent}
-                    deviceSequence={deviceSequence}
                 />
             )}
         </>
