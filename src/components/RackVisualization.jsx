@@ -780,6 +780,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                 idfData={idfData}
                 currentIdf={currentIdf}
                 numIdfs={numIdfs}
+                deviceSequence={editComponent ? editComponent.sequence : undefined}
             />
             <IssuesDialog
                 open={issuesDialogOpen}
