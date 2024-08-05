@@ -307,7 +307,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
     };
 
     const handleEditComponent = (component) => {
-        setEditComponent(component);
+        setEditComponent({...component, deviceSequence: component.sequence});
         setConfigDialogOpen(true);
     };
 
@@ -553,6 +553,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                                     isDragging={draggedComponent && draggedComponent.id === comp.id}
                                     componentColors={componentColors}
                                     isHighlighted={highlightedType === comp.type}
+                                    sequence={comp.sequence}
                                 />
                             ))}
 
