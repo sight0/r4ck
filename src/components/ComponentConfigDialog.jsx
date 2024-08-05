@@ -124,6 +124,7 @@ const ComponentConfigDialog = ({ open, onClose, component, numIdfs, idfData, cur
                     numIdfs={numIdfs}
                     idf={currentIdf}
                     onPortChange={handlePortChange}
+                    component={editedComponent}
                 />
             )}
         </>

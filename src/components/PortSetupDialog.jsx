@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Select, MenuItem, FormControl, InputLabel, Box, Typography } from '@mui/material';
 import { generateSmartIdentifier, isEndUserDeviceType } from '../utils/identifierUtils';
 
-const PortSetupDialog = ({ open, onClose, ports, numIdfs, idf, onPortChange, componentType, componentNumber }) => {
+const PortSetupDialog = ({ open, onClose, ports, numIdfs, idf, onPortChange, component }) => {
+    const componentType = component.type;
+    const componentNumber = component.id;
     const [localPorts, setLocalPorts] = useState(ports);
 
     useEffect(() => {
@@ -94,8 +96,10 @@ PortSetupDialog.propTypes = {
     numIdfs: PropTypes.number.isRequired,
     idf: PropTypes.number.isRequired,
     onPortChange: PropTypes.func.isRequired,
-    componentType: PropTypes.string.isRequired,
-    componentNumber: PropTypes.number.isRequired,
+    component: PropTypes.shape({
+        type: PropTypes.string.isRequired,
+        id: PropTypes.number.isRequired,
+    }).isRequired,
 };
 
 export default PortSetupDialog;
