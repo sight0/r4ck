@@ -75,18 +75,9 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
     const [connections, setConnections] = useState([]);
     const [componentSequences, setComponentSequences] = useState({});
 
-    useEffect(() => {
-        const sequences = {};
-        components.forEach(comp => {
-            if (!sequences[comp.type]) {
-                sequences[comp.type] = 0;
-            }
-            sequences[comp.type]++;
-            comp.sequence = sequences[comp.type];
-        });
-        setComponentSequences(sequences);
-    }, [components]);
-    const [componentSequences, setComponentSequences] = useState({});
+    const getNextSequence = (type) => {
+        return (componentSequences[type] || 0) + 1;
+    };
 
     useEffect(() => {
         const sequences = {};
@@ -221,11 +212,13 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
 
     const handleDialogClose = (name, capacity, units) => {
         if (name && capacity && units) {
+            const sequence = getNextSequence(newComponent.type);
             const newComp = {
                 ...newComponent,
                 name,
                 capacity,
                 units: parseInt(units),
+                sequence,
             };
             
             // Check if the component fits within the rack
