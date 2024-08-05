@@ -1,4 +1,4 @@
-const componentTypeMap = {
+export const componentTypeMap = {
   'access_point': 'AP',
   'ip_phone': 'IP',
   'end_user_device': 'EU',

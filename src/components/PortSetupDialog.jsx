@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Select, MenuItem, FormControl, InputLabel, Box, Typography } from '@mui/material';
-import { generateSmartIdentifier, isEndUserDeviceType } from '../utils/identifierUtils';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Select, MenuItem, FormControl, InputLabel, Box, Typography, Tooltip, IconButton } from '@mui/material';
+import InfoIcon from '@mui/icons-material/Info';
+import { generateSmartIdentifier, isEndUserDeviceType, componentTypeMap } from '../utils/identifierUtils';
 
 const PortSetupDialog = ({ open, onClose, ports, numIdfs, idf, onPortChange, component }) => {
     const componentType = component.type;
@@ -10,6 +11,17 @@ const PortSetupDialog = ({ open, onClose, ports, numIdfs, idf, onPortChange, com
     useEffect(() => {
         setLocalPorts(ports);
     }, [ports]);
+
+    const getIdentifierExplanation = (port) => {
+        const prefix = isEndUserDeviceType(port.cableSource) ? 'A' : 'B';
+        const typeCode = componentTypeMap[port.cableSource] || 'OT';
+        return `Identifier Structure:
+        ${prefix}: ${isEndUserDeviceType(port.cableSource) ? 'End-user device' : 'Infrastructure device'}
+        ${typeCode}: ${port.cableSource.replace(/_/g, ' ')}
+        ${idf.toString().padStart(2, '0')}: IDF number
+        ${component.sequence.toString().padStart(2, '0')}: Device sequence
+        ${port.identifier.split('-')[3]}: Port number`;
+    };
 
     const handleCableSourceChange = (index, value) => {
         const updatedPorts = [...localPorts];
@@ -66,13 +78,20 @@ const PortSetupDialog = ({ open, onClose, ports, numIdfs, idf, onPortChange, com
                                     <MenuItem value="OTHER">Other</MenuItem>
                                 </Select>
                             </FormControl>
-                            <TextField
-                                label="Identifier"
-                                value={port.identifier || ''}
-                                InputProps={{ readOnly: true }}
-                                fullWidth
-                                margin="dense"
-                            />
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                <TextField
+                                    label="Identifier"
+                                    value={port.identifier || ''}
+                                    InputProps={{ readOnly: true }}
+                                    fullWidth
+                                    margin="dense"
+                                />
+                                <Tooltip title={getIdentifierExplanation(port)} arrow>
+                                    <IconButton size="small" sx={{ ml: 1 }}>
+                                        <InfoIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            </Box>
                             {port.connectedTo && (
                                 <Typography variant="caption" display="block" sx={{ mt: 1 }}>
                                     Connected to: {port.connectedTo}
