@@ -431,7 +431,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
 
         // Check for incoming connections from other IDFs
         Object.entries(interIdfConnections).forEach(([sourceIdf, connections]) => {
-            if (sourceIdf !== currentIdf.toString()) {
+            if (sourceIdf !== currentIdf.toString() && connections) {
                 const incomingConnections = connections[`IDF_${currentIdf}`] || 0;
                 if (incomingConnections > 0) {
                     const allocatedIncomingPorts = patchPanelPorts.filter(port => port.cableSource === `IDF_${sourceIdf}`).length;
