@@ -86,6 +86,19 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
         });
         setComponentSequences(sequences);
     }, [components]);
+    const [componentSequences, setComponentSequences] = useState({});
+
+    useEffect(() => {
+        const sequences = {};
+        components.forEach(comp => {
+            if (!sequences[comp.type]) {
+                sequences[comp.type] = 0;
+            }
+            sequences[comp.type]++;
+            comp.sequence = sequences[comp.type];
+        });
+        setComponentSequences(sequences);
+    }, [components]);
 
     const handleConnectionCreate = (newConnection) => {
         const deviceA = components.find(c => c.id === newConnection.deviceA.componentId);
