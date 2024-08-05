@@ -76,6 +76,7 @@ const StyledLine = styled('div')(({ theme }) => ({
 const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interIdfConnections, onUpdateInterIdfConnections, onPortChange }) => {
     const [connections, setConnections] = useState([]);
     const [componentSequences, setComponentSequences] = useState({});
+    const [components, setComponents] = useState([]);
 
     const getNextSequence = (type) => {
         return (componentSequences[type] || 0) + 1;
