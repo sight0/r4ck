@@ -12,7 +12,7 @@ const InitialSetupForm = ({ onSubmit }) => {
 
     const deviceTypes = [
         { value: 'access_point', label: 'Access Point' },
-        { value: 'ip_telephone', label: 'IP Telephone' },
+        { value: 'ip_phone', label: 'IP Telephone' },
         { value: 'end_user_device', label: 'End-User Device' },
     ];
 

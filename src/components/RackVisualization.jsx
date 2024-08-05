@@ -397,6 +397,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
         // Check for each required port type
         requiredPorts.forEach(requirement => {
             const { type, count } = requirement;
+            console.log(patchPanelPorts);
             const allocatedPorts = patchPanelPorts.filter(port => port.cableSource === type).length;
 
             // This is terrible (should be passed with the idfData):

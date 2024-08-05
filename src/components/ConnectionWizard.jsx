@@ -63,7 +63,8 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
                 componentId,
                 port: portLabel,
                 identifier: port.identifier,
-                deviceType: component.type === 'patch_panel' ? 'Patch Panel' : undefined
+                deviceType: component.type
+                // deviceType: component.type === 'patch_panel' ? 'Patch Panel' : undefined
             };
         };
 
@@ -147,15 +148,17 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
                                 </Box>
                                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                                     <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
-                                        {getComponentName(connection.deviceA.componentId)}
+                                        {connection.deviceA.deviceType}&nbsp;(
+                                        {getComponentName(connection.deviceA.componentId)})
                                     </Typography>
                                     <ArrowRightAltIcon sx={{ mx: 1 }} />
                                     <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
-                                        {getComponentName(connection.deviceB.componentId)}
+                                        {connection.deviceB.deviceType}&nbsp;(
+                                        {getComponentName(connection.deviceB.componentId)})
                                     </Typography>
                                 </Box>
                                 <Typography variant="body2" color="text.secondary">
-                                    Port {connection.deviceA.port} ({connection.deviceA.identifier}) → Port {connection.deviceB.port} ({connection.deviceB.identifier})
+                                    {connection.deviceA.port} ({connection.deviceA.identifier}) → {connection.deviceB.port} ({connection.deviceB.identifier || "N/A"})
                                 </Typography>
                                 <Box sx={{ mt: 2, display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                                     <Chip label={`IDF ${connection.idf}`} size="small" />
