@@ -18,8 +18,11 @@ const RackComponent = ({ component, rackWidth, onDelete, onEdit, onDragStart, is
                 rx="5"
                 ry="5"
             />
-            <text x={(rackWidth - 40) / 2} y={(component.units * 20) / 2} textAnchor="middle" fill="white" fontSize="12" dy=".3em">
+            <text x={(rackWidth - 40) / 2} y={(component.units * 20) / 2 - 8} textAnchor="middle" fill="white" fontSize="12" dy=".3em">
                 {component.type.charAt(0).toUpperCase() + component.type.slice(1).replace('_', ' ')} ({component.capacity})
+            </text>
+            <text x={(rackWidth - 40) / 2} y={(component.units * 20) / 2 + 8} textAnchor="middle" fill="white" fontSize="10" dy=".3em">
+                {component.type}-{component.sequence}
             </text>
             <foreignObject x="0" y='-4' width="30" height="30">
                 <IconButton 
