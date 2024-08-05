@@ -12,10 +12,11 @@ const ComponentConfigDialog = ({ open, onClose, component, numIdfs, idfData, cur
             const initializePorts = (count) => Array.from({ length: count }, (_, i) => ({ label: `Port ${i + 1}`, cableSource: '', connectedTo: '' }));
             setEditedComponent({ 
                 ...component, 
-                ports: component.ports || initializePorts(component.capacity)
+                ports: component.ports || initializePorts(component.capacity),
+                deviceSequence: deviceSequence
             });
         }
-    }, [component]);
+    }, [component, deviceSequence]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
