@@ -17,7 +17,9 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import RackComponent from './RackComponent';
 import ComponentConfigDialog from './ComponentConfigDialog';
 import ConnectionWizard from './ConnectionWizard';
-import { components } from './Sidebar';
+import { components as sidebarComponents } from './Sidebar';
+
+const componentColors = Object.fromEntries(sidebarComponents.map(comp => [comp.type, comp.color]));
 
 const GreenButton = styled(Button)(({ theme }) => ({
     backgroundColor: theme.palette.success.main,
