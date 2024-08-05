@@ -125,6 +125,7 @@ const ComponentConfigDialog = ({ open, onClose, component, numIdfs, idfData, cur
                     idf={currentIdf}
                     onPortChange={handlePortChange}
                     component={editedComponent}
+                    deviceSequence={deviceSequence}
                 />
             )}
         </>
@@ -138,6 +139,7 @@ ComponentConfigDialog.propTypes = {
     numIdfs: PropTypes.number.isRequired,
     idfData: PropTypes.object.isRequired,
     currentIdf: PropTypes.number.isRequired,
+    deviceSequence: PropTypes.number.isRequired,
 };
 
 export default ComponentConfigDialog;
