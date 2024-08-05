@@ -10,11 +10,11 @@ const componentTypeMap = {
   // Add more as needed
 };
 
-export const generateSmartIdentifier = (componentType, idfNumber, deviceSequence, portNumber) => {
+export const generateSmartIdentifier = (componentType, idfNumber, sequence, portNumber) => {
   const prefix = isEndUserDeviceType(componentType) ? 'A' : 'B';
   const typeCode = componentTypeMap[componentType] || 'OT'; // OT for Other
   const idf = idfNumber.toString().padStart(2, '0');
-  const device = deviceSequence.toString().padStart(2, '0');
+  const device = sequence.toString().padStart(2, '0');
   const port = portNumber.toString().padStart(3, '0');
 
   return `${prefix}${typeCode}-${idf}-${device}-${port}`;
