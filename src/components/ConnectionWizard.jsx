@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { generateSmartIdentifier } from '../utils/identifierUtils';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Stepper, Step, StepLabel, Typography, Box, Select, MenuItem, FormControl, InputLabel, List, ListItem, IconButton, Tooltip, TextField, Chip, Card, CardContent, Grid } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Stepper, Step, StepLabel, Typography, Box, Select, MenuItem, FormControl, InputLabel, IconButton, Tooltip, TextField, Chip, Card, CardContent, Grid, Paper } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -64,8 +64,8 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
                 identifier: generateSmartIdentifier(
                     components.find(c => c.id === connection.firstComponent)?.type,
                     currentIdf,
-                    connection.firstComponent,
-                    connection.firstPort
+                    components.find(c => c.id === connection.firstComponent)?.sequence,
+                    parseInt(connection.firstPort.replace('Port ', ''))
                 )
             },
             deviceB: { 
@@ -74,8 +74,8 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
                 identifier: generateSmartIdentifier(
                     components.find(c => c.id === connection.secondComponent)?.type,
                     currentIdf,
-                    connection.secondComponent,
-                    connection.secondPort
+                    components.find(c => c.id === connection.secondComponent)?.sequence,
+                    parseInt(connection.secondPort.replace('Port ', ''))
                 )
             },
             idf: currentIdf,
@@ -275,7 +275,7 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
                     }
                 })}
                 {step === steps.length - 1 && (
-                    <Box sx={{ mt: 2 }}>
+                    <Paper elevation={3} sx={{ p: 2, mt: 2 }}>
                         <Typography variant="h6" gutterBottom>Connection Summary</Typography>
                         <Typography>First Device: {components.find(c => c.id === connection.firstComponent)?.name} ({components.find(c => c.id === connection.firstComponent)?.type})</Typography>
                         <Typography>First Port: {connection.firstPort}</Typography>
@@ -284,7 +284,7 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
                         <Typography>Connection Type: {connection.type}</Typography>
                         <Typography>Connection Speed: {connection.speed}</Typography>
                         <Typography>Notes: {connection.notes}</Typography>
-                    </Box>
+                    </Paper>
                 )}
             </Box>
         );
