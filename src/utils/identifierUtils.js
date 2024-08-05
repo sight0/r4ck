@@ -17,7 +17,7 @@ export const generateSmartIdentifier = (componentType, idfNumber, deviceNumber, 
   const device = deviceNumber.toString().padStart(2, '0');
   const port = portNumber.toString().padStart(3, '0');
 
-  return `${prefix}${typeCode}-${idf}${device}-${port}`;
+  return `${prefix}${typeCode}-${idf}-${device}-${port}`;
 };
 
 export const isEndUserDeviceType = (type) => {

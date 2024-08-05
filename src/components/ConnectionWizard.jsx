@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { generateSmartIdentifier } from '../utils/identifierUtils';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Stepper, Step, StepLabel, Typography, Box, Select, MenuItem, FormControl, InputLabel, List, ListItem, IconButton, Tooltip, TextField, Chip, Card, CardContent, Grid } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
@@ -57,8 +58,26 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
     const handleFinish = () => {
         const newConnection = {
             id: editingConnection ? editingConnection.id : Date.now(),
-            deviceA: { componentId: connection.firstComponent, port: connection.firstPort },
-            deviceB: { componentId: connection.secondComponent, port: connection.secondPort },
+            deviceA: { 
+                componentId: connection.firstComponent, 
+                port: connection.firstPort,
+                identifier: generateSmartIdentifier(
+                    components.find(c => c.id === connection.firstComponent)?.type,
+                    currentIdf,
+                    connection.firstComponent,
+                    connection.firstPort
+                )
+            },
+            deviceB: { 
+                componentId: connection.secondComponent, 
+                port: connection.secondPort,
+                identifier: generateSmartIdentifier(
+                    components.find(c => c.id === connection.secondComponent)?.type,
+                    currentIdf,
+                    connection.secondComponent,
+                    connection.secondPort
+                )
+            },
             idf: currentIdf,
             type: connection.type,
             speed: connection.speed,
@@ -143,7 +162,7 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
                                     </Typography>
                                 </Box>
                                 <Typography variant="body2" color="text.secondary">
-                                    Port {connection.deviceA.port} → Port {connection.deviceB.port}
+                                    Port {connection.deviceA.port} ({connection.deviceA.identifier}) → Port {connection.deviceB.port} ({connection.deviceB.identifier})
                                 </Typography>
                                 <Box sx={{ mt: 2, display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                                     <Chip label={`IDF ${connection.idf}`} size="small" />
