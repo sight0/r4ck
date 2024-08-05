@@ -12,15 +12,13 @@ const PortSetupDialog = ({ open, onClose, ports, numIdfs, idf, onPortChange, com
         setLocalPorts(ports);
     }, [ports]);
 
-    const getIdentifierExplanation = (port) => {
-        const prefix = isEndUserDeviceType(port.cableSource) ? 'A' : 'B';
-        const typeCode = componentTypeMap[port.cableSource] || 'OT';
+    const getIdentifierExplanation = () => {
         return `Identifier Structure:
-        ${prefix}: ${isEndUserDeviceType(port.cableSource) ? 'End-user device' : 'Infrastructure device'}
-        ${typeCode}: ${port.cableSource.replace(/_/g, ' ')}
-        ${idf.toString().padStart(2, '0')}: IDF number
-        ${component.sequence.toString().padStart(2, '0')}: Device sequence
-        ${port.identifier.split('-')[3]}: Port number`;
+        A/B: End-user device / Infrastructure device
+        XX: Device type code
+        YY: IDF number
+        ZZ: Device sequence
+        NNN: Port number`;
     };
 
     const handleCableSourceChange = (index, value) => {
@@ -39,7 +37,14 @@ const PortSetupDialog = ({ open, onClose, ports, numIdfs, idf, onPortChange, com
 
     return (
         <Dialog open={open} onClose={() => onClose(localPorts)} maxWidth="lg" fullWidth>
-            <DialogTitle>Configure Ports for {componentType}</DialogTitle>
+            <DialogTitle>
+                Configure Ports for {componentType}
+                <Tooltip title={getIdentifierExplanation()} arrow>
+                    <IconButton size="small" sx={{ ml: 1 }}>
+                        <InfoIcon />
+                    </IconButton>
+                </Tooltip>
+            </DialogTitle>
             <DialogContent>
                 <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 2 }}>
                     {localPorts.map((port, index) => (
@@ -78,20 +83,13 @@ const PortSetupDialog = ({ open, onClose, ports, numIdfs, idf, onPortChange, com
                                     <MenuItem value="OTHER">Other</MenuItem>
                                 </Select>
                             </FormControl>
-                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                <TextField
-                                    label="Identifier"
-                                    value={port.identifier || ''}
-                                    InputProps={{ readOnly: true }}
-                                    fullWidth
-                                    margin="dense"
-                                />
-                                <Tooltip title={getIdentifierExplanation(port)} arrow>
-                                    <IconButton size="small" sx={{ ml: 1 }}>
-                                        <InfoIcon />
-                                    </IconButton>
-                                </Tooltip>
-                            </Box>
+                            <TextField
+                                label="Identifier"
+                                value={port.identifier || ''}
+                                InputProps={{ readOnly: true }}
+                                fullWidth
+                                margin="dense"
+                            />
                             {port.connectedTo && (
                                 <Typography variant="caption" display="block" sx={{ mt: 1 }}>
                                     Connected to: {port.connectedTo}
