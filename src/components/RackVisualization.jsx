@@ -31,8 +31,6 @@ const GreenButton = styled(Button)(({ theme }) => ({
     },
 }));
 
-const componentColors = Object.fromEntries(components.map(comp => [comp.type, comp.color]));
-
 const StyledRackContainer = styled(Box)({
     position: 'relative',
     '& .rack-units': {
