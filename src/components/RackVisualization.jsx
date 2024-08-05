@@ -76,21 +76,24 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
     const [componentSequences, setComponentSequences] = useState({});
     // const [components, setComponents] = useState([]);
 
+    const [componentSequences, setComponentSequences] = useState({});
+
     const getNextSequence = (type) => {
         return (componentSequences[type] || 0) + 1;
     };
 
-    // useEffect(() => {
-    //     const sequences = {};
-    //     components.forEach(comp => {
-    //         if (!sequences[comp.type]) {
-    //             sequences[comp.type] = 0;
-    //         }
-    //         sequences[comp.type]++;
-    //         comp.sequence = sequences[comp.type];
-    //     });
-    //     setComponentSequences(sequences);
-    // }, [components]);
+    useEffect(() => {
+        const sequences = {};
+        Object.values(allComponents).forEach(idfComponents => {
+            idfComponents.forEach(comp => {
+                if (!sequences[comp.type]) {
+                    sequences[comp.type] = 0;
+                }
+                sequences[comp.type] = Math.max(sequences[comp.type], comp.sequence || 0);
+            });
+        });
+        setComponentSequences(sequences);
+    }, [allComponents]);
 
     const handleConnectionCreate = (newConnection) => {
         const deviceA = components.find(c => c.id === newConnection.deviceA.componentId);
@@ -235,9 +238,16 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
             );
 
             if (!overlap) {
-                setAllComponents(prevAll => ({
-                    ...prevAll,
-                    [currentIdf]: [...(prevAll[currentIdf] || []), newComp]
+                setAllComponents(prevAll => {
+                    const updatedIdf = [...(prevAll[currentIdf] || []), newComp];
+                    return {
+                        ...prevAll,
+                        [currentIdf]: updatedIdf
+                    };
+                });
+                setComponentSequences(prevSequences => ({
+                    ...prevSequences,
+                    [newComponent.type]: sequence
                 }));
                 setDialogOpen(false);
                 setNewComponent(null);
