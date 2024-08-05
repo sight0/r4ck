@@ -13,7 +13,8 @@ const ComponentConfigDialog = ({ open, onClose, component, numIdfs, idfData, cur
             setEditedComponent({ 
                 ...component, 
                 ports: component.ports || initializePorts(component.capacity),
-                sequence: component.sequence
+                sequence: component.sequence,
+                deviceSequence: component.sequence // Add this line
             });
         }
     }, [component]);
@@ -32,7 +33,10 @@ const ComponentConfigDialog = ({ open, onClose, component, numIdfs, idfData, cur
     };
 
     const handleSave = () => {
-        onClose(editedComponent);
+        onClose({
+            ...editedComponent,
+            deviceSequence: editedComponent.sequence // Ensure deviceSequence is set
+        });
     };
 
     const handlePortChange = (index, field, value) => {
