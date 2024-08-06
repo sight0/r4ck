@@ -18,3 +18,34 @@ This application provides a visual representation of distribution frames racks, 
 ## Getting Started
 
 TODO: Add instructions for setting up and running the project here
+
+## To-do
+
+Standarize the following components:
+Component -> # of ports
+Switch -> 8 or 24 or 48
+Patch Panel -> 24 or 48
+
+Implement AUTO config that does the following:
+
+FPP to be CALCULATED BY # of CORES
+
+Configuration Template:
+FPP1
+CABLE MANAGER
+PP1
+PP2
+CABLE MANAGER
+SWITCH 48
+CABLE MANAGER
+PP3
+PP4
+CABLE MANAGER
+SWITCH 48
+CABLE MANAGER
+PP5
+CABLE MANAGER
+
+Configuration Calculation
+DIVIDE TOTAL DEVICES BY /24 FOR PP & CABLE MNGR AND /48 FOR SW
+
