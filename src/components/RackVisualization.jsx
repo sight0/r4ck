@@ -786,7 +786,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                             fullWidth
                             margin="normal"
                             id="component-capacity"
-                            defaultValue={newComponent.type === 'switch' ? '24' : '24'}
+                            defaultValue='24'
                         >
                             {newComponent.type === 'switch' ? (
                                 ['8', '24', '48'].map((option) => (
@@ -814,10 +814,12 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                     <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
                     <Button onClick={() => {
                         const name = document.getElementById('component-name').value;
-                        const capacityElement = document.getElementById('component-capacity');
-                        const capacity = capacityElement.tagName.toLowerCase() === 'div' 
-                            ? capacityElement.querySelector('input').value 
+                        const capacityElement = document.getElementById('component-capacity').value;
+                        const capacity = capacityElement.tagName.toLowerCase() === 'div'
+                            ? capacityElement.querySelector('input').value
                             : capacityElement.value;
+                        console.log(document.getElementById('component-capacity'));
+                        console.log(document.getElementById('component-units').value);
                         const units = document.getElementById('component-units').value;
                         handleDialogClose(name, capacity, units);
                     }}>Add</Button>
