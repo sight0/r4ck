@@ -86,7 +86,7 @@ const ComponentConfigDialog = ({ open, onClose, component, numIdfs, idfData, cur
                                             </MenuItem>
                                         ))
                                     ) : editedComponent.type === 'fiber_patch_panel' ? (
-                                        ['12', '24', '48', '96'].map((option) => (
+                                        ['12', '24'].map((option) => (
                                             <MenuItem key={option} value={option}>
                                                 {option}
                                             </MenuItem>
