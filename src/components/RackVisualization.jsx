@@ -695,7 +695,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                         </StyledRackContainer>
                     </Box>
                 </Grid>
-                <Grid item xs={12} md={7}>
+                <Grid item xs={12} md={4}>
                     <Box sx={{ border: '1px solid #ccc', borderRadius: '4px', p: 2, mb: 2 }}>
                         <Typography variant="h6" gutterBottom>Legend</Typography>
                         {Object.entries(componentColors).map(([type, color]) => {
@@ -823,6 +823,51 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                             </Box>
                         </Box>
                     </Box>
+                </Grid>
+                <Grid item xs={12} md={3}>
+                    <Paper elevation={3} sx={{ p: 2, height: '100%' }}>
+                        <Typography variant="h6" gutterBottom>Quick Actions</Typography>
+                        <Button 
+                            variant="contained" 
+                            color="primary" 
+                            fullWidth 
+                            sx={{ mb: 2 }}
+                            onClick={() => setConnectionWizardOpen(true)}
+                        >
+                            Open Connection Wizard
+                        </Button>
+                        <Button 
+                            variant="contained" 
+                            color="secondary" 
+                            fullWidth 
+                            sx={{ mb: 2 }}
+                            onClick={() => setIssuesDialogOpen(true)}
+                        >
+                            View Issues
+                        </Button>
+                        <Button 
+                            variant="contained" 
+                            color="info" 
+                            fullWidth 
+                            sx={{ mb: 2 }}
+                            onClick={handleGetRecommendations}
+                        >
+                            Get Recommendations
+                        </Button>
+                        <Typography variant="subtitle1" gutterBottom sx={{ mt: 3 }}>IDF Summary</Typography>
+                        <Typography variant="body2">
+                            Total Components: {components.length}
+                        </Typography>
+                        <Typography variant="body2">
+                            Switches: {components.filter(c => c.type === 'switch').length}
+                        </Typography>
+                        <Typography variant="body2">
+                            Patch Panels: {components.filter(c => c.type === 'patch_panel').length}
+                        </Typography>
+                        <Typography variant="body2">
+                            Total Ports: {components.reduce((sum, c) => sum + parseInt(c.capacity || 0), 0)}
+                        </Typography>
+                    </Paper>
                 </Grid>
             </Grid>
             <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
