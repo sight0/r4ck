@@ -77,6 +77,8 @@ const Sidebar = ({ currentIdf }) => {
                             },
                             display: 'flex',
                             alignItems: 'center',
+                            padding: '10px 15px',
+                            border: `2px solid ${component.color}`,
                         }}
                     >
                         <DragIndicatorIcon sx={{ mr: 1, color: '#757575' }} />
