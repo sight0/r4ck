@@ -893,6 +893,10 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                 onConnectionDelete={handleConnectionDelete}
                 existingConnections={connections}
             />
+            <PatchingSchedule
+                connections={connections}
+                components={components}
+            />
             {/* Placeholder for Recommendations Dialog */}
             <Dialog
                 open={recommendationsDialogOpen}
