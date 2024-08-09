@@ -1,11 +1,14 @@
 import React from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography } from '@mui/material';
 
+// TODO: This component is deprecated. Use PatchingSchedule instead.
+// TODO: Remove this component once PatchingSchedule is fully implemented and tested.
+
 const PatchSchedule = ({ connections }) => {
   return (
     <TableContainer component={Paper}>
       <Typography variant="h6" gutterBottom component="div" style={{ padding: '16px' }}>
-        Patch Schedule
+        Patch Schedule (Deprecated)
       </Typography>
       <Table size="small" aria-label="patch schedule">
         <TableHead>
