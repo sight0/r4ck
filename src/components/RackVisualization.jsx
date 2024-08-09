@@ -607,14 +607,16 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                     </Tooltip>
                     <Button
                         variant="contained"
-                        color="info"
                         onClick={handleGetRecommendations}
                         sx={{
                             flex: 1,
                             py: 1.5,
                             fontWeight: 'bold',
                             boxShadow: 3,
+                            backgroundColor: '#424242',
+                            color: '#ffffff',
                             '&:hover': {
+                                backgroundColor: '#616161',
                                 boxShadow: 5,
                             },
                         }}
@@ -888,17 +890,17 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                             Auto Wiring
                         </Button>
                         <Typography variant="subtitle1" gutterBottom sx={{ mt: 3, fontWeight: 'bold' }}>Configuration Calculations</Typography>
-                        <Box sx={{ backgroundColor: '#f5f5f5', p: 2, borderRadius: 2 }}>
-                            <Typography variant="body2" sx={{ mb: 1 }}>
+                        <Box sx={{ backgroundColor: '#e0e0e0', p: 2, borderRadius: 2, border: '1px solid #bdbdbd' }}>
+                            <Typography variant="body2" sx={{ mb: 1, color: '#000000' }}>
                                 <strong>Expected Patch Panels:</strong> {Math.ceil(totalDevices / 24)}
                             </Typography>
-                            <Typography variant="body2" sx={{ mb: 1 }}>
+                            <Typography variant="body2" sx={{ mb: 1, color: '#000000' }}>
                                 <strong>Expected Switches:</strong> {Math.ceil(totalDevices / 48)}
                             </Typography>
-                            <Typography variant="body2" sx={{ mb: 1 }}>
+                            <Typography variant="body2" sx={{ mb: 1, color: '#000000' }}>
                                 <strong>Expected Fiber Patch Panels:</strong> {Math.ceil(totalDevices / 24 * 0.1)} {/* Assuming 10% of connections are fiber */}
                             </Typography>
-                            <Typography variant="body2">
+                            <Typography variant="body2" sx={{ color: '#000000' }}>
                                 <strong>Expected Cable Managers:</strong> {Math.ceil((Math.ceil(totalDevices / 24) + Math.ceil(totalDevices / 48)) / 2)} {/* One cable manager for every two devices */}
                             </Typography>
                         </Box>
