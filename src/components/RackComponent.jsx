@@ -27,7 +27,7 @@ const RackComponent = ({ component, rackWidth, onDelete, onEdit, onDragStart, is
                     <tspan dx="5">{component.sequence}</tspan>
                 )}
                 {!isCableManager && (
-                    <tspan dx="5" fontStyle="italic">({component.name})</tspan>
+                    <tspan dx="5" fontStyle="italic">({component.name.length > 16 ? component.name.substring(0, 16) + '...' : component.name})</tspan>
                 )}
             </text>
             <foreignObject x="0" y='-4' width="30" height="30">
