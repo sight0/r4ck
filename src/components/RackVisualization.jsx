@@ -3,7 +3,8 @@ import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { calculateInterIdfConnections } from '../utils/rackUtils';
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography, Box, Grid, Paper, Divider, IconButton, Badge, Tooltip, MenuItem } from '@mui/material';
 import IssuesDialog from './IssuesDialog';
-// import PatchingSchedule from './PatchingSchedule';
+import PatchingSchedule from './PatchingSchedule';
+import GetAppIcon from '@mui/icons-material/GetApp';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -75,6 +76,7 @@ const StyledLine = styled('div')(({ theme }) => ({
 const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interIdfConnections, onUpdateInterIdfConnections, onPortChange }) => {
     const [connections, setConnections] = useState([]);
     const [componentSequences, setComponentSequences] = useState({});
+    const [previewDialogOpen, setPreviewDialogOpen] = useState(false);
 
     const getNextSequence = (type) => {
         const existingSequences = components
@@ -136,6 +138,13 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
             prevConnections.filter(conn => conn.id !== connectionId)
         );
         // You may need to update the port connections here as well
+    };
+
+    const handleExportSchedule = () => {
+        // Implementation for exporting the schedule
+        // This could involve generating a CSV or PDF file
+        console.log("Exporting schedule...");
+        // You can add your export logic here
     };
     const theme = useTheme();
     const [allComponents, setAllComponents] = useState({});
@@ -894,8 +903,43 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                 onConnectionDelete={handleConnectionDelete}
                 existingConnections={connections}
             />
-            {/* TODO: Add a button to preview the patching schedule */}
-            {/* TODO: Add an export button for the patching schedule */}
+            <Box sx={{ mt: 4, p: 2, backgroundColor: '#f5f5f5', borderRadius: 2, boxShadow: 3 }}>
+              <Typography variant="h6" gutterBottom>Patching Schedule</Typography>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  startIcon={<VisibilityIcon />}
+                  onClick={() => setPreviewDialogOpen(true)}
+                >
+                  Preview Schedule
+                </Button>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  startIcon={<GetAppIcon />}
+                  onClick={handleExportSchedule}
+                >
+                  Export Schedule
+                </Button>
+              </Box>
+            </Box>
+
+            {/* Preview Dialog */}
+            <Dialog
+              open={previewDialogOpen}
+              onClose={() => setPreviewDialogOpen(false)}
+              maxWidth="lg"
+              fullWidth
+            >
+              <DialogTitle>Patching Schedule Preview</DialogTitle>
+              <DialogContent>
+                <PatchingSchedule connections={connections} components={components} />
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={() => setPreviewDialogOpen(false)}>Close</Button>
+              </DialogActions>
+            </Dialog>
             {/* Placeholder for Recommendations Dialog */}
             <Dialog
                 open={recommendationsDialogOpen}
