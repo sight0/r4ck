@@ -145,7 +145,7 @@ const App = () => {
                                 onPortChange={(componentId, portIndex, field, value) => 
                                     handlePortChange(currentIdf, componentId, portIndex, field, value)}
                             />
-                            <PatchSchedule connections={connections} />
+                            {/*<PatchSchedule connections={connections} />*/}
                         </Box>
                     </Box>
                 )}

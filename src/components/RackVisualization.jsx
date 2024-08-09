@@ -740,14 +740,14 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                                     transition: 'all 0.3s ease',
                                     border: `3px solid ${color}`,
                                     borderRadius: '10px',
-                                    padding: '8px',
+                                    padding: '1px',
                                     '&:hover': {
                                         transform: 'scale(1.023)',
                                     },
                                 }}
                                      onMouseEnter={() => handleHighlight(type)}
                                      onMouseLeave={() => handleHighlight(null)}>
-                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', ml: 2 }}>
                                         <Typography>{type} ({count})</Typography>
                                     </Box>
                                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -755,7 +755,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                                             sx={{ 
                                                 width: 30, 
                                                 height: 30, 
-                                                border: `2px solid ${color}`,
+                                                // border: `1px solid ${color}`,
                                                 mr: 1,
                                                 borderRadius: '50%',
                                                 display: 'flex',

@@ -22,12 +22,20 @@ const RackComponent = ({ component, rackWidth, onDelete, onEdit, onDragStart, is
                 ry="5"
             />
             <text x="25" y={componentHeight / 2} fill="white" fontSize="12" dy=".35em">
-                <tspan fontWeight="bold">{component.type.charAt(0).toUpperCase() + component.type.slice(1).replace('_', ' ')}</tspan>
+                <tspan fontWeight="bold">
+                    {component.type === 'fiber_patch_panel' 
+                        ? 'Fiber PP' 
+                        : component.type.charAt(0).toUpperCase() + component.type.slice(1).replace('_', ' ')}
+                </tspan>
                 {!isCableManager && (
                     <tspan dx="5">{component.sequence}</tspan>
                 )}
                 {!isCableManager && (
-                    <tspan dx="5" fontStyle="italic">({component.name.length > 16 && component.units === 1 ? component.name.substring(0, 14) + '...' : component.name})</tspan>
+                    <tspan dx="5" fontStyle="italic">
+                        ({component.name.length > 16 && component.units === 1 
+                            ? component.name.substring(0, 14) + '...' 
+                            : component.name})
+                    </tspan>
                 )}
             </text>
             <foreignObject x="0" y='-4' width="30" height="30">

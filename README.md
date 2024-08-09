@@ -19,11 +19,6 @@ TODO: Add instructions for setting up and running the project here
 
 ## To-do
 
-Standarize the following components:
-Component -> # of ports
-Switch -> 8 or 24 or 48
-Patch Panel -> 24 or 48
-
 Implement AUTO config that does the following:
 
 FPP to be CALCULATED BY # of CORES
