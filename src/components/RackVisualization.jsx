@@ -344,16 +344,15 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                 sequence,
             };
             
-            // Initialize ports for switches and patch panels
-            if (newComp.type === 'switch' || newComp.type === 'patch_panel' || newComp.type === 'fiber_patch_panel') {
-                const portCount = parseInt(capacity);
-                newComp.ports = Array.from({ length: portCount }, (_, i) => ({
-                    label: `Port ${i + 1}`,
-                    cableSource: '',
-                    connectedTo: '',
-                    type: newComp.type === 'fiber_patch_panel' ? 'fiber' : 'copper'
-                }));
-            }
+            // Initialize ports for all components
+            const portCount = parseInt(capacity);
+            newComp.ports = Array.from({ length: portCount }, (_, i) => ({
+                label: `Port ${i + 1}`,
+                cableSource: '',
+                connectedTo: '',
+                type: newComp.type === 'fiber_patch_panel' ? 'fiber' : 'copper',
+                identifier: generateSmartIdentifier(newComp.type, currentIdf, sequence, i + 1)
+            }));
             
             // Check if the component fits within the rack
             if (newComp.y + newComp.units * 20 > rackHeight) {

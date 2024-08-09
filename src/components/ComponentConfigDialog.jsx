@@ -29,12 +29,19 @@ const ComponentConfigDialog = ({ open, onClose, component, numIdfs, idfData, cur
         const { name, value } = e.target;
         setEditedComponent(prev => {
             const updatedComponent = { ...prev, [name]: value };
-            if (name === 'capacity') {
-                const newCapacity = parseInt(value, 10);
+            if (name === 'capacity' || name === 'type') {
+                const newCapacity = name === 'capacity' ? parseInt(value, 10) : prev.capacity;
+                const newType = name === 'type' ? value : prev.type;
                 const initializePorts = (count) => Array.from({ length: count }, (_, i) => {
                     const portLabel = `Port ${i + 1}`;
-                    const identifier = generateSmartIdentifier(updatedComponent.type, currentIdf, updatedComponent.sequence, i + 1);
-                    return { label: portLabel, cableSource: '', connectedTo: '', identifier };
+                    const identifier = generateSmartIdentifier(newType, currentIdf, updatedComponent.sequence, i + 1);
+                    return { 
+                        label: portLabel, 
+                        cableSource: '', 
+                        connectedTo: '', 
+                        type: newType === 'fiber_patch_panel' ? 'fiber' : 'copper',
+                        identifier 
+                    };
                 });
                 updatedComponent.ports = initializePorts(newCapacity);
             }
