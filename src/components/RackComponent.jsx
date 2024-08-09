@@ -32,7 +32,7 @@ const RackComponent = ({ component, rackWidth, onDelete, onEdit, onDragStart, is
                 >
                     <PanToolIcon fontSize="small" />
                 </IconButton>
-            </foreignObject>
+            </foreignObject>z
             <foreignObject x={rackWidth - 100} y='-4' width="30" height="30">
                 <IconButton onClick={() => onEdit(component)} size="small">
                     <EditIcon fontSize="small" />
