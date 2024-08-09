@@ -359,10 +359,14 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
     }, [draggedComponent, components, currentIdf]);
 
     const handleDeleteComponent = (id) => {
-        setAllComponents(prevAll => ({
-            ...prevAll,
-            [currentIdf]: prevAll[currentIdf].filter(comp => comp.id !== id)
-        }));
+        const confirmDelete = window.confirm("Are you sure you want to delete this component? This will also delete any connections made with this component.");
+        if (confirmDelete) {
+            setAllComponents(prevAll => ({
+                ...prevAll,
+                [currentIdf]: prevAll[currentIdf].filter(comp => comp.id !== id)
+            }));
+            // TODO: Implement logic to delete connections associated with this component
+        }
     };
 
     const handleEditComponent = (component) => {
