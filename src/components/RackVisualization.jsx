@@ -795,7 +795,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                                     </MenuItem>
                                 ))
                             ) : (
-                                ['24', '48'].map((option) => (
+                                ['24'].map((option) => (
                                     <MenuItem key={option} value={option}>
                                         {option}
                                     </MenuItem>
@@ -816,7 +816,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                         const name = document.getElementById('component-name').value;
                         const capacityElement = document.getElementById('component-capacity');
                         const capacity = capacityElement.tagName.toLowerCase() === 'div'
-                            ? capacityElement.querySelector('.MuiSelect-nativeInput').value
+                            ? capacityElement.nextSibling.value
                             : capacityElement.value;
                         const units = document.getElementById('component-units').value;
                         handleDialogClose(name, capacity, units);

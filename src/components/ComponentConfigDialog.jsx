@@ -86,7 +86,7 @@ const ComponentConfigDialog = ({ open, onClose, component, numIdfs, idfData, cur
                                             </MenuItem>
                                         ))
                                     ) : (
-                                        ['24', '48'].map((option) => (
+                                        ['24'].map((option) => (
                                             <MenuItem key={option} value={option}>
                                                 {option}
                                             </MenuItem>

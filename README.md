@@ -11,9 +11,7 @@ This application provides a visual representation of distribution frames racks, 
 
 ## Known Issues
 
-1. IP Telephones must have a separate patch panel as they are not RJ45.
-2. Some components may not render correctly in certain browsers.
-3. The identifier is not resetting the rack-specific counter of components when moving to another IDF.
+*. The identifier is not resetting the rack-specific counter of components when moving to another IDF.
 
 ## Getting Started
 
