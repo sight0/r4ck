@@ -734,7 +734,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                                 <Box key={type} sx={{ 
                                     display: 'flex', 
                                     alignItems: 'center', 
-                                    mb: 2, 
+                                    mb: 0.85,
                                     justifyContent: 'space-between',
                                     cursor: 'pointer',
                                     transition: 'all 0.3s ease',
@@ -863,7 +863,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                     </Box>
                 </Grid>
                 <Grid item xs={12} md={3}>
-                    <Paper elevation={3} sx={{ p: 2, height: '100%' }}>
+                    <Paper elevation={3} sx={{ p: 2, height: '98.2%' }}>
                         <Typography variant="h6" gutterBottom>Quick Actions</Typography>
                         <Button 
                             variant="contained" 
