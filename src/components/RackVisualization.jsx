@@ -76,7 +76,19 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
     const [componentSequences, setComponentSequences] = useState({});
 
     const getNextSequence = (type) => {
-        return (componentSequences[type] || 0) + 1;
+        const existingSequences = components
+            .filter(comp => comp.type === type)
+            .map(comp => comp.sequence)
+            .sort((a, b) => a - b);
+
+        let nextSequence = 1;
+        for (const seq of existingSequences) {
+            if (seq !== nextSequence) {
+                return nextSequence;
+            }
+            nextSequence++;
+        }
+        return nextSequence;
     };
 
     const handleConnectionCreate = (newConnection) => {
@@ -274,10 +286,6 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                         [currentIdf]: updatedIdf
                     };
                 });
-                setComponentSequences(prevSequences => ({
-                    ...prevSequences,
-                    [newComponent.type]: sequence
-                }));
                 setDialogOpen(false);
                 setNewComponent(null);
             } else {
@@ -361,11 +369,30 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
     const handleDeleteComponent = (id) => {
         const confirmDelete = window.confirm("Are you sure you want to delete this component? This will also delete any connections made with this component.");
         if (confirmDelete) {
-            setAllComponents(prevAll => ({
-                ...prevAll,
-                [currentIdf]: prevAll[currentIdf].filter(comp => comp.id !== id)
-            }));
-            // TODO: Implement logic to delete connections associated with this component
+            setAllComponents(prevAll => {
+                const updatedComponents = prevAll[currentIdf].filter(comp => comp.id !== id);
+                return {
+                    ...prevAll,
+                    [currentIdf]: updatedComponents
+                };
+            });
+
+            // Update connections
+            setConnections(prevConnections => 
+                prevConnections.filter(conn => 
+                    conn.deviceA.componentId !== id && conn.deviceB.componentId !== id
+                )
+            );
+
+            // Recalculate inter-IDF connections
+            const newInterIdfConnections = calculateInterIdfConnections(
+                allComponents[currentIdf].filter(comp => comp.id !== id),
+                currentIdf
+            );
+            onUpdateInterIdfConnections({
+                ...interIdfConnections,
+                [currentIdf]: newInterIdfConnections
+            });
         }
     };
 
@@ -375,7 +402,6 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
     };
 
     const handleConfigDialogClose = (updatedComponent) => {
-        // console.log('handleConfigDialogClose called with:', updatedComponent);
         if (updatedComponent) {
             const overlap = components.some(comp => 
                 comp.id !== updatedComponent.id &&
@@ -385,26 +411,25 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
 
             if (!overlap) {
                 setAllComponents(prevAll => {
-                    // console.log('Previous allComponents:', prevAll);
                     const newComponents = prevAll[currentIdf].map(comp =>
-                        comp.id === updatedComponent.id ? updatedComponent : comp
+                        comp.id === updatedComponent.id ? {
+                            ...updatedComponent,
+                            sequence: comp.sequence // Maintain the original sequence
+                        } : comp
                     );
                     
                     // Recalculate inter-IDF connections for the current IDF
                     const newInterIdfConnections = calculateInterIdfConnections(newComponents, currentIdf);
                     
-                    // console.log('New interIdfConnections:', newInterIdfConnections);
                     onUpdateInterIdfConnections({
                         ...interIdfConnections,
                         [currentIdf]: newInterIdfConnections
                     });
                     
-                    const result = {
+                    return {
                         ...prevAll,
                         [currentIdf]: newComponents
                     };
-                    // console.log('New allComponents:', result);
-                    return result;
                 });
             } else {
                 alert("The updated component overlaps with existing components. Please adjust the size or position.");
