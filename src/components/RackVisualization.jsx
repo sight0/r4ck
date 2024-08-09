@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { calculateInterIdfConnections } from '../utils/rackUtils';
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography, Box, Grid, Paper, Divider, IconButton, Badge, Tooltip } from '@mui/material';
+import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography, Box, Grid, Paper, Divider, IconButton, Badge, Tooltip, MenuItem } from '@mui/material';
 import IssuesDialog from './IssuesDialog';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -779,7 +779,32 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                 <DialogTitle>Component Details</DialogTitle>
                 <DialogContent>
                     <TextField label="Name" fullWidth margin="normal" id="component-name" />
-                    <TextField label="Capacity/Ports" fullWidth margin="normal" id="component-capacity" />
+                    {newComponent && (newComponent.type === 'switch' || newComponent.type === 'patch_panel') ? (
+                        <TextField
+                            select
+                            label="Capacity/Ports"
+                            fullWidth
+                            margin="normal"
+                            id="component-capacity"
+                            defaultValue={newComponent.type === 'switch' ? '24' : '24'}
+                        >
+                            {newComponent.type === 'switch' ? (
+                                ['8', '24', '48'].map((option) => (
+                                    <MenuItem key={option} value={option}>
+                                        {option}
+                                    </MenuItem>
+                                ))
+                            ) : (
+                                ['24', '48'].map((option) => (
+                                    <MenuItem key={option} value={option}>
+                                        {option}
+                                    </MenuItem>
+                                ))
+                            )}
+                        </TextField>
+                    ) : (
+                        <TextField label="Capacity/Ports" fullWidth margin="normal" id="component-capacity" />
+                    )}
                     <TextField label="Units (U)" type="number" fullWidth margin="normal" id="component-units" />
                     {/*<Typography variant="body2" sx={{ mt: 2, fontStyle: 'italic' }}>*/}
                     {/*    {recommendation}*/}
