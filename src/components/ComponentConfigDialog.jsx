@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Select, MenuItem, FormControl, InputLabel, Box } from '@mui/material';
 import PortSetupDialog from './PortSetupDialog';
+import { generateSmartIdentifier } from '../utils/identifierUtils';
 
 const ComponentConfigDialog = ({ open, onClose, component, numIdfs, idfData, currentIdf, deviceSequence = 0 }) => {
     const [editedComponent, setEditedComponent] = useState(null);
@@ -9,15 +10,20 @@ const ComponentConfigDialog = ({ open, onClose, component, numIdfs, idfData, cur
 
     useEffect(() => {
         if (component) {
-            const initializePorts = (count) => Array.from({ length: count }, (_, i) => ({ label: `Port ${i + 1}`, cableSource: '', connectedTo: '' }));
+            const initializePorts = (count, componentType, sequence) => Array.from({ length: count }, (_, i) => {
+                const portLabel = `Port ${i + 1}`;
+                const identifier = generateSmartIdentifier(componentType, currentIdf, sequence, i + 1);
+                return { label: portLabel, cableSource: '', connectedTo: '', identifier };
+            });
+
             setEditedComponent({ 
                 ...component, 
-                ports: component.ports || initializePorts(component.capacity),
-                sequence: component.sequence,
-                deviceSequence: component.sequence // Add this line
+                ports: component.ports || initializePorts(component.capacity, component.type, component.sequence || deviceSequence),
+                sequence: component.sequence || deviceSequence,
+                deviceSequence: component.sequence || deviceSequence
             });
         }
-    }, [component]);
+    }, [component, currentIdf, deviceSequence]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -25,7 +31,11 @@ const ComponentConfigDialog = ({ open, onClose, component, numIdfs, idfData, cur
             const updatedComponent = { ...prev, [name]: value };
             if (name === 'capacity') {
                 const newCapacity = parseInt(value, 10);
-                const initializePorts = (count) => Array.from({ length: count }, (_, i) => ({ label: `Port ${i + 1}`, cableSource: '', connectedTo: '' }));
+                const initializePorts = (count) => Array.from({ length: count }, (_, i) => {
+                    const portLabel = `Port ${i + 1}`;
+                    const identifier = generateSmartIdentifier(updatedComponent.type, currentIdf, updatedComponent.sequence, i + 1);
+                    return { label: portLabel, cableSource: '', connectedTo: '', identifier };
+                });
                 updatedComponent.ports = initializePorts(newCapacity);
             }
             return updatedComponent;
