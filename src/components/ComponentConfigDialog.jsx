@@ -71,14 +71,39 @@ const ComponentConfigDialog = ({ open, onClose, component, numIdfs, idfData, cur
                             fullWidth
                             margin="normal"
                         />
-                        <TextField
-                            name="capacity"
-                            label="Capacity/Ports"
-                            value={editedComponent.capacity}
-                            onChange={handleChange}
-                            fullWidth
-                            margin="normal"
-                        />
+                        {editedComponent.type === 'switch' || editedComponent.type === 'patch_panel' ? (
+                            <FormControl fullWidth margin="normal">
+                                <InputLabel>Capacity/Ports</InputLabel>
+                                <Select
+                                    name="capacity"
+                                    value={editedComponent.capacity}
+                                    onChange={handleChange}
+                                >
+                                    {editedComponent.type === 'switch' ? (
+                                        ['8', '24', '48'].map((option) => (
+                                            <MenuItem key={option} value={option}>
+                                                {option}
+                                            </MenuItem>
+                                        ))
+                                    ) : (
+                                        ['24', '48'].map((option) => (
+                                            <MenuItem key={option} value={option}>
+                                                {option}
+                                            </MenuItem>
+                                        ))
+                                    )}
+                                </Select>
+                            </FormControl>
+                        ) : (
+                            <TextField
+                                name="capacity"
+                                label="Capacity/Ports"
+                                value={editedComponent.capacity}
+                                onChange={handleChange}
+                                fullWidth
+                                margin="normal"
+                            />
+                        )}
                         <TextField
                             name="units"
                             label="Units (U)"
