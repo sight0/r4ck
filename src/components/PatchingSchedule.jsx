@@ -105,10 +105,10 @@ const PatchingSchedule = ({ connections, components }) => {
               <TableRow key={index} sx={{ '&:nth-of-type(odd)': { backgroundColor: 'action.hover' } }}>
                 <TableCell>{connection.deviceA.deviceType}</TableCell>
                 <TableCell>{connection.deviceA.port}</TableCell>
-                <TableCell>{getPortIdentifier(connection.deviceA.componentId, connection.deviceA.port)}</TableCell>
+                <TableCell>{connection.identifierA || getPortIdentifier(connection.deviceA.componentId, connection.deviceA.port)}</TableCell>
                 <TableCell>{connection.deviceB.deviceType}</TableCell>
                 <TableCell>{connection.deviceB.port}</TableCell>
-                <TableCell>{getPortIdentifier(connection.deviceB.componentId, connection.deviceB.port)}</TableCell>
+                <TableCell>{connection.identifierB || getPortIdentifier(connection.deviceB.componentId, connection.deviceB.port)}</TableCell>
               </TableRow>
             ))}
           </TableBody>

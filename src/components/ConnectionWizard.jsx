@@ -75,7 +75,9 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
             idf: currentIdf,
             type: connection.type,
             speed: connection.speed,
-            notes: connection.notes
+            notes: connection.notes,
+            identifierA: getPortDetails(connection.firstComponent, connection.firstPort).identifier,
+            identifierB: getPortDetails(connection.secondComponent, connection.secondPort).identifier
         };
         
         if (editingConnection) {
