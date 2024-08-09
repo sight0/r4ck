@@ -208,7 +208,12 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
                             );
                         case 'firstPort':
                         case 'secondPort':
-                            const ports = components.find(c => c.id === connection[field === 'firstPort' ? 'firstComponent' : 'secondComponent'])?.ports || [];
+                            const component = components.find(c => c.id === connection[field === 'firstPort' ? 'firstComponent' : 'secondComponent']);
+                            const ports = component?.ports || [];
+                            const connectedPorts = new Set(existingConnections.flatMap(conn => 
+                                [conn.deviceA.port, conn.deviceB.port]
+                            ));
+                            const availablePorts = ports.filter(port => !connectedPorts.has(port.label));
                             return (
                                 <FormControl fullWidth key={field} sx={{ mb: 2 }}>
                                     <InputLabel>{field === 'firstPort' ? 'First Port' : 'Second Port'}</InputLabel>
@@ -216,7 +221,7 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
                                         value={connection[field]}
                                         onChange={(e) => handleChange(field, e.target.value)}
                                     >
-                                        {ports.map((port, index) => (
+                                        {availablePorts.map((port, index) => (
                                             <MenuItem key={index} value={port.label}>
                                                 {port.label} - {port.cableSource || port.deviceType || 'Unknown'}
                                             </MenuItem>
