@@ -814,7 +814,10 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                     <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
                     <Button onClick={() => {
                         const name = document.getElementById('component-name').value;
-                        const capacity = document.getElementById('component-capacity').value;
+                        const capacityElement = document.getElementById('component-capacity');
+                        const capacity = capacityElement.tagName.toLowerCase() === 'div' 
+                            ? capacityElement.querySelector('input').value 
+                            : capacityElement.value;
                         const units = document.getElementById('component-units').value;
                         handleDialogClose(name, capacity, units);
                     }}>Add</Button>
