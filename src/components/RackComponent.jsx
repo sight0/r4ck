@@ -5,25 +5,30 @@ import EditIcon from '@mui/icons-material/Edit';
 import PanToolIcon from '@mui/icons-material/PanTool';
 
 const RackComponent = ({ component, rackWidth, onDelete, onEdit, onDragStart, isDragging, componentColors, isHighlighted, sequence }) => {
+    const isCableManager = component.type === 'cable_manager';
+    const componentHeight = isCableManager ? 20 : component.units * 20; // Cable manager is always 1U (20px)
+
     return (
         <g 
             transform={`translate(${component.x}, ${component.y})`}
         >
             <rect
                 width={rackWidth - 40}
-                height={component.units * 20}
+                height={componentHeight}
                 fill={isDragging ? "rgba(66, 165, 245, 0.5)" : componentColors[component.type] || componentColors.other}
                 stroke={isHighlighted ? "#000000" : componentColors[component.type] || componentColors.other}
                 strokeWidth={isHighlighted ? 7 : 1}
                 rx="5"
                 ry="5"
             />
-            <text x={(rackWidth - 40) / 2} y={(component.units * 20) / 2 - 8} textAnchor="middle" fill="white" fontSize="12" dy=".3em">
-                {component.type.charAt(0).toUpperCase() + component.type.slice(1).replace('_', ' ')} {component.sequence}
+            <text x={(rackWidth - 40) / 2} y={componentHeight / 2} textAnchor="middle" fill="white" fontSize="12" dy=".3em">
+                {component.type.charAt(0).toUpperCase() + component.type.slice(1).replace('_', ' ')} {!isCableManager && component.sequence}
             </text>
-            <text x={(rackWidth - 40) / 2} y={(component.units * 20) / 2 + 8} textAnchor="middle" fill="white" fontSize="11" dy=".3em">
-                {component.name}
-            </text>
+            {!isCableManager && (
+                <text x={(rackWidth - 40) / 2} y={(componentHeight / 2) + 16} textAnchor="middle" fill="white" fontSize="11" dy=".3em">
+                    {component.name}
+                </text>
+            )}
             <foreignObject x="0" y='-4' width="30" height="30">
                 <IconButton 
                     onMouseDown={(e) => onDragStart(e)} 
@@ -32,13 +37,15 @@ const RackComponent = ({ component, rackWidth, onDelete, onEdit, onDragStart, is
                 >
                     <PanToolIcon fontSize="small" />
                 </IconButton>
-            </foreignObject>z
-            <foreignObject x={rackWidth - 100} y='-4' width="30" height="30">
-                <IconButton onClick={() => onEdit(component)} size="small">
-                    <EditIcon fontSize="small" />
-                </IconButton>
             </foreignObject>
-            <foreignObject x={rackWidth - 70} y='-4' width="30" height="30">
+            {!isCableManager && (
+                <foreignObject x={rackWidth - 100} y='-4' width="30" height="30">
+                    <IconButton onClick={() => onEdit(component)} size="small">
+                        <EditIcon fontSize="small" />
+                    </IconButton>
+                </foreignObject>
+            )}
+            <foreignObject x={isCableManager ? rackWidth - 70 : rackWidth - 70} y='-4' width="30" height="30">
                 <IconButton onClick={() => onDelete(component.id)} size="small">
                     <DeleteIcon fontSize="small" />
                 </IconButton>

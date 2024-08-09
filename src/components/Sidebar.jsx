@@ -12,7 +12,8 @@ export const components = [
     { id: 5, name: 'Firewall', type: 'firewall', color: '#F44336' },
     { id: 6, name: 'Server', type: 'server', color: '#00BCD4' },
     { id: 7, name: 'UPS', type: 'ups', color: '#FFC107' },
-    { id: 8, name: 'Other', type: 'other', color: '#607D8B' },
+    { id: 8, name: 'Cable Manager', type: 'cable_manager', color: '#FF9800' },
+    { id: 9, name: 'Other', type: 'other', color: '#607D8B' },
 ];
 
 const Sidebar = ({ currentIdf }) => {
