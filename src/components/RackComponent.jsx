@@ -21,11 +21,11 @@ const RackComponent = ({ component, rackWidth, onDelete, onEdit, onDragStart, is
                 rx="5"
                 ry="5"
             />
-            <text x={(rackWidth - 40) / 2} y={componentHeight / 2} textAnchor="middle" fill="white" fontSize="12" dy=".3em">
+            <text x={(rackWidth - 40) / 2} y={componentHeight / 3} textAnchor="middle" fill="white" fontSize="12" dy=".1em">
                 {component.type.charAt(0).toUpperCase() + component.type.slice(1).replace('_', ' ')} {!isCableManager && component.sequence}
             </text>
             {!isCableManager && (
-                <text x={(rackWidth - 40) / 2} y={(componentHeight / 2) + 16} textAnchor="middle" fill="white" fontSize="11" dy=".3em">
+                <text x={(rackWidth - 40) / 2} y={(componentHeight / 3) + 16} textAnchor="middle" fill="white" fontSize="11" dy=".1em">
                     {component.name}
                 </text>
             )}
