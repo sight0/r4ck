@@ -131,6 +131,12 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
             const portBIndex = deviceB.ports.findIndex(p => p.label === newConnection.deviceB.port);
 
             if (portAIndex !== -1 && portBIndex !== -1) {
+                // Check if either port is already connected
+                if (deviceA.ports[portAIndex].connectedTo || deviceB.ports[portBIndex].connectedTo) {
+                    alert("One or both ports are already connected. Please disconnect them first.");
+                    return;
+                }
+
                 onPortChange(newConnection.deviceA.componentId, portAIndex, 'connectedTo', newConnection.deviceB.componentId);
                 onPortChange(newConnection.deviceA.componentId, portAIndex, 'connectedPort', newConnection.deviceB.port);
 
@@ -162,10 +168,31 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
     };
 
     const handleConnectionDelete = (connectionId) => {
-        setConnections(prevConnections => 
-            prevConnections.filter(conn => conn.id !== connectionId)
-        );
-        // You may need to update the port connections here as well
+        setConnections(prevConnections => {
+            const connectionToDelete = prevConnections.find(conn => conn.id === connectionId);
+            if (connectionToDelete) {
+                const deviceA = components.find(c => c.id === connectionToDelete.deviceA.componentId);
+                const deviceB = components.find(c => c.id === connectionToDelete.deviceB.componentId);
+
+                if (deviceA && deviceB) {
+                    const portAIndex = deviceA.ports.findIndex(p => p.label === connectionToDelete.deviceA.port);
+                    const portBIndex = deviceB.ports.findIndex(p => p.label === connectionToDelete.deviceB.port);
+
+                    if (portAIndex !== -1 && portBIndex !== -1) {
+                        onPortChange(connectionToDelete.deviceA.componentId, portAIndex, 'connectedTo', '');
+                        onPortChange(connectionToDelete.deviceA.componentId, portAIndex, 'connectedPort', '');
+                        onPortChange(connectionToDelete.deviceA.componentId, portAIndex, 'connectionType', '');
+                        onPortChange(connectionToDelete.deviceA.componentId, portAIndex, 'connectedDeviceType', '');
+
+                        onPortChange(connectionToDelete.deviceB.componentId, portBIndex, 'connectedTo', '');
+                        onPortChange(connectionToDelete.deviceB.componentId, portBIndex, 'connectedPort', '');
+                        onPortChange(connectionToDelete.deviceB.componentId, portBIndex, 'connectionType', '');
+                        onPortChange(connectionToDelete.deviceB.componentId, portBIndex, 'connectedDeviceType', '');
+                    }
+                }
+            }
+            return prevConnections.filter(conn => conn.id !== connectionId);
+        });
     };
 
     const handleExportSchedule = () => {
