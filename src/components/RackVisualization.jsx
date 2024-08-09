@@ -137,23 +137,45 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                     return;
                 }
 
-                onPortChange(newConnection.deviceA.componentId, portAIndex, 'connectedTo', newConnection.deviceB.componentId);
-                onPortChange(newConnection.deviceA.componentId, portAIndex, 'connectedPort', newConnection.deviceB.port);
+                // Update port connections
+                const updatedDeviceA = {
+                    ...deviceA,
+                    ports: deviceA.ports.map((port, index) => 
+                        index === portAIndex 
+                            ? { ...port, connectedTo: newConnection.deviceB.componentId, connectedPort: newConnection.deviceB.port }
+                            : port
+                    )
+                };
 
-                onPortChange(newConnection.deviceB.componentId, portBIndex, 'connectedTo', newConnection.deviceA.componentId);
-                onPortChange(newConnection.deviceB.componentId, portBIndex, 'connectedPort', newConnection.deviceA.port);
+                const updatedDeviceB = {
+                    ...deviceB,
+                    ports: deviceB.ports.map((port, index) => 
+                        index === portBIndex 
+                            ? { ...port, connectedTo: newConnection.deviceA.componentId, connectedPort: newConnection.deviceA.port }
+                            : port
+                    )
+                };
+
+                // Update components state
+                setAllComponents(prevAll => ({
+                    ...prevAll,
+                    [currentIdf]: prevAll[currentIdf].map(comp => 
+                        comp.id === updatedDeviceA.id ? updatedDeviceA :
+                        comp.id === updatedDeviceB.id ? updatedDeviceB :
+                        comp
+                    )
+                }));
 
                 // Set connection type
                 const connectionType = deviceA.type === deviceB.type ? 'stacking' : 'standard';
-                onPortChange(newConnection.deviceA.componentId, portAIndex, 'connectionType', connectionType);
-                onPortChange(newConnection.deviceB.componentId, portBIndex, 'connectionType', connectionType);
-
-                // Set device types
-                onPortChange(newConnection.deviceA.componentId, portAIndex, 'connectedDeviceType', deviceB.type);
-                onPortChange(newConnection.deviceB.componentId, portBIndex, 'connectedDeviceType', deviceA.type);
 
                 // Add the new connection to the connections state
-                setConnections(prevConnections => [...prevConnections, newConnection]);
+                setConnections(prevConnections => [...prevConnections, {
+                    ...newConnection,
+                    connectionType,
+                    deviceAType: deviceA.type,
+                    deviceBType: deviceB.type
+                }]);
             }
         }
     };
@@ -171,25 +193,26 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
         setConnections(prevConnections => {
             const connectionToDelete = prevConnections.find(conn => conn.id === connectionId);
             if (connectionToDelete) {
-                const deviceA = components.find(c => c.id === connectionToDelete.deviceA.componentId);
-                const deviceB = components.find(c => c.id === connectionToDelete.deviceB.componentId);
-
-                if (deviceA && deviceB) {
-                    const portAIndex = deviceA.ports.findIndex(p => p.label === connectionToDelete.deviceA.port);
-                    const portBIndex = deviceB.ports.findIndex(p => p.label === connectionToDelete.deviceB.port);
-
-                    if (portAIndex !== -1 && portBIndex !== -1) {
-                        onPortChange(connectionToDelete.deviceA.componentId, portAIndex, 'connectedTo', '');
-                        onPortChange(connectionToDelete.deviceA.componentId, portAIndex, 'connectedPort', '');
-                        onPortChange(connectionToDelete.deviceA.componentId, portAIndex, 'connectionType', '');
-                        onPortChange(connectionToDelete.deviceA.componentId, portAIndex, 'connectedDeviceType', '');
-
-                        onPortChange(connectionToDelete.deviceB.componentId, portBIndex, 'connectedTo', '');
-                        onPortChange(connectionToDelete.deviceB.componentId, portBIndex, 'connectedPort', '');
-                        onPortChange(connectionToDelete.deviceB.componentId, portBIndex, 'connectionType', '');
-                        onPortChange(connectionToDelete.deviceB.componentId, portBIndex, 'connectedDeviceType', '');
-                    }
-                }
+                setAllComponents(prevAll => {
+                    const updatedComponents = prevAll[currentIdf].map(device => {
+                        if (device.id === connectionToDelete.deviceA.componentId || device.id === connectionToDelete.deviceB.componentId) {
+                            return {
+                                ...device,
+                                ports: device.ports.map(port => 
+                                    (port.label === connectionToDelete.deviceA.port && device.id === connectionToDelete.deviceA.componentId) ||
+                                    (port.label === connectionToDelete.deviceB.port && device.id === connectionToDelete.deviceB.componentId)
+                                        ? { ...port, connectedTo: '', connectedPort: '', connectionType: '', connectedDeviceType: '' }
+                                        : port
+                                )
+                            };
+                        }
+                        return device;
+                    });
+                    return {
+                        ...prevAll,
+                        [currentIdf]: updatedComponents
+                    };
+                });
             }
             return prevConnections.filter(conn => conn.id !== connectionId);
         });
