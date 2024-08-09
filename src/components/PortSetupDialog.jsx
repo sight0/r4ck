@@ -35,6 +35,26 @@ const PortSetupDialog = ({ open, onClose, ports, numIdfs, idf, onPortChange, com
         onPortChange(index, 'identifier', updatedPorts[index].identifier);
     };
 
+    const getMenuItems = () => {
+        if (componentType === 'patch_panel') {
+            return [
+                <MenuItem value="end_user_device" key="end_user_device">End User Device</MenuItem>,
+                <MenuItem value="ip_phone" key="ip_phone">IP Phone</MenuItem>,
+                <MenuItem value="access_point" key="access_point">Access Point</MenuItem>
+            ];
+        } else if (componentType === 'fiber_patch_panel') {
+            return [
+                <MenuItem value="MDF" key="MDF">MDF</MenuItem>,
+                ...[...Array(numIdfs)].map((_, i) => (
+                    <MenuItem key={`IDF_${i + 1}`} value={`IDF_${i + 1}`} disabled={i + 1 === idf}>
+                        IDF {i + 1}
+                    </MenuItem>
+                ))
+            ];
+        }
+        return [];
+    };
+
     return (
         <Dialog open={open} onClose={() => onClose(localPorts)} maxWidth="lg" fullWidth>
             <DialogTitle>
@@ -67,20 +87,10 @@ const PortSetupDialog = ({ open, onClose, ports, numIdfs, idf, onPortChange, com
                                     value={port.cableSource || ''}
                                     onChange={(e) => handleCableSourceChange(index, e.target.value)}
                                 >
-                                    <MenuItem value="access_point">Access Point</MenuItem>
-                                    <MenuItem value="ip_phone">IP Phone</MenuItem>
-                                    <MenuItem value="end_user_device">End-User Device</MenuItem>
-                                    <MenuItem value="switch">Switch</MenuItem>
-                                    <MenuItem value="router">Router</MenuItem>
-                                    <MenuItem value="server">Server</MenuItem>
-                                    <MenuItem value="firewall">Firewall</MenuItem>
-                                    <MenuItem value="patch_panel">Patch Panel</MenuItem>
-                                    {[...Array(numIdfs)].map((_, idx) => (
-                                        idx + 1 !== idf && 
-                                        <MenuItem key={idx + 1} value={`IDF_${idx + 1}`}>{`IDF ${idx + 1}`}</MenuItem>
-                                    ))}
-                                    <MenuItem value="MDF">MDF</MenuItem>
-                                    <MenuItem value="OTHER">Other</MenuItem>
+                                    <MenuItem value="">
+                                        <em>None</em>
+                                    </MenuItem>
+                                    {getMenuItems()}
                                 </Select>
                             </FormControl>
                             <TextField
@@ -116,6 +126,7 @@ PortSetupDialog.propTypes = {
     component: PropTypes.shape({
         type: PropTypes.string.isRequired,
         id: PropTypes.number.isRequired,
+        sequence: PropTypes.number.isRequired,
     }).isRequired,
 };
 
