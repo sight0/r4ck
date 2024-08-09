@@ -1,17 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, 
-  Button, Box, TextField, InputAdornment, IconButton, Tooltip
+  Button, Box, TextField, InputAdornment, Autocomplete
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import FilterListIcon from '@mui/icons-material/FilterList';
 import GetAppIcon from '@mui/icons-material/GetApp';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import PropTypes from 'prop-types';
 
 const PatchingSchedule = ({ connections, components }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortColumn, setSortColumn] = useState('');
-  const [sortDirection, setSortDirection] = useState('asc');
 
   const getPortIdentifier = (componentId, portLabel) => {
     const component = components.find(c => c.id === componentId);
@@ -19,34 +17,26 @@ const PatchingSchedule = ({ connections, components }) => {
     return `${component.name}-${portLabel}`;
   };
 
-  const handleSort = (column) => {
-    if (sortColumn === column) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortColumn(column);
-      setSortDirection('asc');
-    }
-  };
+  const allIdentifiers = useMemo(() => {
+    return connections.flatMap(connection => [
+      getPortIdentifier(connection.deviceA.componentId, connection.deviceA.port),
+      getPortIdentifier(connection.deviceB.componentId, connection.deviceB.port)
+    ]);
+  }, [connections, components]);
 
-  const sortedConnections = [...connections].sort((a, b) => {
-    if (!sortColumn) return 0;
-    const aValue = a.deviceA[sortColumn] || a.deviceB[sortColumn];
-    const bValue = b.deviceA[sortColumn] || b.deviceB[sortColumn];
-    if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
-    if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
-    return 0;
-  });
-
-  const filteredConnections = sortedConnections.filter(connection => 
-    connection.deviceA.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    connection.deviceB.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    connection.deviceA.port.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    connection.deviceB.port.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredConnections = connections.filter(connection => 
+    getPortIdentifier(connection.deviceA.componentId, connection.deviceA.port).toLowerCase().includes(searchTerm.toLowerCase()) ||
+    getPortIdentifier(connection.deviceB.componentId, connection.deviceB.port).toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleExport = () => {
+  const handleExportCSV = () => {
     // Implement CSV export logic here
     console.log('Exporting to CSV...');
+  };
+
+  const handleExportPDF = () => {
+    // Implement PDF export logic here
+    console.log('Exporting to PDF...');
   };
 
   return (
@@ -55,53 +45,59 @@ const PatchingSchedule = ({ connections, components }) => {
         <Typography variant="h5" component="div" sx={{ fontWeight: 'bold' }}>
           Patching Schedule
         </Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<GetAppIcon />}
-          onClick={handleExport}
-        >
-          Export to CSV
-        </Button>
+        <Box>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<GetAppIcon />}
+            onClick={handleExportCSV}
+            sx={{ mr: 1 }}
+          >
+            Export CSV
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            startIcon={<PictureAsPdfIcon />}
+            onClick={handleExportPDF}
+          >
+            Export PDF
+          </Button>
+        </Box>
       </Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <TextField
-          variant="outlined"
-          size="small"
-          placeholder="Search connections..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-        />
-        <Tooltip title="Sort and filter options">
-          <IconButton>
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      </Box>
+      <Autocomplete
+        freeSolo
+        options={allIdentifiers}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            variant="outlined"
+            size="small"
+            placeholder="Search connections..."
+            InputProps={{
+              ...params.InputProps,
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+        )}
+        onInputChange={(event, newValue) => {
+          setSearchTerm(newValue);
+        }}
+        sx={{ mb: 2 }}
+      />
       <TableContainer>
         <Table size="small" aria-label="patching schedule">
           <TableHead>
             <TableRow>
-              <TableCell onClick={() => handleSort('name')} sx={{ cursor: 'pointer', fontWeight: 'bold' }}>
-                From Device {sortColumn === 'name' && (sortDirection === 'asc' ? '▲' : '▼')}
-              </TableCell>
-              <TableCell onClick={() => handleSort('port')} sx={{ cursor: 'pointer', fontWeight: 'bold' }}>
-                From Port {sortColumn === 'port' && (sortDirection === 'asc' ? '▲' : '▼')}
-              </TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>From Device</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>From Port</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }}>From Port Identifier</TableCell>
-              <TableCell onClick={() => handleSort('name')} sx={{ cursor: 'pointer', fontWeight: 'bold' }}>
-                To Device {sortColumn === 'name' && (sortDirection === 'asc' ? '▲' : '▼')}
-              </TableCell>
-              <TableCell onClick={() => handleSort('port')} sx={{ cursor: 'pointer', fontWeight: 'bold' }}>
-                To Port {sortColumn === 'port' && (sortDirection === 'asc' ? '▲' : '▼')}
-              </TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>To Device</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>To Port</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }}>To Port Identifier</TableCell>
             </TableRow>
           </TableHead>
