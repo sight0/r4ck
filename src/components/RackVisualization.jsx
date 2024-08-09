@@ -731,15 +731,23 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                         {Object.entries(componentColors).map(([type, color]) => {
                             const count = components.filter(comp => comp.type === type).length;
                             return (
-                                <Box key={type} sx={{ display: 'flex', backgroundColor: color, border: 1, alignItems: 'center', mb: 2, justifyContent: 'space-between',
+                                <Box key={type} sx={{ 
+                                    display: 'flex', 
+                                    alignItems: 'center', 
+                                    mb: 2, 
+                                    justifyContent: 'space-between',
                                     cursor: 'pointer',
                                     transition: 'all 0.3s ease',
+                                    border: `3px solid ${color}`,
+                                    borderRadius: '10px',
+                                    padding: '8px',
                                     '&:hover': {
                                         transform: 'scale(1.023)',
-                                    },}}
+                                    },
+                                }}
                                      onMouseEnter={() => handleHighlight(type)}
                                      onMouseLeave={() => handleHighlight(null)}>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', ml: 1}}>
+                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                         <Typography>{type} ({count})</Typography>
                                     </Box>
                                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -747,7 +755,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                                             sx={{ 
                                                 width: 30, 
                                                 height: 30, 
-                                                backgroundColor: color, 
+                                                border: `2px solid ${color}`,
                                                 mr: 1,
                                                 borderRadius: '50%',
                                                 display: 'flex',
@@ -755,7 +763,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                                                 alignItems: 'center',
                                             }}
                                         >
-                                            <VisibilityIcon fontSize="small" sx={{ color: '#fff' }} />
+                                            <VisibilityIcon fontSize="small" sx={{ color: color }} />
                                         </Box>
                                     </Box>
                                 </Box>
