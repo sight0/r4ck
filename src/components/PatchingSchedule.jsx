@@ -10,7 +10,6 @@ import PropTypes from 'prop-types';
 
 const PatchingSchedule = ({ connections, components }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  console.log(connections)
   const getPortIdentifier = (componentId, portLabel) => {
     const component = components.find(c => c.id === componentId);
     if (!component) return '';
@@ -128,12 +127,12 @@ PatchingSchedule.propTypes = {
   connections: PropTypes.arrayOf(PropTypes.shape({
     deviceA: PropTypes.shape({
       componentId: PropTypes.number.isRequired,
-      name: PropTypes.string.isRequired,
+      deviceType: PropTypes.string.isRequired,
       port: PropTypes.string.isRequired,
     }).isRequired,
     deviceB: PropTypes.shape({
       componentId: PropTypes.number.isRequired,
-      name: PropTypes.string.isRequired,
+      deviceType: PropTypes.string.isRequired,
       port: PropTypes.string.isRequired,
     }).isRequired,
   })).isRequired,

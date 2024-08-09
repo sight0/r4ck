@@ -223,7 +223,7 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
                                     >
                                         {availablePorts.map((port, index) => (
                                             <MenuItem key={index} value={port.label}>
-                                                {port.label} - {port.cableSource || port.deviceType || 'Unknown'}
+                                                {port.label} - {port.identifier} ({port.cableSource || port.deviceType || 'Unknown'})
                                             </MenuItem>
                                         ))}
                                     </Select>
