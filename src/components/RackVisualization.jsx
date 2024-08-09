@@ -3,7 +3,7 @@ import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { calculateInterIdfConnections } from '../utils/rackUtils';
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography, Box, Grid, Paper, Divider, IconButton, Badge, Tooltip, MenuItem } from '@mui/material';
 import IssuesDialog from './IssuesDialog';
-import PatchingSchedule from './PatchingSchedule';
+// import PatchingSchedule from './PatchingSchedule';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -894,10 +894,8 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                 onConnectionDelete={handleConnectionDelete}
                 existingConnections={connections}
             />
-            <PatchingSchedule
-                connections={connections}
-                components={components}
-            />
+            {/* TODO: Add a button to preview the patching schedule */}
+            {/* TODO: Add an export button for the patching schedule */}
             {/* Placeholder for Recommendations Dialog */}
             <Dialog
                 open={recommendationsDialogOpen}
