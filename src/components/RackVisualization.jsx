@@ -903,14 +903,23 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                 onConnectionDelete={handleConnectionDelete}
                 existingConnections={connections}
             />
-            <Box sx={{ mt: 4, p: 2, backgroundColor: '#f5f5f5', borderRadius: 2, boxShadow: 3 }}>
-              <Typography variant="h6" gutterBottom>Patching Schedule</Typography>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Paper elevation={3} sx={{ mt: 4, p: 3, backgroundColor: '#f8f8f8', borderRadius: 2 }}>
+              <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', color: '#333', mb: 2 }}>
+                Patching Schedule
+              </Typography>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
                 <Button
                   variant="contained"
                   color="primary"
                   startIcon={<VisibilityIcon />}
                   onClick={() => setPreviewDialogOpen(true)}
+                  sx={{ 
+                    minWidth: '200px',
+                    backgroundColor: theme.palette.primary.main,
+                    '&:hover': {
+                      backgroundColor: theme.palette.primary.dark,
+                    },
+                  }}
                 >
                   Preview Schedule
                 </Button>
@@ -919,11 +928,18 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                   color="secondary"
                   startIcon={<GetAppIcon />}
                   onClick={handleExportSchedule}
+                  sx={{ 
+                    minWidth: '200px',
+                    backgroundColor: theme.palette.secondary.main,
+                    '&:hover': {
+                      backgroundColor: theme.palette.secondary.dark,
+                    },
+                  }}
                 >
                   Export Schedule
                 </Button>
               </Box>
-            </Box>
+            </Paper>
 
             {/* Preview Dialog */}
             <Dialog
