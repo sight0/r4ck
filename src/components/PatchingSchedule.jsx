@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 
 const PatchingSchedule = ({ connections, components }) => {
   const [searchTerm, setSearchTerm] = useState('');
-
+  console.log(connections)
   const getPortIdentifier = (componentId, portLabel) => {
     const component = components.find(c => c.id === componentId);
     if (!component) return '';
@@ -104,10 +104,10 @@ const PatchingSchedule = ({ connections, components }) => {
           <TableBody>
             {filteredConnections.map((connection, index) => (
               <TableRow key={index} sx={{ '&:nth-of-type(odd)': { backgroundColor: 'action.hover' } }}>
-                <TableCell>{connection.deviceA.name}</TableCell>
+                <TableCell>{connection.deviceA.deviceType}</TableCell>
                 <TableCell>{connection.deviceA.port}</TableCell>
                 <TableCell>{getPortIdentifier(connection.deviceA.componentId, connection.deviceA.port)}</TableCell>
-                <TableCell>{connection.deviceB.name}</TableCell>
+                <TableCell>{connection.deviceB.deviceType}</TableCell>
                 <TableCell>{connection.deviceB.port}</TableCell>
                 <TableCell>{getPortIdentifier(connection.deviceB.componentId, connection.deviceB.port)}</TableCell>
               </TableRow>
