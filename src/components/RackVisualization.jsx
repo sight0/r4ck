@@ -815,13 +815,10 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                     <Button onClick={() => {
                         const name = document.getElementById('component-name').value;
                         const capacityElement = document.getElementById('component-capacity');
-                        console.log(capacityElement.querySelector('input'))
                         const capacity = capacityElement.tagName.toLowerCase() === 'div'
-                            // ? capacityElement.querySelector('input').value
-                            ? capacityElement.querySelector('input')
+                            ? capacityElement.querySelector('.MuiSelect-nativeInput').value
                             : capacityElement.value;
                         const units = document.getElementById('component-units').value;
-                        console.log(capacity);
                         handleDialogClose(name, capacity, units);
                     }}>Add</Button>
                 </DialogActions>
