@@ -15,7 +15,7 @@ const PatchingSchedule = ({ connections, components }) => {
     if (!component) return '';
     return `${component.name}-${portLabel}`;
   };
-
+  console.log(connections)
   const allIdentifiers = useMemo(() => {
     return connections.flatMap(connection => [
       getPortIdentifier(connection.deviceA.componentId, connection.deviceA.port),
