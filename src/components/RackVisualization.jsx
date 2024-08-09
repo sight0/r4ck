@@ -77,6 +77,34 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
     const [connections, setConnections] = useState([]);
     const [componentSequences, setComponentSequences] = useState({});
     const [previewDialogOpen, setPreviewDialogOpen] = useState(false);
+    const [totalDevices, setTotalDevices] = useState(0);
+
+    useEffect(() => {
+        // Calculate total devices for the current IDF
+        const devices = idfData[currentIdf]?.devices || [];
+        const total = devices.reduce((sum, device) => sum + device.count, 0);
+        setTotalDevices(total);
+    }, [currentIdf, idfData]);
+
+    const handleSaveWorkspace = () => {
+        // Implement save workspace functionality
+        console.log('Saving workspace...');
+    };
+
+    const handleLoadWorkspace = () => {
+        // Implement load workspace functionality
+        console.log('Loading workspace...');
+    };
+
+    const handleAutoPlacement = () => {
+        // Implement auto placement functionality
+        console.log('Auto placing components...');
+    };
+
+    const handleAutoWiring = () => {
+        // Implement auto wiring functionality
+        console.log('Auto wiring components...');
+    };
 
     const getNextSequence = (type) => {
         const existingSequences = components
@@ -832,40 +860,43 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                             color="primary" 
                             fullWidth 
                             sx={{ mb: 2 }}
-                            onClick={() => setConnectionWizardOpen(true)}
+                            onClick={handleSaveWorkspace}
                         >
-                            Open Connection Wizard
+                            Save Workspace
                         </Button>
                         <Button 
                             variant="contained" 
                             color="secondary" 
                             fullWidth 
                             sx={{ mb: 2 }}
-                            onClick={() => setIssuesDialogOpen(true)}
+                            onClick={handleLoadWorkspace}
                         >
-                            View Issues
+                            Load Workspace
+                        </Button>
+                        <Button 
+                            variant="contained" 
+                            color="success" 
+                            fullWidth 
+                            sx={{ mb: 2 }}
+                            onClick={handleAutoPlacement}
+                        >
+                            Auto Placement
                         </Button>
                         <Button 
                             variant="contained" 
                             color="info" 
                             fullWidth 
                             sx={{ mb: 2 }}
-                            onClick={handleGetRecommendations}
+                            onClick={handleAutoWiring}
                         >
-                            Get Recommendations
+                            Auto Wiring
                         </Button>
-                        <Typography variant="subtitle1" gutterBottom sx={{ mt: 3 }}>IDF Summary</Typography>
+                        <Typography variant="subtitle1" gutterBottom sx={{ mt: 3 }}>Configuration Calculations</Typography>
                         <Typography variant="body2">
-                            Total Components: {components.length}
+                            Expected Patch Panels: {Math.ceil(totalDevices / 24)}
                         </Typography>
                         <Typography variant="body2">
-                            Switches: {components.filter(c => c.type === 'switch').length}
-                        </Typography>
-                        <Typography variant="body2">
-                            Patch Panels: {components.filter(c => c.type === 'patch_panel').length}
-                        </Typography>
-                        <Typography variant="body2">
-                            Total Ports: {components.reduce((sum, c) => sum + parseInt(c.capacity || 0), 0)}
+                            Expected Switches: {Math.ceil(totalDevices / 48)}
                         </Typography>
                     </Paper>
                 </Grid>
