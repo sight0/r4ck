@@ -190,15 +190,36 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
         // Snap to grid
         const snappedY = Math.floor(y / 20) * 20;
 
-        setNewComponent({
+        const newComp = {
             ...component,
             x: 30, // Adjusted to accommodate rack unit labels
             y: snappedY,
             id: Date.now(),
-        });
-        setDialogOpen(true);
+        };
+
+        if (component.type === 'cable_manager') {
+            // Instantly place cable manager
+            const sequence = getNextSequence(component.type);
+            newComp.name = `Cable Manager ${sequence}`;
+            newComp.capacity = '1';
+            newComp.units = 1;
+            newComp.sequence = sequence;
+
+            setAllComponents(prevAll => ({
+                ...prevAll,
+                [currentIdf]: [...(prevAll[currentIdf] || []), newComp]
+            }));
+            setComponentSequences(prevSequences => ({
+                ...prevSequences,
+                [component.type]: sequence
+            }));
+        } else {
+            // For other components, open the dialog
+            setNewComponent(newComp);
+            setDialogOpen(true);
+        }
         setPlacementIndicator(null);
-    }, []);
+    }, [currentIdf, getNextSequence]);
 
     const handleDragOver = useCallback((e) => {
         e.preventDefault();
