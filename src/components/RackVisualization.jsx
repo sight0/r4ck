@@ -257,12 +257,13 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
             };
             
             // Initialize ports for switches and patch panels
-            if (newComp.type === 'switch' || newComp.type === 'patch_panel') {
+            if (newComp.type === 'switch' || newComp.type === 'patch_panel' || newComp.type === 'fiber_patch_panel') {
                 const portCount = parseInt(capacity);
                 newComp.ports = Array.from({ length: portCount }, (_, i) => ({
                     label: `Port ${i + 1}`,
                     cableSource: '',
-                    connectedTo: ''
+                    connectedTo: '',
+                    type: newComp.type === 'fiber_patch_panel' ? 'fiber' : 'copper'
                 }));
             }
             
