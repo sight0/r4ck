@@ -781,9 +781,9 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                     <TextField label="Name" fullWidth margin="normal" id="component-name" />
                     <TextField label="Capacity/Ports" fullWidth margin="normal" id="component-capacity" />
                     <TextField label="Units (U)" type="number" fullWidth margin="normal" id="component-units" />
-                    <Typography variant="body2" sx={{ mt: 2, fontStyle: 'italic' }}>
-                        {recommendation}
-                    </Typography>
+                    {/*<Typography variant="body2" sx={{ mt: 2, fontStyle: 'italic' }}>*/}
+                    {/*    {recommendation}*/}
+                    {/*</Typography>*/}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
