@@ -597,105 +597,105 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                 </Box>
             </Box>
             <Grid container spacing={2}>
-                <Grid item xs={12} md={8}>
+                <Grid item xs={12} md={5}>
                     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 2 }} className="rack-visualization">
-                <StyledRackContainer>
-                    <Box className="rack-units">
-                        {[...Array(rackSize)].map((_, index) => (
-                            <div key={index} style={{ position: 'absolute', top: `${index * 20}px`, color: '#fff' }}>
-                                {rackSize - index}U
-                            </div>
-                        ))}
+                        <StyledRackContainer>
+                            <Box className="rack-units">
+                                {[...Array(rackSize)].map((_, index) => (
+                                    <div key={index} style={{ position: 'absolute', top: `${index * 20}px`, color: '#fff' }}>
+                                        {rackSize - index}U
+                                    </div>
+                                ))}
+                            </Box>
+                            <Box className="rack-container">
+                                <svg
+                                    ref={rackRef}
+                                    width={rackWidth}
+                                    height={rackHeight}
+                                    onDrop={handleDrop}
+                                    onDragOver={handleDragOver}
+                                    onMouseMove={handleComponentDrag}
+                                    onMouseUp={handleComponentDragEnd}
+                                >
+                                    {/* Rack outline */}
+                                    <rect
+                                        x="30"
+                                        y="0"
+                                        width={rackWidth - 30}
+                                        height={rackHeight}
+                                        fill="none"
+                                        stroke="#666"
+                                        strokeWidth="2"
+                                    />
+                                    {/* Rack units */}
+                                    {[...Array(rackSize)].map((_, index) => (
+                                        <line
+                                            key={index}
+                                            x1="30"
+                                            y1={index * 20}
+                                            x2={rackWidth}
+                                            y2={index * 20}
+                                            stroke="#666"
+                                            strokeWidth="1"
+                                            opacity="0.5"
+                                        />
+                                    ))}
+
+                                    {/* Components */}
+                                    {components.map((comp) => (
+                                        <RackComponent
+                                            key={comp.id}
+                                            component={comp}
+                                            rackWidth={rackWidth}
+                                            onDelete={handleDeleteComponent}
+                                            onEdit={handleEditComponent}
+                                            onDragStart={(e) => handleComponentDragStart(e, comp)}
+                                            isDragging={draggedComponent && draggedComponent.id === comp.id}
+                                            componentColors={componentColors}
+                                            isHighlighted={highlightedType === comp.type}
+                                            sequence={comp.sequence}
+                                        />
+                                    ))}
+
+                                    {/* Preview of dragged component */}
+                                    {draggedComponent && (
+                                        <rect
+                                            x={30}
+                                            y={draggedComponent.y}
+                                            width={rackWidth - 40}
+                                            height={draggedComponent.units * 20}
+                                            fill="#FFD700"
+                                            fillOpacity={0.2}
+                                            stroke="#FFD700"
+                                            strokeWidth={2}
+                                            strokeDasharray="5,5"
+                                            rx="5"
+                                            ry="5"
+                                        />
+                                    )}
+
+                                    {/* Placement indicator */}
+                                    {placementIndicator && (
+                                        <rect
+                                            x={30}
+                                            y={placementIndicator.y}
+                                            width={rackWidth - 40}
+                                            height={placementIndicator.height}
+                                            fill="#FFD700"
+                                            fillOpacity={0.2}
+                                            stroke="#FFD700"
+                                            strokeWidth={2}
+                                            strokeDasharray="5,5"
+                                            rx="5"
+                                            ry="5"
+                                        />
+                                    )}
+                                </svg>
+                            </Box>
+                        </StyledRackContainer>
                     </Box>
-                    <Box className="rack-container">
-                        <svg
-                            ref={rackRef}
-                            width={rackWidth}
-                            height={rackHeight}
-                            onDrop={handleDrop}
-                            onDragOver={handleDragOver}
-                            onMouseMove={handleComponentDrag}
-                            onMouseUp={handleComponentDragEnd}
-                        >
-                            {/* Rack outline */}
-                            <rect
-                                x="30"
-                                y="0"
-                                width={rackWidth - 30}
-                                height={rackHeight}
-                                fill="none"
-                                stroke="#666"
-                                strokeWidth="2"
-                            />
-                            {/* Rack units */}
-                            {[...Array(rackSize)].map((_, index) => (
-                                <line
-                                    key={index}
-                                    x1="30"
-                                    y1={index * 20}
-                                    x2={rackWidth}
-                                    y2={index * 20}
-                                    stroke="#666"
-                                    strokeWidth="1"
-                                    opacity="0.5"
-                                />
-                            ))}
-
-                            {/* Components */}
-                            {components.map((comp) => (
-                                <RackComponent
-                                    key={comp.id}
-                                    component={comp}
-                                    rackWidth={rackWidth}
-                                    onDelete={handleDeleteComponent}
-                                    onEdit={handleEditComponent}
-                                    onDragStart={(e) => handleComponentDragStart(e, comp)}
-                                    isDragging={draggedComponent && draggedComponent.id === comp.id}
-                                    componentColors={componentColors}
-                                    isHighlighted={highlightedType === comp.type}
-                                    sequence={comp.sequence}
-                                />
-                            ))}
-
-                            {/* Preview of dragged component */}
-                            {draggedComponent && (
-                                <rect
-                                    x={30}
-                                    y={draggedComponent.y}
-                                    width={rackWidth - 40}
-                                    height={draggedComponent.units * 20}
-                                    fill="#FFD700"
-                                    fillOpacity={0.2}
-                                    stroke="#FFD700"
-                                    strokeWidth={2}
-                                    strokeDasharray="5,5"
-                                    rx="5"
-                                    ry="5"
-                                />
-                            )}
-
-                            {/* Placement indicator */}
-                            {placementIndicator && (
-                                <rect
-                                    x={30}
-                                    y={placementIndicator.y}
-                                    width={rackWidth - 40}
-                                    height={placementIndicator.height}
-                                    fill="#FFD700"
-                                    fillOpacity={0.2}
-                                    stroke="#FFD700"
-                                    strokeWidth={2}
-                                    strokeDasharray="5,5"
-                                    rx="5"
-                                    ry="5"
-                                />
-                            )}
-                        </svg>
-                    </Box>
-                </StyledRackContainer>
-                </Box>
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={7}>
                     <Box sx={{ border: '1px solid #ccc', borderRadius: '4px', p: 2, mb: 2 }}>
                         <Typography variant="h6" gutterBottom>Legend</Typography>
                         {Object.entries(componentColors).map(([type, color]) => {
