@@ -989,6 +989,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
             >
                 <DialogTitle>Recommendations</DialogTitle>
                 <DialogContent>
+                    <Typography>TODO:</Typography>
                     <Typography>Recommendations content will go here.</Typography>
                 </DialogContent>
                 <DialogActions>
