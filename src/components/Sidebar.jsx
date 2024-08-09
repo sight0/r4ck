@@ -7,8 +7,8 @@ import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 export const components = [
     { id: 1, name: 'Router', type: 'router', color: '#795548' },
     { id: 2, name: 'Switch', type: 'switch', color: '#4CAF50' },
-    { id: 3, name: 'Fiber Switch', type: 'fiber_switch', color: '#2196F3' },
-    { id: 4, name: 'Patch Panel', type: 'patch_panel', color: '#9C27B0' },
+    { id: 3, name: 'Patch Panel', type: 'patch_panel', color: '#9C27B0' },
+    { id: 4, name: 'Fiber Patch Panel', type: 'fiber_patch_panel', color: '#E91E63' },
     { id: 5, name: 'Firewall', type: 'firewall', color: '#F44336' },
     { id: 6, name: 'Server', type: 'server', color: '#00BCD4' },
     { id: 7, name: 'UPS', type: 'ups', color: '#FFC107' },
