@@ -857,47 +857,51 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                         <Typography variant="h6" gutterBottom>Quick Actions</Typography>
                         <Button 
                             variant="contained" 
-                            color="primary" 
                             fullWidth 
-                            sx={{ mb: 2 }}
+                            sx={{ mb: 2, backgroundColor: '#4CAF50', '&:hover': { backgroundColor: '#45a049' } }}
                             onClick={handleSaveWorkspace}
                         >
                             Save Workspace
                         </Button>
                         <Button 
                             variant="contained" 
-                            color="secondary" 
                             fullWidth 
-                            sx={{ mb: 2 }}
+                            sx={{ mb: 2, backgroundColor: '#2196F3', '&:hover': { backgroundColor: '#1e88e5' } }}
                             onClick={handleLoadWorkspace}
                         >
                             Load Workspace
                         </Button>
                         <Button 
                             variant="contained" 
-                            color="success" 
                             fullWidth 
-                            sx={{ mb: 2 }}
+                            sx={{ mb: 2, backgroundColor: '#FF9800', '&:hover': { backgroundColor: '#f57c00' } }}
                             onClick={handleAutoPlacement}
                         >
                             Auto Placement
                         </Button>
                         <Button 
                             variant="contained" 
-                            color="info" 
                             fullWidth 
-                            sx={{ mb: 2 }}
+                            sx={{ mb: 2, backgroundColor: '#9C27B0', '&:hover': { backgroundColor: '#8e24aa' } }}
                             onClick={handleAutoWiring}
                         >
                             Auto Wiring
                         </Button>
-                        <Typography variant="subtitle1" gutterBottom sx={{ mt: 3 }}>Configuration Calculations</Typography>
-                        <Typography variant="body2">
-                            Expected Patch Panels: {Math.ceil(totalDevices / 24)}
-                        </Typography>
-                        <Typography variant="body2">
-                            Expected Switches: {Math.ceil(totalDevices / 48)}
-                        </Typography>
+                        <Typography variant="subtitle1" gutterBottom sx={{ mt: 3, fontWeight: 'bold' }}>Configuration Calculations</Typography>
+                        <Box sx={{ backgroundColor: '#f5f5f5', p: 2, borderRadius: 2 }}>
+                            <Typography variant="body2" sx={{ mb: 1 }}>
+                                <strong>Expected Patch Panels:</strong> {Math.ceil(totalDevices / 24)}
+                            </Typography>
+                            <Typography variant="body2" sx={{ mb: 1 }}>
+                                <strong>Expected Switches:</strong> {Math.ceil(totalDevices / 48)}
+                            </Typography>
+                            <Typography variant="body2" sx={{ mb: 1 }}>
+                                <strong>Expected Fiber Patch Panels:</strong> {Math.ceil(totalDevices / 24 * 0.1)} {/* Assuming 10% of connections are fiber */}
+                            </Typography>
+                            <Typography variant="body2">
+                                <strong>Expected Cable Managers:</strong> {Math.ceil((Math.ceil(totalDevices / 24) + Math.ceil(totalDevices / 48)) / 2)} {/* One cable manager for every two devices */}
+                            </Typography>
+                        </Box>
                     </Paper>
                 </Grid>
             </Grid>
