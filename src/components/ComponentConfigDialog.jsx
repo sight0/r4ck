@@ -54,11 +54,19 @@ const ComponentConfigDialog = ({ open, onClose, component, numIdfs, idfData, cur
             const ports = [...prev.ports];
             ports[index] = { ...ports[index], [field]: value };
             
-            // If connecting to an IDF or MDF, update the connectedTo field
-            if (field === 'cableSource' && (value.startsWith('IDF_') || value === 'MDF')) {
-                ports[index].connectedTo = value;
-            } else if (field === 'cableSource') {
-                ports[index].connectedTo = '';
+            // Update connectedTo field based on component type and cable source
+            if (prev.type === 'patch_panel') {
+                if (['end_user_device', 'ip_phone', 'access_point'].includes(value)) {
+                    ports[index].connectedTo = value;
+                } else {
+                    ports[index].connectedTo = '';
+                }
+            } else if (prev.type === 'fiber_patch_panel') {
+                if (value.startsWith('IDF_') || value === 'MDF') {
+                    ports[index].connectedTo = value;
+                } else {
+                    ports[index].connectedTo = '';
+                }
             }
             
             return { ...prev, ports: ports };
@@ -140,13 +148,14 @@ const ComponentConfigDialog = ({ open, onClose, component, numIdfs, idfData, cur
                                 <MenuItem value="switch">Switch</MenuItem>
                                 <MenuItem value="fiber_switch">Fiber Switch</MenuItem>
                                 <MenuItem value="patch_panel">Patch Panel</MenuItem>
+                                <MenuItem value="fiber_patch_panel">Fiber Patch Panel</MenuItem>
                                 <MenuItem value="firewall">Firewall</MenuItem>
                                 <MenuItem value="server">Server</MenuItem>
                                 <MenuItem value="ups">UPS</MenuItem>
                                 <MenuItem value="other">Other</MenuItem>
                             </Select>
                         </FormControl>
-                        {editedComponent.type === 'patch_panel' && (
+                        {(editedComponent.type === 'patch_panel' || editedComponent.type === 'fiber_patch_panel') && (
                             <Button 
                                 onClick={() => setShowPortSetup(true)} 
                                 variant="outlined" 
@@ -162,7 +171,7 @@ const ComponentConfigDialog = ({ open, onClose, component, numIdfs, idfData, cur
                     <Button onClick={handleSave} color="primary">Save</Button>
                 </DialogActions>
             </Dialog>
-            {editedComponent.type === 'patch_panel' && (
+            {(editedComponent.type === 'patch_panel' || editedComponent.type === 'fiber_patch_panel') && (
                 <PortSetupDialog
                     open={showPortSetup}
                     onClose={() => setShowPortSetup(false)}
