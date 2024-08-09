@@ -244,6 +244,16 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                 sequence,
             };
             
+            // Initialize ports for switches and patch panels
+            if (newComp.type === 'switch' || newComp.type === 'patch_panel') {
+                const portCount = parseInt(capacity);
+                newComp.ports = Array.from({ length: portCount }, (_, i) => ({
+                    label: `Port ${i + 1}`,
+                    cableSource: '',
+                    connectedTo: ''
+                }));
+            }
+            
             // Check if the component fits within the rack
             if (newComp.y + newComp.units * 20 > rackHeight) {
                 alert("The component doesn't fit within the rack. Please adjust the size or position.");
