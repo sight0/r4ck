@@ -20,6 +20,7 @@ import RackComponent from './RackComponent';
 import ComponentConfigDialog from './ComponentConfigDialog';
 import ConnectionWizard from './ConnectionWizard';
 import { components as sidebarComponents } from './Sidebar';
+import {generateSmartIdentifier} from "../utils/identifierUtils.js";
 
 const componentColors = Object.fromEntries(sidebarComponents.map(comp => [comp.type, comp.color]));
 

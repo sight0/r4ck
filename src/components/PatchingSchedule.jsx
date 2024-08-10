@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 
 const PatchingSchedule = ({ connections, components }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const getPortIdentifier = (componentId, portLabel) => {
+  const getConnectionIdentifier = (componentId, portLabel) => {
     const component = components.find(c => c.id === componentId);
     if (!component) return '';
     return `${component.name}-${portLabel}`;
@@ -18,14 +18,14 @@ const PatchingSchedule = ({ connections, components }) => {
   console.log(connections)
   const allIdentifiers = useMemo(() => {
     return connections.flatMap(connection => [
-      getPortIdentifier(connection.deviceA.componentId, connection.deviceA.port),
-      getPortIdentifier(connection.deviceB.componentId, connection.deviceB.port)
+      getConnectionIdentifier(connection.deviceA.deviceType, connection.deviceA.port),
+      getConnectionIdentifier(connection.deviceB.deviceType, connection.deviceB.port)
     ]);
   }, [connections, components]);
 
   const filteredConnections = connections.filter(connection => 
-    getPortIdentifier(connection.deviceA.componentId, connection.deviceA.port).toLowerCase().includes(searchTerm.toLowerCase()) ||
-    getPortIdentifier(connection.deviceB.componentId, connection.deviceB.port).toLowerCase().includes(searchTerm.toLowerCase())
+    getConnectionIdentifier(connection.deviceA.deviceType, connection.deviceA.port).toLowerCase().includes(searchTerm.toLowerCase()) ||
+    getConnectionIdentifier(connection.deviceB.deviceType, connection.deviceB.port).toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleExportCSV = () => {
@@ -105,10 +105,10 @@ const PatchingSchedule = ({ connections, components }) => {
               <TableRow key={index} sx={{ '&:nth-of-type(odd)': { backgroundColor: 'action.hover' } }}>
                 <TableCell>{connection.deviceA.deviceType}</TableCell>
                 <TableCell>{connection.deviceA.port}</TableCell>
-                <TableCell>{getPortIdentifier(connection.deviceA.componentId, connection.deviceA.port)}</TableCell>
+                <TableCell>{connection.deviceA.identifier}</TableCell>
                 <TableCell>{connection.deviceB.deviceType}</TableCell>
                 <TableCell>{connection.deviceB.port}</TableCell>
-                <TableCell>{getPortIdentifier(connection.deviceB.componentId, connection.deviceB.port)}</TableCell>
+                <TableCell>{connection.deviceB.identifier}</TableCell>
               </TableRow>
             ))}
           </TableBody>
