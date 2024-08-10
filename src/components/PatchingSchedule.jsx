@@ -87,6 +87,11 @@ const PatchingSchedule = ({ connections, components }) => {
           setSearchTerm(newValue);
         }}
         sx={{ mb: 2 }}
+        renderOption={(props, option) => (
+          <li {...props} key={option}>
+            {option}
+          </li>
+        )}
       />
       <TableContainer>
         <Table size="small" aria-label="patching schedule">
