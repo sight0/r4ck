@@ -9,7 +9,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import { useTheme } from "@mui/material/styles";
 
-const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionCreate, existingConnections, onConnectionUpdate, onConnectionDelete }) => {
+const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionCreate, existingConnections, onConnectionUpdate, onConnectionDelete, setAllComponents }) => {
     const theme = useTheme();
     const [activeStep, setActiveStep] = useState(0);
     const [connection, setConnection] = useState({
