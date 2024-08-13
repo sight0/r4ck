@@ -124,8 +124,9 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
     };
 
     const handleConnectionCreate = (newConnection) => {
-        const deviceA = components.find(c => c.id === newConnection.deviceA.componentId);
-        const deviceB = components.find(c => c.id === newConnection.deviceB.componentId);
+      const idfComponents = components[currentIdf];
+        const deviceA = idfComponents.find(c => c.id === newConnection.deviceA.componentId);
+        const deviceB = idfComponents.find(c => c.id === newConnection.deviceB.componentId);
 
         if (deviceA && deviceB) {
             const portAIndex = deviceA.ports.findIndex(p => p.label === newConnection.deviceA.port);
