@@ -9,7 +9,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import { useTheme } from "@mui/material/styles";
 
-const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionCreate, existingConnections, onConnectionUpdate, onConnectionDelete, setAllComponents }) => {
+const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionCreate, onConnectionUpdate, onConnectionDelete, existingConnections }) => {
     const theme = useTheme();
     const [activeStep, setActiveStep] = useState(0);
     const [connection, setConnection] = useState({
@@ -57,17 +57,63 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
         setActiveStep(0);
     };
 
+    // const handleFinish = () => {
+    //     const getPortDetails = (componentId, portLabel) => {
+    //         const idfComponents = components;
+    //         const component = idfComponents.find(c => c.id === componentId);
+    //         const port = component.ports.find(p => p.label === portLabel);
+    //         return {
+    //             componentId,
+    //             port: portLabel,
+    //             identifier: port.identifier,
+    //             deviceType: component.type
+    //             // deviceType: component.type === 'patch_panel' ? 'Patch Panel' : undefined
+    //         };
+    //     };
+    //
+    //     const newConnection = {
+    //         id: editingConnection ? editingConnection.id : Date.now(),
+    //         deviceA: getPortDetails(connection.firstComponent, connection.firstPort),
+    //         deviceB: getPortDetails(connection.secondComponent, connection.secondPort),
+    //         idf: currentIdf,
+    //         type: connection.type,
+    //         speed: connection.speed,
+    //         notes: connection.notes,
+    //         identifierA: getPortDetails(connection.firstComponent, connection.firstPort).identifier,
+    //         firstDeviceSequence: connection.firstComponent.firstDeviceSequence,
+    //         identifierB: getPortDetails(connection.secondComponent, connection.secondPort).identifier,
+    //         secondDeviceSequence: connection.firstComponent.secondDeviceSequence,
+    //     };
+    //
+    //     if (editingConnection) {
+    //         onConnectionUpdate(newConnection);
+    //     } else {
+    //         onConnectionCreate(newConnection);
+    //     }
+    //
+    //     setIsAddingConnection(false);
+    //     setEditingConnection(null);
+    //     setConnection({
+    //         firstComponent: '',
+    //         firstPort: '',
+    //         secondComponent: '',
+    //         secondPort: '',
+    //         type: '',
+    //         speed: '',
+    //         notes: ''
+    //     });
+    // };
+
     const handleFinish = () => {
         const getPortDetails = (componentId, portLabel) => {
-            const idfComponents = components;
-            const component = idfComponents.find(c => c.id === componentId);
+            const component = components.find(c => c.id === componentId);
             const port = component.ports.find(p => p.label === portLabel);
             return {
                 componentId,
                 port: portLabel,
                 identifier: port.identifier,
-                deviceType: component.type
-                // deviceType: component.type === 'patch_panel' ? 'Patch Panel' : undefined
+                deviceType: component.type,
+                deviceSequence: component.sequence
             };
         };
 
@@ -79,18 +125,14 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
             type: connection.type,
             speed: connection.speed,
             notes: connection.notes,
-            identifierA: getPortDetails(connection.firstComponent, connection.firstPort).identifier,
-            firstDeviceSequence: connection.firstComponent.firstDeviceSequence,
-            identifierB: getPortDetails(connection.secondComponent, connection.secondPort).identifier,
-            secondDeviceSequence: connection.firstComponent.secondDeviceSequence,
         };
-        
+
         if (editingConnection) {
             onConnectionUpdate(newConnection);
         } else {
             onConnectionCreate(newConnection);
         }
-        
+
         setIsAddingConnection(false);
         setEditingConnection(null);
         setConnection({
@@ -386,7 +428,6 @@ ConnectionWizard.propTypes = {
     components: PropTypes.array.isRequired,
     currentIdf: PropTypes.number.isRequired,
     onConnectionCreate: PropTypes.func.isRequired,
-    onConnectionUpdate: PropTypes.func.isRequired,
     onConnectionDelete: PropTypes.func.isRequired,
     existingConnections: PropTypes.array.isRequired,
 };
