@@ -30,18 +30,14 @@ const PatchingSchedule = ({ connections, components, currentIdf }) => {
 
   const allIdentifiers = useMemo(() => {
     return connections.flatMap(connection => [
-      connection.identifierA,
-      connection.identifierB,
+      connection.deviceA.identifier,
+      connection.deviceB.identifier,
     ])
-  }, [connections, components]);
+  }, [connections]);
 
-  const idfConnections = connections.filter(conn => 
-    components.some(comp => comp.id === conn.deviceA.componentId || comp.id === conn.deviceB.componentId)
-  );
-  const filteredConnections = idfConnections.filter(connection =>
-      {
-        return connection.identifierA.toLowerCase().includes(searchTerm.toLowerCase()) || connection.identifierB.toLowerCase().includes(searchTerm.toLowerCase())
-      }
+  const filteredConnections = connections.filter(connection =>
+    connection.deviceA.identifier.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    connection.deviceB.identifier.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleExportCSV = () => {
@@ -49,10 +45,10 @@ const PatchingSchedule = ({ connections, components, currentIdf }) => {
     const csvContent = [
       headers.join(','),
       ...filteredConnections.map(connection => [
-        connection.deviceA.deviceType,
+        connection.deviceA.deviceType + " " + connection.firstDeviceSequence,
         connection.deviceA.port,
         connection.deviceA.identifier,
-        connection.deviceB.deviceType,
+        connection.deviceB.deviceType + " " + connection.secondDeviceSequence,
         connection.deviceB.port,
         connection.deviceB.identifier
       ].join(','))
