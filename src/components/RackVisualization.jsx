@@ -382,9 +382,6 @@ const RackVisualization = ({
         saveRackDesign();
     }, [allComponents, saveRackDesign]);
 
-    useEffect(() => {
-        setConnections(connectionsPerIdf[currentIdf] || []);
-    }, [connectionsPerIdf, currentIdf]);
 
     const handleNextIdf = () => {
         if (currentIdf < numIdfs) {
