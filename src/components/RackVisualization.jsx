@@ -125,62 +125,46 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
 
     const handleConnectionCreate = (newConnection) => {
         onAddConnection(newConnection);
+        setAllComponents(prevAll => {
+            const updatedComponents = prevAll[currentIdf].map(comp => {
+                if (comp.id === newConnection.deviceA.componentId || comp.id === newConnection.deviceB.componentId) {
+                    return {
+                        ...comp,
+                        ports: comp.ports.map(port => {
+                            if (
+                                (comp.id === newConnection.deviceA.componentId && port.label === newConnection.deviceA.port) ||
+                                (comp.id === newConnection.deviceB.componentId && port.label === newConnection.deviceB.port)
+                            ) {
+                                return {
+                                    ...port,
+                                    connectedTo: comp.id === newConnection.deviceA.componentId ? newConnection.deviceB.componentId : newConnection.deviceA.componentId,
+                                    connectedPort: comp.id === newConnection.deviceA.componentId ? newConnection.deviceB.port : newConnection.deviceA.port
+                                };
+                            }
+                            return port;
+                        })
+                    };
+                }
+                return comp;
+            });
+            return {
+                ...prevAll,
+                [currentIdf]: updatedComponents
+            };
+        });
+
         const deviceA = components.find(c => c.id === newConnection.deviceA.componentId);
         const deviceB = components.find(c => c.id === newConnection.deviceB.componentId);
+        const connectionType = (deviceA.type === 'switch' && deviceB.type === 'switch') ? 'stacking' : 'standard';
+        const firstDeviceSequence = deviceA.sequence;
+        const secondDeviceSequence = deviceB.sequence;
 
-        if (deviceA && deviceB) {
-            const portAIndex = deviceA.ports.findIndex(p => p.label === newConnection.deviceA.port);
-            const portBIndex = deviceB.ports.findIndex(p => p.label === newConnection.deviceB.port);
-
-            if (portAIndex !== -1 && portBIndex !== -1) {
-                // Check if either port is already connected
-                if (deviceA.ports[portAIndex].connectedTo || deviceB.ports[portBIndex].connectedTo) {
-                    alert("One or both ports are already connected. Please disconnect them first.");
-                    return;
-                }
-
-                // Update port connections
-                const updatedDeviceA = {
-                    ...deviceA,
-                    ports: deviceA.ports.map((port, index) => 
-                        index === portAIndex 
-                            ? { ...port, connectedTo: newConnection.deviceB.componentId, connectedPort: newConnection.deviceB.port }
-                            : port
-                    )
-                };
-
-                const updatedDeviceB = {
-                    ...deviceB,
-                    ports: deviceB.ports.map((port, index) => 
-                        index === portBIndex 
-                            ? { ...port, connectedTo: newConnection.deviceA.componentId, connectedPort: newConnection.deviceA.port }
-                            : port
-                    )
-                };
-
-                // Update components state
-                setAllComponents(prevAll => ({
-                    ...prevAll,
-                    [currentIdf]: prevAll[currentIdf].map(comp => 
-                        comp.id === updatedDeviceA.id ? updatedDeviceA :
-                        comp.id === updatedDeviceB.id ? updatedDeviceB :
-                        comp
-                    )
-                }));
-
-                // Set connection type
-                const connectionType = (deviceA.type === 'switch' && deviceB.type === 'switch') ? 'stacking' : 'standard';
-                const firstDeviceSequence = deviceA.sequence;
-                const secondDeviceSequence = deviceB.sequence;
-                // Add the new connection to the connections state
-                setConnections(prevConnections => [...prevConnections, {
-                    ...newConnection,
-                    connectionType,
-                    firstDeviceSequence,
-                    secondDeviceSequence,
-                }]);
-            }
-        }
+        setConnections(prevConnections => [...prevConnections, {
+            ...newConnection,
+            connectionType,
+            firstDeviceSequence,
+            secondDeviceSequence,
+        }]);
     };
 
     const handleConnectionUpdate = (updatedConnection) => {
@@ -219,6 +203,11 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
             }
             return prevConnections.filter(conn => conn.id !== connectionId);
         });
+        // Also update the connectionsPerIdf state
+        setConnectionsPerIdf(prevConnections => ({
+            ...prevConnections,
+            [currentIdf]: prevConnections[currentIdf].filter(conn => conn.id !== connectionId)
+        }));
     };
 
     const theme = useTheme();
@@ -407,6 +396,10 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
     useEffect(() => {
         saveRackDesign();
     }, [allComponents, saveRackDesign]);
+
+    useEffect(() => {
+        setConnections(connectionsPerIdf[currentIdf] || []);
+    }, [connectionsPerIdf, currentIdf]);
 
     const handleNextIdf = () => {
         if (currentIdf < numIdfs) {
