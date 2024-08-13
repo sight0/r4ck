@@ -259,7 +259,8 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
                             );
                         case 'firstPort':
                         case 'secondPort':
-                            const component = components.find(c => c.id === connection[field === 'firstPort' ? 'firstComponent' : 'secondComponent']);
+                            const componentId = field === 'firstPort' ? connection.firstComponent : connection.secondComponent;
+                            const component = components.find(c => c.id === componentId);
                             const ports = component?.ports || [];
                             const connectedPorts = new Set(existingConnections.flatMap(conn => 
                                 [
