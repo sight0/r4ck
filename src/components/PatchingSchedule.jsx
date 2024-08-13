@@ -35,7 +35,10 @@ const PatchingSchedule = ({ connections, components, currentIdf }) => {
     ])
   }, [connections, components]);
 
-  const filteredConnections = connections.filter(connection =>
+  const idfConnections = connections.filter(conn => 
+    components.some(comp => comp.id === conn.deviceA.componentId || comp.id === conn.deviceB.componentId)
+  );
+  const filteredConnections = idfConnections.filter(connection =>
       {
         return connection.identifierA.toLowerCase().includes(searchTerm.toLowerCase()) || connection.identifierB.toLowerCase().includes(searchTerm.toLowerCase())
       }
