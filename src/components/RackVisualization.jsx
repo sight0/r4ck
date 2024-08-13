@@ -74,7 +74,7 @@ const StyledLine = styled('div')(({ theme }) => ({
     margin: '0 auto',
 }));
 
-const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interIdfConnections, onUpdateInterIdfConnections, onPortChange }) => {
+const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interIdfConnections, onUpdateInterIdfConnections, onPortChange, connectionsPerIdf, onAddConnection }) => {
     const [connections, setConnections] = useState([]);
     const [componentSequences, setComponentSequences] = useState({});
     const [previewDialogOpen, setPreviewDialogOpen] = useState(false);
@@ -124,9 +124,9 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
     };
 
     const handleConnectionCreate = (newConnection) => {
-      const idfComponents = components[currentIdf];
-        const deviceA = idfComponents.find(c => c.id === newConnection.deviceA.componentId);
-        const deviceB = idfComponents.find(c => c.id === newConnection.deviceB.componentId);
+        onAddConnection(newConnection);
+        const deviceA = components.find(c => c.id === newConnection.deviceA.componentId);
+        const deviceB = components.find(c => c.id === newConnection.deviceB.componentId);
 
         if (deviceA && deviceB) {
             const portAIndex = deviceA.ports.findIndex(p => p.label === newConnection.deviceA.port);
@@ -1037,9 +1037,9 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                 onConnectionCreate={handleConnectionCreate}
                 onConnectionUpdate={handleConnectionUpdate}
                 onConnectionDelete={handleConnectionDelete}
-                existingConnections={connections}
+                existingConnections={connectionsPerIdf[currentIdf] || []}
             />
-            <PatchingSchedule connections={connections} components={components} currentIdf={currentIdf}/>
+            <PatchingSchedule connections={connectionsPerIdf[currentIdf] || []} components={components} currentIdf={currentIdf}/>
             {/* Placeholder for Recommendations Dialog */}
             <Dialog
                 open={recommendationsDialogOpen}
@@ -1068,6 +1068,8 @@ RackVisualization.propTypes = {
     interIdfConnections: PropTypes.object.isRequired,
     onUpdateInterIdfConnections: PropTypes.func.isRequired,
     onPortChange: PropTypes.func.isRequired,
+    connectionsPerIdf: PropTypes.object.isRequired,
+    onAddConnection: PropTypes.func.isRequired,
 };
 
 export default RackVisualization;
