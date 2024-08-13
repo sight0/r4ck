@@ -59,7 +59,8 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
 
     const handleFinish = () => {
         const getPortDetails = (componentId, portLabel) => {
-            const component = components.find(c => c.id === componentId);
+            const idfComponents = components;
+            const component = idfComponents.find(c => c.id === componentId);
             const port = component.ports.find(p => p.label === portLabel);
             return {
                 componentId,
