@@ -1013,7 +1013,6 @@ const RackVisualization = ({
                 components={components}
                 currentIdf={currentIdf}
                 onConnectionCreate={handleConnectionCreate}
-                onConnectionUpdate={handleConnectionUpdate}
                 onConnectionDelete={handleConnectionDelete}
                 existingConnections={connectionsPerIdf[currentIdf] || []}
             />
