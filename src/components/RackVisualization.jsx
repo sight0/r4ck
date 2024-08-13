@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
-import { calculateInterIdfConnections } from '../utils/rackUtils';
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography, Box, Grid, Paper, Divider, IconButton, Badge, Tooltip, MenuItem, Container } from '@mui/material';
 import IssuesDialog from './IssuesDialog';
 import PatchingSchedule from './PatchingSchedule';
@@ -74,11 +73,42 @@ const StyledLine = styled('div')(({ theme }) => ({
     margin: '0 auto',
 }));
 
-const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interIdfConnections, onUpdateInterIdfConnections, onPortChange, connectionsPerIdf, onAddConnection }) => {
-    const [connections, setConnections] = useState([]);
+const RackVisualization = ({ 
+    currentIdf, 
+    setCurrentIdf, 
+    numIdfs, 
+    idfData, 
+    interIdfConnections, 
+    onUpdateInterIdfConnections, 
+    onPortChange, 
+    connectionsPerIdf,
+    onAddConnection,
+    onUpdateConnection,
+    onDeleteConnection,
+    rackDesign,
+    onSaveRackDesign,
+    allComponents,
+    setAllComponents
+}) => {
     const [componentSequences, setComponentSequences] = useState({});
     const [previewDialogOpen, setPreviewDialogOpen] = useState(false);
     const [totalDevices, setTotalDevices] = useState(0);
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [newComponent, setNewComponent] = useState(null);
+    const [editComponent, setEditComponent] = useState(null);
+    const [recommendation, setRecommendation] = useState('');
+    const [draggedComponent, setDraggedComponent] = useState(null);
+    const [placementIndicator, setPlacementIndicator] = useState(null);
+    const [configDialogOpen, setConfigDialogOpen] = useState(false);
+    const [exhaustedPorts, setExhaustedPorts] = useState(0);
+    const [highlightedType, setHighlightedType] = useState(null);
+    const [issuesDialogOpen, setIssuesDialogOpen] = useState(false);
+    const [connectionWizardOpen, setConnectionWizardOpen] = useState(false);
+    const [recommendationsDialogOpen, setRecommendationsDialogOpen] = useState(false);
+    const rackRef = useRef(null);
+
+    const theme = useTheme();
+    const components = useMemo(() => allComponents[currentIdf] || [], [allComponents, currentIdf]);
 
     useEffect(() => {
         // Calculate total devices for the current IDF
@@ -152,80 +182,35 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                 [currentIdf]: updatedComponents
             };
         });
-
-        const deviceA = components.find(c => c.id === newConnection.deviceA.componentId);
-        const deviceB = components.find(c => c.id === newConnection.deviceB.componentId);
-        const connectionType = (deviceA.type === 'switch' && deviceB.type === 'switch') ? 'stacking' : 'standard';
-        const firstDeviceSequence = deviceA.sequence;
-        const secondDeviceSequence = deviceB.sequence;
-
-        setConnections(prevConnections => [...prevConnections, {
-            ...newConnection,
-            connectionType,
-            firstDeviceSequence,
-            secondDeviceSequence,
-        }]);
-    };
-
-    const handleConnectionUpdate = (updatedConnection) => {
-        setConnections(prevConnections => 
-            prevConnections.map(conn => 
-                conn.id === updatedConnection.id ? updatedConnection : conn
-            )
-        );
-        // You may need to update the port connections here as well
     };
 
     const handleConnectionDelete = (connectionId) => {
-        setConnections(prevConnections => {
-            const connectionToDelete = prevConnections.find(conn => conn.id === connectionId);
+        onDeleteConnection(connectionId);
+        setAllComponents(prevAll => {
+            const connectionToDelete = connectionsPerIdf[currentIdf].find(conn => conn.id === connectionId);
             if (connectionToDelete) {
-                setAllComponents(prevAll => {
-                    const updatedComponents = prevAll[currentIdf].map(device => {
-                        if (device.id === connectionToDelete.deviceA.componentId || device.id === connectionToDelete.deviceB.componentId) {
-                            return {
-                                ...device,
-                                ports: device.ports.map(port => 
-                                    (port.label === connectionToDelete.deviceA.port && device.id === connectionToDelete.deviceA.componentId) ||
-                                    (port.label === connectionToDelete.deviceB.port && device.id === connectionToDelete.deviceB.componentId)
-                                        ? { ...port, connectedTo: '', connectedPort: '', connectionType: '', connectedDeviceType: '' }
-                                        : port
-                                )
-                            };
-                        }
-                        return device;
-                    });
-                    return {
-                        ...prevAll,
-                        [currentIdf]: updatedComponents
-                    };
+                const updatedComponents = prevAll[currentIdf].map(device => {
+                    if (device.id === connectionToDelete.deviceA.componentId || device.id === connectionToDelete.deviceB.componentId) {
+                        return {
+                            ...device,
+                            ports: device.ports.map(port => 
+                                (port.label === connectionToDelete.deviceA.port && device.id === connectionToDelete.deviceA.componentId) ||
+                                (port.label === connectionToDelete.deviceB.port && device.id === connectionToDelete.deviceB.componentId)
+                                    ? { ...port, connectedTo: '', connectedPort: '', connectionType: '', connectedDeviceType: '' }
+                                    : port
+                            )
+                        };
+                    }
+                    return device;
                 });
+                return {
+                    ...prevAll,
+                    [currentIdf]: updatedComponents
+                };
             }
-            return prevConnections.filter(conn => conn.id !== connectionId);
+            return prevAll;
         });
-        // Also update the connectionsPerIdf state
-        setConnectionsPerIdf(prevConnections => ({
-            ...prevConnections,
-            [currentIdf]: prevConnections[currentIdf].filter(conn => conn.id !== connectionId)
-        }));
     };
-
-    const theme = useTheme();
-    const [allComponents, setAllComponents] = useState({});
-    const components = useMemo(() => allComponents[currentIdf] || [], [allComponents, currentIdf]);
-    const [dialogOpen, setDialogOpen] = useState(false);
-    const [newComponent, setNewComponent] = useState(null);
-    const [editComponent, setEditComponent] = useState(null);
-    const [recommendation, setRecommendation] = useState('');
-    const [draggedComponent, setDraggedComponent] = useState(null);
-    const [placementIndicator, setPlacementIndicator] = useState(null);
-    const [configDialogOpen, setConfigDialogOpen] = useState(false);
-    const [exhaustedPorts, setExhaustedPorts] = useState(0);
-    const [highlightedType, setHighlightedType] = useState(null);
-    const [issuesDialogOpen, setIssuesDialogOpen] = useState(false);
-    const [connectionWizardOpen, setConnectionWizardOpen] = useState(false);
-    const [recommendationsDialogOpen, setRecommendationsDialogOpen] = useState(false);
-    const rackRef = useRef(null);
     
     const rackSize = idfData[currentIdf]?.rackSize || 42; // Use the specified rack size or default to 42U
     const rackHeight = rackSize * 20; // Each U is 20px tall
@@ -1063,6 +1048,12 @@ RackVisualization.propTypes = {
     onPortChange: PropTypes.func.isRequired,
     connectionsPerIdf: PropTypes.object.isRequired,
     onAddConnection: PropTypes.func.isRequired,
+    onUpdateConnection: PropTypes.func.isRequired,
+    onDeleteConnection: PropTypes.func.isRequired,
+    rackDesign: PropTypes.array.isRequired,
+    onSaveRackDesign: PropTypes.func.isRequired,
+    allComponents: PropTypes.object.isRequired,
+    setAllComponents: PropTypes.func.isRequired,
 };
 
 export default RackVisualization;

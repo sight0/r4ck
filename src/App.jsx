@@ -1,5 +1,5 @@
 import './App.css'
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Box, CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
@@ -48,30 +48,30 @@ const App = () => {
     // const handleAddConnection = (connection) => {
     //     setConnections([...connections, connection]);
     // };
-    const handleAddConnection = (connection) => {
+    const handleAddConnection = useCallback((connection) => {
         setConnectionsPerIdf(prev => ({
             ...prev,
             [currentIdf]: [...(prev[currentIdf] || []), connection]
         }));
-    };
+    }, [currentIdf]);
 
-    const handleUpdateConnection = (updatedConnection) => {
+    const handleUpdateConnection = useCallback((updatedConnection) => {
         setConnectionsPerIdf(prev => ({
             ...prev,
             [currentIdf]: prev[currentIdf].map(conn => 
                 conn.id === updatedConnection.id ? updatedConnection : conn
             )
         }));
-    };
+    }, [currentIdf]);
 
-    const handleDeleteConnection = (connectionId) => {
+    const handleDeleteConnection = useCallback((connectionId) => {
         setConnectionsPerIdf(prev => ({
             ...prev,
             [currentIdf]: prev[currentIdf].filter(conn => conn.id !== connectionId)
         }));
-    };
+    }, [currentIdf]);
 
-    const handleSaveRackDesign = (idf, design) => {
+    const handleSaveRackDesign = useCallback((idf, design) => {
         setRackDesigns(prevDesigns => ({
             ...prevDesigns,
             [idf]: design
@@ -87,21 +87,16 @@ const App = () => {
             ...prev,
             [idf]: newInterIdfConnections[idf]
         }));
-    };
+    }, []);
 
-    const handleUpdateInterIdfConnections = (newConnections) => {
-        console.log('handleUpdateInterIdfConnections called with:', newConnections);
-        setInterIdfConnections(prevConnections => {
-            const result = {
-                ...prevConnections,
-                ...newConnections
-            };
-            console.log('New interIdfConnections state:', result);
-            return result;
-        });
-    };
+    const handleUpdateInterIdfConnections = useCallback((newConnections) => {
+        setInterIdfConnections(prevConnections => ({
+            ...prevConnections,
+            ...newConnections
+        }));
+    }, []);
 
-    const handlePortChange = (idf, componentId, portIndex, field, value) => {
+    const handlePortChange = useCallback((idf, componentId, portIndex, field, value) => {
         setAllComponents(prevAll => {
             const idfComponents = prevAll[idf] || [];
             const newComponents = idfComponents.map(comp => {
@@ -127,7 +122,7 @@ const App = () => {
                 [idf]: newComponents
             };
         });
-    };
+    }, []);
 
     useEffect(() => {
         if (networkInfo) {
@@ -169,6 +164,8 @@ const App = () => {
                                 onPortChange={(componentId, portIndex, field, value) => 
                                     handlePortChange(currentIdf, componentId, portIndex, field, value)}
                                 connectionsPerIdf={connectionsPerIdf}
+                                allComponents={allComponents}
+                                setAllComponents={setAllComponents}
                             />
                         </Box>
                     </Box>
