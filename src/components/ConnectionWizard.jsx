@@ -19,7 +19,9 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
         secondPort: '',
         type: '',
         speed: '',
-        notes: ''
+        notes: '',
+        firstDeviceSequence: '',
+        secondDeviceSequence: ''
     });
     const [availableSecondComponents, setAvailableSecondComponents] = useState([]);
     const [isAddingConnection, setIsAddingConnection] = useState(false);
@@ -108,7 +110,9 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
             secondPort: conn.deviceB.port,
             type: conn.type || '',
             speed: conn.speed || '',
-            notes: conn.notes || ''
+            notes: conn.notes || '',
+            firstDeviceSequence: conn.deviceA.deviceSequence,
+            secondDeviceSequence: conn.deviceB.deviceSequence
         });
         setIsAddingConnection(true);
         setActiveStep(0);
@@ -150,12 +154,12 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
                                 </Box>
                                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                                     <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
-                                        {connection.deviceA.deviceType}&nbsp;(
+                                        {connection.deviceA.deviceType}&nbsp;{connection.deviceA.deviceSequence}&nbsp;(
                                         {getComponentName(connection.deviceA.componentId)})
                                     </Typography>
                                     <ArrowRightAltIcon sx={{ mx: 1 }} />
                                     <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
-                                        {connection.deviceB.deviceType}&nbsp;(
+                                        {connection.deviceB.deviceType}&nbsp;{connection.deviceB.deviceSequence}&nbsp;(
                                         {getComponentName(connection.deviceB.componentId)})
                                     </Typography>
                                 </Box>
@@ -202,7 +206,7 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
                                     >
                                         {(field === 'firstComponent' ? components : availableSecondComponents).map((component) => (
                                             <MenuItem key={component.id} value={component.id}>
-                                                {component.name} ({component.type})
+                                                {component.name} ({component.type} {component.sequence})
                                             </MenuItem>
                                         ))}
                                     </Select>
