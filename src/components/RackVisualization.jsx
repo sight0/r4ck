@@ -168,14 +168,11 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                 }));
 
                 // Set connection type
-                const connectionType = deviceA.type === deviceB.type ? 'stacking' : 'standard';
-
+                const connectionType = (deviceA.type === 'switch' && deviceB.type === 'switch') ? 'stacking' : 'standard';
                 // Add the new connection to the connections state
                 setConnections(prevConnections => [...prevConnections, {
                     ...newConnection,
                     connectionType,
-                    deviceAType: deviceA.type,
-                    deviceBType: deviceB.type
                 }]);
             }
         }

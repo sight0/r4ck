@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { 
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, 
   Button, Box, TextField, InputAdornment, Autocomplete
@@ -10,22 +10,24 @@ import PropTypes from 'prop-types';
 
 const PatchingSchedule = ({ connections, components }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const getConnectionIdentifier = (componentId, portLabel) => {
-    const component = components.find(c => c.id === componentId);
-    if (!component) return '';
-    return `${component.name}-${portLabel}`;
-  };
-  console.log(connections)
+  // const getConnectionIdentifier = (componentId, portLabel) => {
+  //   const component = components.find(c => c.id === componentId);
+  //   if (!component) return '';
+  //   return `${component.name}-${portLabel}`;
+  // };
+
   const allIdentifiers = useMemo(() => {
-    return connections.flatMap(connection => [
-      getConnectionIdentifier(connection.deviceA.deviceType, connection.deviceA.port),
-      getConnectionIdentifier(connection.deviceB.deviceType, connection.deviceB.port)
+    const identifiers =  connections.flatMap(connection => [
+        connection.identifierA,
+        connection.identifierB,
     ]);
+    return identifiers
   }, [connections, components]);
 
-  const filteredConnections = connections.filter(connection => 
-    getConnectionIdentifier(connection.deviceA.deviceType, connection.deviceA.port).toLowerCase().includes(searchTerm.toLowerCase()) ||
-    getConnectionIdentifier(connection.deviceB.deviceType, connection.deviceB.port).toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredConnections = connections.filter(connection =>
+      {
+        return connection.identifierA.toLowerCase().includes(searchTerm.toLowerCase()) || connection.identifierB.toLowerCase().includes(searchTerm.toLowerCase())
+      }
   );
 
   const handleExportCSV = () => {
