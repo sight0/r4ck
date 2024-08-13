@@ -5,7 +5,6 @@ import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import RackVisualization from './components/RackVisualization';
 import InitialSetupForm from './components/InitialSetupForm';
-import PatchSchedule from './components/PatchSchedule';
 import { calculateInterIdfConnections } from './utils/rackUtils';
 
 const App = () => {

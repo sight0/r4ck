@@ -1,15 +1,27 @@
-import { useState, useMemo } from 'react';
-import { 
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, 
-  Button, Box, TextField, InputAdornment, Autocomplete, Snackbar
+import {useMemo, useState} from 'react';
+import {
+  Autocomplete,
+  Box,
+  Button,
+  InputAdornment,
+  Paper,
+  Snackbar,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import GetAppIcon from '@mui/icons-material/GetApp';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import PropTypes from 'prop-types';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
-import { saveAs } from 'file-saver';
+import autoTable from 'jspdf-autotable';
+import {saveAs} from 'file-saver';
 
 const PatchingSchedule = ({ connections, components }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -17,11 +29,10 @@ const PatchingSchedule = ({ connections, components }) => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
 
   const allIdentifiers = useMemo(() => {
-    const identifiers =  connections.flatMap(connection => [
-        connection.identifierA,
-        connection.identifierB,
-    ]);
-    return identifiers
+    return connections.flatMap(connection => [
+      connection.identifierA,
+      connection.identifierB,
+    ])
   }, [connections, components]);
 
   const filteredConnections = connections.filter(connection =>
