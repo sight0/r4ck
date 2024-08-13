@@ -20,13 +20,14 @@ import GetAppIcon from '@mui/icons-material/GetApp';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import PropTypes from 'prop-types';
 import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
 import {saveAs} from 'file-saver';
 
-const PatchingSchedule = ({ connections, components, currentIdf }) => {
+const PatchingSchedule = ({ connections, currentIdf }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+
+  connections.filter(connection => {console.log(connection)});
 
   const allIdentifiers = useMemo(() => {
     return connections.flatMap(connection => [
@@ -45,10 +46,10 @@ const PatchingSchedule = ({ connections, components, currentIdf }) => {
     const csvContent = [
       headers.join(','),
       ...filteredConnections.map(connection => [
-        connection.deviceA.deviceType + " " + connection.firstDeviceSequence,
+        connection.deviceA.deviceType + " " + connection.deviceA.deviceSequence,
         connection.deviceA.port,
         connection.deviceA.identifier,
-        connection.deviceB.deviceType + " " + connection.secondDeviceSequence,
+        connection.deviceB.deviceType + " " + connection.deviceB.deviceSequence,
         connection.deviceB.port,
         connection.deviceB.identifier
       ].join(','))
@@ -70,10 +71,10 @@ const PatchingSchedule = ({ connections, components, currentIdf }) => {
     doc.autoTable({
       head: [['From Device', 'From Port', 'From Port Identifier', 'To Device', 'To Port', 'To Port Identifier']],
       body: filteredConnections.map(connection => [
-        connection.deviceA.deviceType + " " + connection.firstDeviceSequence,
+        connection.deviceA.deviceType + " " + connection.deviceA.deviceSequence,
         connection.deviceA.port,
         connection.deviceA.identifier,
-        connection.deviceB.deviceType + " " + connection.secondDeviceSequence,
+        connection.deviceB.deviceType + " " + connection.deviceB.deviceSequence,
         connection.deviceB.port,
         connection.deviceB.identifier
       ]),
@@ -165,10 +166,10 @@ const PatchingSchedule = ({ connections, components, currentIdf }) => {
           <TableBody>
             {filteredConnections.map((connection, index) => (
               <TableRow key={index} sx={{ '&:nth-of-type(odd)': { backgroundColor: 'action.hover' } }}>
-                <TableCell>{connection.deviceA.deviceType} {connection.firstDeviceSequence}</TableCell>
+                <TableCell>{connection.deviceA.deviceType} {connection.deviceA.deviceSequence}</TableCell>
                 <TableCell>{connection.deviceA.port}</TableCell>
                 <TableCell>{connection.deviceA.identifier}</TableCell>
-                <TableCell>{connection.deviceB.deviceType} {connection.secondDeviceSequence}</TableCell>
+                <TableCell>{connection.deviceB.deviceType} {connection.deviceB.deviceSequence}</TableCell>
                 <TableCell>{connection.deviceB.port}</TableCell>
                 <TableCell>{connection.deviceB.identifier}</TableCell>
               </TableRow>
@@ -200,11 +201,13 @@ PatchingSchedule.propTypes = {
     deviceA: PropTypes.shape({
       componentId: PropTypes.number.isRequired,
       deviceType: PropTypes.string.isRequired,
+      deviceSequence: PropTypes.number.isRequired,
       port: PropTypes.string.isRequired,
     }).isRequired,
     deviceB: PropTypes.shape({
       componentId: PropTypes.number.isRequired,
       deviceType: PropTypes.string.isRequired,
+      deviceSequence: PropTypes.number.isRequired,
       port: PropTypes.string.isRequired,
     }).isRequired,
   })).isRequired,

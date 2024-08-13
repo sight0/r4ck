@@ -69,6 +69,7 @@ RackComponent.propTypes = {
         x: PropTypes.number.isRequired,
         y: PropTypes.number.isRequired,
         name: PropTypes.string.isRequired,
+        sequence: PropTypes.number.isRequired,
         capacity: PropTypes.string.isRequired,
         units: PropTypes.number.isRequired,
         type: PropTypes.string.isRequired,
