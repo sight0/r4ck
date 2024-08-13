@@ -55,6 +55,22 @@ const App = () => {
         }));
     };
 
+    const handleUpdateConnection = (updatedConnection) => {
+        setConnectionsPerIdf(prev => ({
+            ...prev,
+            [currentIdf]: prev[currentIdf].map(conn => 
+                conn.id === updatedConnection.id ? updatedConnection : conn
+            )
+        }));
+    };
+
+    const handleDeleteConnection = (connectionId) => {
+        setConnectionsPerIdf(prev => ({
+            ...prev,
+            [currentIdf]: prev[currentIdf].filter(conn => conn.id !== connectionId)
+        }));
+    };
+
     const handleSaveRackDesign = (idf, design) => {
         setRackDesigns(prevDesigns => ({
             ...prevDesigns,
@@ -144,6 +160,8 @@ const App = () => {
                                 numIdfs={networkInfo.numIdfs}
                                 idfData={networkInfo.idfData}
                                 onAddConnection={handleAddConnection}
+                                onUpdateConnection={handleUpdateConnection}
+                                onDeleteConnection={handleDeleteConnection}
                                 rackDesign={rackDesigns[currentIdf] || []}
                                 onSaveRackDesign={(design) => handleSaveRackDesign(currentIdf, design)}
                                 interIdfConnections={interIdfConnections}
