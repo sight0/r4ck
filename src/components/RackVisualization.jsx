@@ -169,10 +169,14 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
 
                 // Set connection type
                 const connectionType = (deviceA.type === 'switch' && deviceB.type === 'switch') ? 'stacking' : 'standard';
+                const firstDeviceSequence = deviceA.sequence;
+                const secondDeviceSequence = deviceB.sequence;
                 // Add the new connection to the connections state
                 setConnections(prevConnections => [...prevConnections, {
                     ...newConnection,
                     connectionType,
+                    firstDeviceSequence,
+                    secondDeviceSequence,
                 }]);
             }
         }
@@ -216,12 +220,6 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
         });
     };
 
-    const handleExportSchedule = () => {
-        // Implementation for exporting the schedule
-        // This could involve generating a CSV or PDF file
-        console.log("Exporting schedule...");
-        // You can add your export logic here
-    };
     const theme = useTheme();
     const [allComponents, setAllComponents] = useState({});
     const components = useMemo(() => allComponents[currentIdf] || [], [allComponents, currentIdf]);
@@ -1040,7 +1038,7 @@ const RackVisualization = ({ currentIdf, setCurrentIdf, numIdfs, idfData, interI
                 onConnectionDelete={handleConnectionDelete}
                 existingConnections={connections}
             />
-            <PatchingSchedule connections={connections} components={components} />
+            <PatchingSchedule connections={connections} components={components} currentIdf={currentIdf}/>
             {/* Placeholder for Recommendations Dialog */}
             <Dialog
                 open={recommendationsDialogOpen}

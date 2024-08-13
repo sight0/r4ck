@@ -23,7 +23,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import {saveAs} from 'file-saver';
 
-const PatchingSchedule = ({ connections, components }) => {
+const PatchingSchedule = ({ connections, components, currentIdf }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -71,10 +71,10 @@ const PatchingSchedule = ({ connections, components }) => {
     doc.autoTable({
       head: [['From Device', 'From Port', 'From Port Identifier', 'To Device', 'To Port', 'To Port Identifier']],
       body: filteredConnections.map(connection => [
-        connection.deviceA.deviceType,
+        connection.deviceA.deviceType + " " + connection.firstDeviceSequence,
         connection.deviceA.port,
         connection.deviceA.identifier,
-        connection.deviceB.deviceType,
+        connection.deviceB.deviceType + " " + connection.secondDeviceSequence,
         connection.deviceB.port,
         connection.deviceB.identifier
       ]),
@@ -83,8 +83,8 @@ const PatchingSchedule = ({ connections, components }) => {
       alternateRowStyles: { fillColor: [242, 242, 242] },
       margin: { top: 30 },
     });
-
-    doc.save('patching_schedule.pdf');
+    const pdfName = `patching_schedule_IDF${currentIdf}.pdf`
+    doc.save(pdfName);
     setSnackbarMessage('PDF exported successfully!');
     setSnackbarOpen(true);
   };
@@ -130,7 +130,7 @@ const PatchingSchedule = ({ connections, components }) => {
             {...params}
             variant="outlined"
             size="small"
-            placeholder="Search connections..."
+            placeholder="Search identifiers..."
             InputProps={{
               ...params.InputProps,
               startAdornment: (
@@ -166,10 +166,10 @@ const PatchingSchedule = ({ connections, components }) => {
           <TableBody>
             {filteredConnections.map((connection, index) => (
               <TableRow key={index} sx={{ '&:nth-of-type(odd)': { backgroundColor: 'action.hover' } }}>
-                <TableCell>{connection.deviceA.deviceType}</TableCell>
+                <TableCell>{connection.deviceA.deviceType} {connection.firstDeviceSequence}</TableCell>
                 <TableCell>{connection.deviceA.port}</TableCell>
                 <TableCell>{connection.deviceA.identifier}</TableCell>
-                <TableCell>{connection.deviceB.deviceType}</TableCell>
+                <TableCell>{connection.deviceB.deviceType} {connection.secondDeviceSequence}</TableCell>
                 <TableCell>{connection.deviceB.port}</TableCell>
                 <TableCell>{connection.deviceB.identifier}</TableCell>
               </TableRow>
@@ -213,6 +213,7 @@ PatchingSchedule.propTypes = {
     id: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
   })).isRequired,
+  currentIdf: PropTypes.number.isRequired,
 };
 
 export default PatchingSchedule;

@@ -79,7 +79,9 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
             speed: connection.speed,
             notes: connection.notes,
             identifierA: getPortDetails(connection.firstComponent, connection.firstPort).identifier,
-            identifierB: getPortDetails(connection.secondComponent, connection.secondPort).identifier
+            firstDeviceSequence: connection.firstComponent.firstDeviceSequence,
+            identifierB: getPortDetails(connection.secondComponent, connection.secondPort).identifier,
+            secondDeviceSequence: connection.firstComponent.secondDeviceSequence,
         };
         
         if (editingConnection) {
@@ -284,9 +286,9 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
                 {step === steps.length - 1 && (
                     <Paper elevation={3} sx={{ p: 2, mt: 2 }}>
                         <Typography variant="h6" gutterBottom>Connection Summary</Typography>
-                        <Typography>First Device: {components.find(c => c.id === connection.firstComponent)?.name} ({components.find(c => c.id === connection.firstComponent)?.type})</Typography>
+                        <Typography>First Device: {components.find(c => c.id === connection.firstComponent)?.name} ({components.find(c => c.id === connection.firstComponent)?.type} {components.find(c => c.id === connection.firstComponent)?.sequence})</Typography>
                         <Typography>First Port: {connection.firstPort}</Typography>
-                        <Typography>Second Device: {components.find(c => c.id === connection.secondComponent)?.name} ({components.find(c => c.id === connection.secondComponent)?.type})</Typography>
+                        <Typography>Second Device: {components.find(c => c.id === connection.secondComponent)?.name} ({components.find(c => c.id === connection.secondComponent)?.type} {components.find(c => c.id === connection.secondComponent)?.sequence})</Typography>
                         <Typography>Second Port: {connection.secondPort}</Typography>
                         <Typography>Connection Type: {connection.type}</Typography>
                         <Typography>Connection Speed: {connection.speed}</Typography>
