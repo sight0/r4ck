@@ -12,6 +12,7 @@ const App = () => {
     const [networkInfo, setNetworkInfo] = useState(null);
     const [currentIdf, setCurrentIdf] = useState(1);
     const [connections, setConnections] = useState([]);
+    const [connectionsPerIdf, setConnectionsPerIdf] = useState({});
     const [rackDesigns, setRackDesigns] = useState({});
     const [interIdfConnections, setInterIdfConnections] = useState({});
     const [allComponents, setAllComponents] = useState({});
@@ -44,8 +45,14 @@ const App = () => {
         setAllComponents(initialComponents);
     };
 
+    // const handleAddConnection = (connection) => {
+    //     setConnections([...connections, connection]);
+    // };
     const handleAddConnection = (connection) => {
-        setConnections([...connections, connection]);
+        setConnectionsPerIdf(prev => ({
+            ...prev,
+            [currentIdf]: [...(prev[currentIdf] || []), connection]
+        }));
     };
 
     const handleSaveRackDesign = (idf, design) => {
@@ -143,8 +150,8 @@ const App = () => {
                                 onUpdateInterIdfConnections={handleUpdateInterIdfConnections}
                                 onPortChange={(componentId, portIndex, field, value) => 
                                     handlePortChange(currentIdf, componentId, portIndex, field, value)}
+                                connectionsPerIdf={connectionsPerIdf}
                             />
-                            {/*<PatchSchedule connections={connections} />*/}
                         </Box>
                     </Box>
                 )}
