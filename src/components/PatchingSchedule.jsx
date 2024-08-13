@@ -1,20 +1,20 @@
 import { useState, useMemo } from 'react';
 import { 
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, 
-  Button, Box, TextField, InputAdornment, Autocomplete
+  Button, Box, TextField, InputAdornment, Autocomplete, Snackbar
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import GetAppIcon from '@mui/icons-material/GetApp';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import PropTypes from 'prop-types';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import { saveAs } from 'file-saver';
 
 const PatchingSchedule = ({ connections, components }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  // const getConnectionIdentifier = (componentId, portLabel) => {
-  //   const component = components.find(c => c.id === componentId);
-  //   if (!component) return '';
-  //   return `${component.name}-${portLabel}`;
-  // };
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
 
   const allIdentifiers = useMemo(() => {
     const identifiers =  connections.flatMap(connection => [
@@ -31,13 +31,58 @@ const PatchingSchedule = ({ connections, components }) => {
   );
 
   const handleExportCSV = () => {
-    // Implement CSV export logic here
-    console.log('Exporting to CSV...');
+    const headers = ['From Device', 'From Port', 'From Port Identifier', 'To Device', 'To Port', 'To Port Identifier'];
+    const csvContent = [
+      headers.join(','),
+      ...filteredConnections.map(connection => [
+        connection.deviceA.deviceType,
+        connection.deviceA.port,
+        connection.deviceA.identifier,
+        connection.deviceB.deviceType,
+        connection.deviceB.port,
+        connection.deviceB.identifier
+      ].join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    saveAs(blob, 'patching_schedule.csv');
+    setSnackbarMessage('CSV exported successfully!');
+    setSnackbarOpen(true);
   };
 
   const handleExportPDF = () => {
-    // Implement PDF export logic here
-    console.log('Exporting to PDF...');
+    const doc = new jsPDF();
+    doc.setFontSize(18);
+    doc.text('Patching Schedule', 14, 22);
+    doc.setFontSize(11);
+    doc.setTextColor(100);
+
+    doc.autoTable({
+      head: [['From Device', 'From Port', 'From Port Identifier', 'To Device', 'To Port', 'To Port Identifier']],
+      body: filteredConnections.map(connection => [
+        connection.deviceA.deviceType,
+        connection.deviceA.port,
+        connection.deviceA.identifier,
+        connection.deviceB.deviceType,
+        connection.deviceB.port,
+        connection.deviceB.identifier
+      ]),
+      startY: 30,
+      headStyles: { fillColor: [41, 128, 185], textColor: 255 },
+      alternateRowStyles: { fillColor: [242, 242, 242] },
+      margin: { top: 30 },
+    });
+
+    doc.save('patching_schedule.pdf');
+    setSnackbarMessage('PDF exported successfully!');
+    setSnackbarOpen(true);
+  };
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarOpen(false);
   };
 
   return (
@@ -126,6 +171,16 @@ const PatchingSchedule = ({ connections, components }) => {
           No connections found matching your search criteria.
         </Typography>
       )}
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        message={snackbarMessage}
+      />
     </Paper>
   );
 };
