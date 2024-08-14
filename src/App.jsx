@@ -2,6 +2,7 @@ import './App.css'
 import { useState, useEffect, useCallback } from "react";
 import { Box, CssBaseline, ThemeProvider, createTheme, Typography } from '@mui/material';
 import Header from './components/Header';
+import WorkspaceManager from './components/WorkspaceManager';
 import Sidebar from './components/Sidebar';
 import RackVisualization from './components/RackVisualization';
 import InitialSetupForm from './components/InitialSetupForm';
