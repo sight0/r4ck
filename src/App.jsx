@@ -48,25 +48,29 @@ const App = () => {
     };
 
     const handleSaveWorkspace = (name) => {
-        if (name) {
-            const workspace = {
-                name,
-                data: {
-                    setupComplete,
-                    networkInfo,
-                    currentIdf,
-                    connections,
-                    connectionsPerIdf,
-                    rackDesigns,
-                    interIdfConnections,
-                    allComponents
-                }
-            };
-            const savedWorkspaces = JSON.parse(localStorage.getItem('workspaces') || '[]');
+        const workspace = {
+            name: name || currentWorkspace,
+            data: {
+                setupComplete,
+                networkInfo,
+                currentIdf,
+                connections,
+                connectionsPerIdf,
+                rackDesigns,
+                interIdfConnections,
+                allComponents
+            }
+        };
+        const savedWorkspaces = JSON.parse(localStorage.getItem('workspaces') || '[]');
+        const existingIndex = savedWorkspaces.findIndex(w => w.name === workspace.name);
+        if (existingIndex !== -1) {
+            savedWorkspaces[existingIndex] = workspace;
+        } else {
             savedWorkspaces.push(workspace);
-            localStorage.setItem('workspaces', JSON.stringify(savedWorkspaces));
-            setCurrentWorkspace(name);
         }
+        localStorage.setItem('workspaces', JSON.stringify(savedWorkspaces));
+        setCurrentWorkspace(workspace.name);
+        setHasUnsavedChanges(false);
     };
 
     const handleLoadWorkspace = (workspace) => {
@@ -198,6 +202,7 @@ const App = () => {
                             onLoadWorkspace={handleLoadWorkspace}
                             onNewWorkspace={handleNewWorkspace}
                             currentWorkspace={currentWorkspace}
+                            hasUnsavedChanges={hasUnsavedChanges}
                         />
                     </Box>
                 </Header>
