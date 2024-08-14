@@ -99,7 +99,7 @@ const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, cu
                             },
                         }}
                     >
-                        Workspace
+                        Workspace {hasUnsavedChanges ? '*' : ''}
                     </Button>
                 </Badge>
             </Tooltip>
