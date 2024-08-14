@@ -1,5 +1,5 @@
 import './App.css'
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { Box, CssBaseline, ThemeProvider, createTheme, Typography, useMediaQuery } from '@mui/material';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
@@ -19,6 +19,7 @@ const App = () => {
     const [allComponents, setAllComponents] = useState({});
     const [currentWorkspace, setCurrentWorkspace] = useState(null);
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+    const lastSavedStateRef = useRef(null);
 
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
 
@@ -73,26 +74,43 @@ const App = () => {
         setAllComponents(initialComponents);
     };
 
+    const checkForChanges = useCallback(() => {
+        const currentState = JSON.stringify({
+            setupComplete,
+            networkInfo,
+            currentIdf,
+            connections,
+            connectionsPerIdf,
+            rackDesigns,
+            interIdfConnections,
+            allComponents
+        });
+        
+        if (lastSavedStateRef.current !== null && currentState !== lastSavedStateRef.current) {
+            console.log('State changed, setting hasUnsavedChanges to true');
+            setHasUnsavedChanges(true);
+        }
+    }, [setupComplete, networkInfo, currentIdf, connections, connectionsPerIdf, rackDesigns, interIdfConnections, allComponents]);
+
     useEffect(() => {
-        const handleClick = () => setHasUnsavedChanges(true);
-        document.addEventListener('click', handleClick);
-        return () => document.removeEventListener('click', handleClick);
-    }, []);
+        checkForChanges();
+    }, [checkForChanges]);
 
     const handleSaveWorkspace = useCallback((name) => {
         console.log('handleSaveWorkspace called with name:', name);
+        const workspaceData = {
+            setupComplete,
+            networkInfo,
+            currentIdf,
+            connections,
+            connectionsPerIdf,
+            rackDesigns,
+            interIdfConnections,
+            allComponents
+        };
         const workspace = {
             name: name || currentWorkspace,
-            data: {
-                setupComplete,
-                networkInfo,
-                currentIdf,
-                connections,
-                connectionsPerIdf,
-                rackDesigns,
-                interIdfConnections,
-                allComponents
-            }
+            data: workspaceData
         };
         const savedWorkspaces = JSON.parse(localStorage.getItem('workspaces') || '[]');
         const existingIndex = savedWorkspaces.findIndex(w => w.name === workspace.name);
@@ -105,12 +123,7 @@ const App = () => {
         setCurrentWorkspace(workspace.name);
         console.log('Setting hasUnsavedChanges to false');
         setHasUnsavedChanges(false);
-        // Force a re-render to update the UI
-        console.log('Updating allComponents to force re-render');
-        setAllComponents(prevComponents => {
-            console.log('Previous allComponents:', prevComponents);
-            return {...prevComponents};
-        });
+        lastSavedStateRef.current = JSON.stringify(workspaceData);
         console.log('handleSaveWorkspace completed');
     }, [setupComplete, networkInfo, currentIdf, connections, connectionsPerIdf, rackDesigns, interIdfConnections, allComponents, currentWorkspace]);
 
@@ -126,6 +139,8 @@ const App = () => {
             setInterIdfConnections(data.interIdfConnections);
             setAllComponents(data.allComponents);
             setCurrentWorkspace(workspace.name);
+            lastSavedStateRef.current = JSON.stringify(data);
+            setHasUnsavedChanges(false);
         }
     };
 
