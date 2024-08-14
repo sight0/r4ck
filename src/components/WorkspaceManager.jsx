@@ -99,7 +99,12 @@ const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, cu
     }, [workspaceName, onSaveWorkspace, forceRefresh]);
 
     const handleLoadWorkspaceConfirm = useCallback((workspace) => {
-        onLoadWorkspace(workspace);
+        if (workspace && typeof workspace === 'object') {
+            onLoadWorkspace(workspace);
+        } else {
+            console.error('Invalid workspace object:', workspace);
+            // Optionally, you can show an error message to the user here
+        }
         setLoadWorkspaceDialogOpen(false);
     }, [onLoadWorkspace]);
 
