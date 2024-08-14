@@ -229,12 +229,27 @@ const App = () => {
         }));
     }, [currentIdf]);
 
-    const handleDeleteConnection = useCallback((connectionId) => {
-        setConnectionsPerIdf(prev => ({
-            ...prev,
-            [currentIdf]: prev[currentIdf].filter(conn => conn.id !== connectionId)
-        }));
-    }, [currentIdf]);
+    // const handleDeleteConnection = useCallback((connectionId) => {
+    //     setConnectionsPerIdf(prev => ({
+    //         ...prev,
+    //         [currentIdf]: prev[currentIdf].filter(conn => conn.id !== connectionId)
+    //     }));
+    // }, [currentIdf]);
+    const handleDeleteConnection = (connectionId) => {
+        setConnectionsPerIdf(prev => {
+            const newConnections = { ...prev };
+            if (typeof connectionId === 'number') {
+                newConnections[connectionId] = [];
+            } else {
+                // If connectionId is not a number, it's a specific connection ID
+                Object.keys(newConnections).forEach(idfId => {
+                    newConnections[idfId] = newConnections[idfId].filter(conn => conn.id !==
+                        connectionId);
+                });
+            }
+            return newConnections;
+        });
+    };
 
     const handleSaveRackDesign = useCallback((idf, design) => {
         setRackDesigns(prevDesigns => ({

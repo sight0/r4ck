@@ -142,8 +142,55 @@ const RackVisualization = ({
     }, [currentIdf, idfData]);
 
     const handleAutoPlacement = () => {
-        // Implement auto placement functionality
-        console.log('Auto placing components...');
+        if (components.length > 0) {
+            alert("Auto placement is only available when the IDF is empty. Please clear the IDF first.");
+            return;
+        }
+
+        const template = [
+            { type: 'fiber_patch_panel', name: 'FPP1', capacity: '24', units: 1 },
+            { type: 'cable_manager', name: 'Cable Manager 1', capacity: '1', units: 1 },
+            { type: 'patch_panel', name: 'PP1', capacity: '24', units: 1 },
+            { type: 'patch_panel', name: 'PP2', capacity: '24', units: 1 },
+            { type: 'cable_manager', name: 'Cable Manager 2', capacity: '1', units: 1 },
+            { type: 'switch', name: 'Switch 1', capacity: '48', units: 1 },
+            { type: 'cable_manager', name: 'Cable Manager 3', capacity: '1', units: 1 },
+            { type: 'patch_panel', name: 'PP3', capacity: '24', units: 1 },
+            { type: 'patch_panel', name: 'PP4', capacity: '24', units: 1 },
+            { type: 'cable_manager', name: 'Cable Manager 4', capacity: '1', units: 1 },
+            { type: 'switch', name: 'Switch 2', capacity: '48', units: 1 },
+            { type: 'cable_manager', name: 'Cable Manager 5', capacity: '1', units: 1 },
+            { type: 'patch_panel', name: 'PP5', capacity: '24', units: 1 },
+            { type: 'cable_manager', name: 'Cable Manager 6', capacity: '1', units: 1 },
+        ];
+
+        let yPosition = 0;
+        const newComponents = template.map((comp, index) => {
+            const sequence = getNextSequence(comp.type);
+            const component = {
+                ...comp,
+                id: Date.now() + index,
+                x: 30,
+                y: yPosition,
+                sequence: sequence,
+                // name: `${comp.type === 'cable_manager' ? 'Cable Manager' :
+                //     comp.type.toUpperCase()} ${sequence}`,
+                ports: Array.from({ length: parseInt(comp.capacity) }, (_, i) => ({
+                    label: `Port ${i + 1}`,
+                    cableSource: '',
+                    connectedTo: '',
+                    type: comp.type === 'fiber_patch_panel' ? 'fiber' : 'copper',
+                    identifier: generateSmartIdentifier(comp.type, currentIdf, sequence, i + 1)
+                }))
+            };
+            yPosition += comp.units * 20; // Each U is 20px tall
+            return component;
+        });
+
+        setAllComponents(prevAll => ({
+            ...prevAll,
+            [currentIdf]: newComponents
+        }));
     };
 
     const handleAutoWiring = () => {
@@ -235,6 +282,28 @@ const RackVisualization = ({
         // This function would analyze the current setup and requirements
         // and generate recommendations for switch models, etc.
         setRecommendationsDialogOpen(true);
+    };
+
+    const handleClearIdf = () => {
+        if (confirm("Are you sure you want to clear this IDF? This action cannot be undone."))
+        {
+            // Clear all components
+            setAllComponents(prevAll => {
+                const updatedComponents = { ...prevAll };
+                delete updatedComponents[currentIdf];
+                return updatedComponents;
+            });
+
+            // Clear all connections for this IDF
+            onDeleteConnection(currentIdf);
+
+            // Recalculate inter-IDF connections
+            const newInterIdfConnections = calculateInterIdfConnections([], currentIdf);
+            onUpdateInterIdfConnections({
+                ...interIdfConnections,
+                [currentIdf]: newInterIdfConnections
+            });
+        }
     };
 
     const handleHighlight = (type) => {
@@ -908,6 +977,7 @@ const RackVisualization = ({
                             fullWidth 
                             sx={{ mb: 2, backgroundColor: '#FF9800', '&:hover': { backgroundColor: '#f57c00' } }}
                             onClick={handleAutoPlacement}
+                            disabled={components.length > 0}
                         >
                             Auto Component Placement
                         </Button>
@@ -932,8 +1002,7 @@ const RackVisualization = ({
                             variant="contained"
                             fullWidth
                             sx={{ mb: 2, backgroundColor: '#e95849', '&:hover': { backgroundColor: '#d32f2f' } }}
-                            // onClick={handleClearIdf}
-                            disabled
+                            onClick={handleClearIdf}
                         >
                             Clear IDF
                         </Button>
