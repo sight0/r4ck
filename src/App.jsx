@@ -86,9 +86,17 @@ const App = () => {
             allComponents
         });
         
-        if (lastSavedStateRef.current !== null && currentState !== lastSavedStateRef.current) {
-            console.log('State changed, setting hasUnsavedChanges to true');
-            setHasUnsavedChanges(true);
+        if (lastSavedStateRef.current !== null) {
+            console.log('Checking for changes:');
+            console.log('Current state:', currentState);
+            console.log('Last saved state:', lastSavedStateRef.current);
+            if (currentState !== lastSavedStateRef.current) {
+                console.log('State changed, setting hasUnsavedChanges to true');
+                setHasUnsavedChanges(true);
+            } else {
+                console.log('No changes detected');
+                setHasUnsavedChanges(false);
+            }
         }
     }, [setupComplete, networkInfo, currentIdf, connections, connectionsPerIdf, rackDesigns, interIdfConnections, allComponents]);
 
@@ -139,8 +147,10 @@ const App = () => {
             setInterIdfConnections(data.interIdfConnections);
             setAllComponents(data.allComponents);
             setCurrentWorkspace(workspace.name);
-            lastSavedStateRef.current = JSON.stringify(data);
+            const currentState = JSON.stringify(data);
+            lastSavedStateRef.current = currentState;
             setHasUnsavedChanges(false);
+            console.log('Workspace loaded, lastSavedStateRef updated');
         }
     };
 
