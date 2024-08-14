@@ -47,8 +47,7 @@ const App = () => {
         setAllComponents(initialComponents);
     };
 
-    const handleSaveWorkspace = () => {
-        const name = prompt("Enter a name for this workspace:");
+    const handleSaveWorkspace = (name) => {
         if (name) {
             const workspace = {
                 name,
@@ -70,30 +69,18 @@ const App = () => {
         }
     };
 
-    const handleLoadWorkspace = () => {
-        const savedWorkspaces = JSON.parse(localStorage.getItem('workspaces') || '[]');
-        if (savedWorkspaces.length === 0) {
-            alert("No saved workspaces found.");
-            return;
-        }
-        const workspaceNames = savedWorkspaces.map(w => w.name);
-        const selectedName = prompt("Enter the name of the workspace to load:\n\n" + workspaceNames.join(", "));
-        if (selectedName) {
-            const workspace = savedWorkspaces.find(w => w.name === selectedName);
-            if (workspace) {
-                const { data } = workspace;
-                setSetupComplete(data.setupComplete);
-                setNetworkInfo(data.networkInfo);
-                setCurrentIdf(data.currentIdf);
-                setConnections(data.connections);
-                setConnectionsPerIdf(data.connectionsPerIdf);
-                setRackDesigns(data.rackDesigns);
-                setInterIdfConnections(data.interIdfConnections);
-                setAllComponents(data.allComponents);
-                setCurrentWorkspace(selectedName);
-            } else {
-                alert("Workspace not found.");
-            }
+    const handleLoadWorkspace = (workspace) => {
+        if (workspace) {
+            const { data } = workspace;
+            setSetupComplete(data.setupComplete);
+            setNetworkInfo(data.networkInfo);
+            setCurrentIdf(data.currentIdf);
+            setConnections(data.connections);
+            setConnectionsPerIdf(data.connectionsPerIdf);
+            setRackDesigns(data.rackDesigns);
+            setInterIdfConnections(data.interIdfConnections);
+            setAllComponents(data.allComponents);
+            setCurrentWorkspace(workspace.name);
         }
     };
 
@@ -209,7 +196,7 @@ const App = () => {
                             onNewWorkspace={handleNewWorkspace}
                         />
                         <Typography variant="subtitle1" sx={{ fontStyle: 'italic' }}>
-                            {currentWorkspace ? `Current Workspace: ${currentWorkspace}` : 'Unsaved'}
+                            {currentWorkspace ? `Current Workspace: ${currentWorkspace}` : 'Unsaved Workspace'}
                         </Typography>
                     </Box>
                 </Header>
