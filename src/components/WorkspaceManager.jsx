@@ -76,10 +76,7 @@ const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, cu
     };
 
     return (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Typography variant="subtitle1" sx={{ fontStyle: 'italic', color: theme.palette.text.secondary }}>
-                {currentWorkspace ? `Current: ${currentWorkspace}` : 'Unsaved Workspace'}
-            </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Tooltip title="Workspace Options">
                 <Button
                     variant="contained"
