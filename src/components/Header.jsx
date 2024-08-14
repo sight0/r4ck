@@ -18,9 +18,6 @@ const Header = ({ children }) => {
         <AppBar position="static">
             <Toolbar className="app-bar">
                 <Logo src="/logo.png" alt="Logo" />
-                <Box sx={{ display: 'flex', alignItems: 'center', mr: 2 }}>
-                    {children}
-                </Box>
                 <Title variant="h6">
                     Design and Recommendation Tool
                 </Title>
@@ -34,6 +31,9 @@ const Header = ({ children }) => {
                 >
                     <GitHubIcon />
                 </IconButton>
+                <Box sx={{ display: 'flex', alignItems: 'center', mr: 2 }}>
+                    {children}
+                </Box>
             </Toolbar>
         </AppBar>
     );
