@@ -47,54 +47,70 @@ const App = () => {
         setAllComponents(initialComponents);
     };
 
-    const handleSaveWorkspace = (name) => {
-        const workspace = {
-            name,
-            data: {
-                setupComplete,
-                networkInfo,
-                currentIdf,
-                connections,
-                connectionsPerIdf,
-                rackDesigns,
-                interIdfConnections,
-                allComponents
-            }
-        };
-        const savedWorkspaces = JSON.parse(localStorage.getItem('workspaces') || '[]');
-        savedWorkspaces.push(workspace);
-        localStorage.setItem('workspaces', JSON.stringify(savedWorkspaces));
-        setCurrentWorkspace(name);
+    const handleSaveWorkspace = () => {
+        const name = prompt("Enter a name for this workspace:");
+        if (name) {
+            const workspace = {
+                name,
+                data: {
+                    setupComplete,
+                    networkInfo,
+                    currentIdf,
+                    connections,
+                    connectionsPerIdf,
+                    rackDesigns,
+                    interIdfConnections,
+                    allComponents
+                }
+            };
+            const savedWorkspaces = JSON.parse(localStorage.getItem('workspaces') || '[]');
+            savedWorkspaces.push(workspace);
+            localStorage.setItem('workspaces', JSON.stringify(savedWorkspaces));
+            setCurrentWorkspace(name);
+        }
     };
 
-    const handleLoadWorkspace = (workspace) => {
-        const { name, data } = workspace;
-        setSetupComplete(data.setupComplete);
-        setNetworkInfo(data.networkInfo);
-        setCurrentIdf(data.currentIdf);
-        setConnections(data.connections);
-        setConnectionsPerIdf(data.connectionsPerIdf);
-        setRackDesigns(data.rackDesigns);
-        setInterIdfConnections(data.interIdfConnections);
-        setAllComponents(data.allComponents);
-        setCurrentWorkspace(name);
+    const handleLoadWorkspace = () => {
+        const savedWorkspaces = JSON.parse(localStorage.getItem('workspaces') || '[]');
+        if (savedWorkspaces.length === 0) {
+            alert("No saved workspaces found.");
+            return;
+        }
+        const workspaceNames = savedWorkspaces.map(w => w.name);
+        const selectedName = prompt("Enter the name of the workspace to load:\n\n" + workspaceNames.join(", "));
+        if (selectedName) {
+            const workspace = savedWorkspaces.find(w => w.name === selectedName);
+            if (workspace) {
+                const { data } = workspace;
+                setSetupComplete(data.setupComplete);
+                setNetworkInfo(data.networkInfo);
+                setCurrentIdf(data.currentIdf);
+                setConnections(data.connections);
+                setConnectionsPerIdf(data.connectionsPerIdf);
+                setRackDesigns(data.rackDesigns);
+                setInterIdfConnections(data.interIdfConnections);
+                setAllComponents(data.allComponents);
+                setCurrentWorkspace(selectedName);
+            } else {
+                alert("Workspace not found.");
+            }
+        }
     };
 
     const handleNewWorkspace = () => {
-        setSetupComplete(false);
-        setNetworkInfo(null);
-        setCurrentIdf(1);
-        setConnections([]);
-        setConnectionsPerIdf({});
-        setRackDesigns({});
-        setInterIdfConnections({});
-        setAllComponents({});
-        setCurrentWorkspace(null);
+        if (confirm("Are you sure you want to start a new workspace? This will clear all current data.")) {
+            setSetupComplete(false);
+            setNetworkInfo(null);
+            setCurrentIdf(1);
+            setConnections([]);
+            setConnectionsPerIdf({});
+            setRackDesigns({});
+            setInterIdfConnections({});
+            setAllComponents({});
+            setCurrentWorkspace(null);
+        }
     };
 
-    // const handleAddConnection = (connection) => {
-    //     setConnections([...connections, connection]);
-    // };
     const handleAddConnection = useCallback((connection) => {
         setConnectionsPerIdf(prev => ({
             ...prev,

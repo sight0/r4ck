@@ -129,71 +129,10 @@ const RackVisualization = ({
     const [issuesDialogOpen, setIssuesDialogOpen] = useState(false);
     const [connectionWizardOpen, setConnectionWizardOpen] = useState(false);
     const [recommendationsDialogOpen, setRecommendationsDialogOpen] = useState(false);
-    const [workspaceMenuAnchor, setWorkspaceMenuAnchor] = useState(null);
-    const [saveWorkspaceDialogOpen, setSaveWorkspaceDialogOpen] = useState(false);
-    const [workspaceName, setWorkspaceName] = useState('');
     const rackRef = useRef(null);
 
     const theme = useTheme();
     const components = useMemo(() => allComponents[currentIdf] || [], [allComponents, currentIdf]);
-
-    const handleWorkspaceMenuOpen = (event) => {
-        setWorkspaceMenuAnchor(event.currentTarget);
-    };
-
-    const handleWorkspaceMenuClose = () => {
-        setWorkspaceMenuAnchor(null);
-    };
-
-    const handleNewWorkspace = () => {
-        // Logic for creating a new workspace
-        handleWorkspaceMenuClose();
-    };
-
-    const handleSaveWorkspace = () => {
-        setSaveWorkspaceDialogOpen(true);
-        handleWorkspaceMenuClose();
-    };
-
-    const handleLoadWorkspace = () => {
-        setLoadWorkspaceDialogOpen(true);
-        handleWorkspaceMenuClose();
-    };
-
-    const handleDiscardWorkspace = () => {
-        const confirmDiscard = window.confirm("Are you sure you want to discard the current workspace? This action cannot be undone.");
-        if (confirmDiscard) {
-            onNewWorkspace();
-        }
-        handleWorkspaceMenuClose();
-    };
-
-    const handleSaveWorkspaceConfirm = () => {
-        if (workspaceName.trim()) {
-            onSaveWorkspace(workspaceName.trim());
-            setSaveWorkspaceDialogOpen(false);
-            setWorkspaceName('');
-        }
-    };
-
-    const [loadWorkspaceDialogOpen, setLoadWorkspaceDialogOpen] = useState(false);
-    const [savedWorkspaces, setSavedWorkspaces] = useState([]);
-
-    useEffect(() => {
-        const workspaces = JSON.parse(localStorage.getItem('workspaces') || '[]');
-        setSavedWorkspaces(workspaces);
-    }, []);
-
-    const handleLoadWorkspaceConfirm = (workspace) => {
-        onLoadWorkspace(workspace);
-        setLoadWorkspaceDialogOpen(false);
-    };
-
-    const handleDeleteWorkspace = (index) => {
-        const newWorkspaces = savedWorkspaces.filter((_, i) => i !== index);
-        localStorage.setItem('workspaces', JSON.stringify(newWorkspaces));
-        setSavedWorkspaces(newWorkspaces);
-    };
 
     useEffect(() => {
         // Calculate total devices for the current IDF
@@ -654,14 +593,6 @@ const RackVisualization = ({
                         {currentIdf === numIdfs + 1 ? 'MDF' : `IDF ${currentIdf}`} Rack Design
                     </Typography>
                     <Box>
-                        <Button
-                            variant="contained"
-                            onClick={handleWorkspaceMenuOpen}
-                            startIcon={<FolderOpenIcon />}
-                            sx={{ mr: 2 }}
-                        >
-                            Workspace
-                        </Button>
                         <IconButton onClick={handlePreviousIdf} disabled={currentIdf === 1}>
                             <ArrowBackIosNewIcon />
                         </IconButton>
