@@ -106,10 +106,47 @@ const RackVisualization = ({
     const [issuesDialogOpen, setIssuesDialogOpen] = useState(false);
     const [connectionWizardOpen, setConnectionWizardOpen] = useState(false);
     const [recommendationsDialogOpen, setRecommendationsDialogOpen] = useState(false);
+    const [workspaceMenuAnchor, setWorkspaceMenuAnchor] = useState(null);
+    const [saveWorkspaceDialogOpen, setSaveWorkspaceDialogOpen] = useState(false);
+    const [workspaceName, setWorkspaceName] = useState('');
     const rackRef = useRef(null);
 
     const theme = useTheme();
     const components = useMemo(() => allComponents[currentIdf] || [], [allComponents, currentIdf]);
+
+    const handleWorkspaceMenuOpen = (event) => {
+        setWorkspaceMenuAnchor(event.currentTarget);
+    };
+
+    const handleWorkspaceMenuClose = () => {
+        setWorkspaceMenuAnchor(null);
+    };
+
+    const handleNewWorkspace = () => {
+        // Logic for creating a new workspace
+        handleWorkspaceMenuClose();
+    };
+
+    const handleSaveWorkspace = () => {
+        setSaveWorkspaceDialogOpen(true);
+        handleWorkspaceMenuClose();
+    };
+
+    const handleLoadWorkspace = () => {
+        // Logic for loading a workspace
+        handleWorkspaceMenuClose();
+    };
+
+    const handleDiscardWorkspace = () => {
+        // Logic for discarding a workspace
+        handleWorkspaceMenuClose();
+    };
+
+    const handleSaveWorkspaceConfirm = () => {
+        // Logic for saving the workspace with the given name
+        setSaveWorkspaceDialogOpen(false);
+        setWorkspaceName('');
+    };
 
     useEffect(() => {
         // Calculate total devices for the current IDF
@@ -580,6 +617,14 @@ const RackVisualization = ({
                         {currentIdf === numIdfs + 1 ? 'MDF' : `IDF ${currentIdf}`} Rack Design
                     </Typography>
                     <Box>
+                        <Button
+                            variant="contained"
+                            onClick={handleWorkspaceMenuOpen}
+                            startIcon={<FolderOpenIcon />}
+                            sx={{ mr: 2 }}
+                        >
+                            Workspace
+                        </Button>
                         <IconButton onClick={handlePreviousIdf} disabled={currentIdf === 1}>
                             <ArrowBackIosNewIcon />
                         </IconButton>
@@ -1029,6 +1074,48 @@ const RackVisualization = ({
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setRecommendationsDialogOpen(false)}>Close</Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* Workspace Menu */}
+            <Menu
+                anchorEl={workspaceMenuAnchor}
+                open={Boolean(workspaceMenuAnchor)}
+                onClose={handleWorkspaceMenuClose}
+            >
+                <MenuItem onClick={handleNewWorkspace}>
+                    <AddIcon sx={{ mr: 1 }} /> New Workspace
+                </MenuItem>
+                <MenuItem onClick={handleSaveWorkspace}>
+                    <SaveIcon sx={{ mr: 1 }} /> Save Workspace
+                </MenuItem>
+                <MenuItem onClick={handleLoadWorkspace}>
+                    <FolderOpenIcon sx={{ mr: 1 }} /> Load Workspace
+                </MenuItem>
+                <MenuItem onClick={handleDiscardWorkspace}>
+                    <DeleteIcon sx={{ mr: 1 }} /> Discard Workspace
+                </MenuItem>
+            </Menu>
+
+            {/* Save Workspace Dialog */}
+            <Dialog open={saveWorkspaceDialogOpen} onClose={() => setSaveWorkspaceDialogOpen(false)}>
+                <DialogTitle>Save Workspace</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="name"
+                        label="Workspace Name"
+                        type="text"
+                        fullWidth
+                        variant="standard"
+                        value={workspaceName}
+                        onChange={(e) => setWorkspaceName(e.target.value)}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setSaveWorkspaceDialogOpen(false)}>Cancel</Button>
+                    <Button onClick={handleSaveWorkspaceConfirm}>Save</Button>
                 </DialogActions>
             </Dialog>
         </Box>
