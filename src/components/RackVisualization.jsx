@@ -909,7 +909,7 @@ const RackVisualization = ({
                             sx={{ mb: 2, backgroundColor: '#FF9800', '&:hover': { backgroundColor: '#f57c00' } }}
                             onClick={handleAutoPlacement}
                         >
-                            Auto Placement
+                            Auto Component Placement
                         </Button>
                         <Button 
                             variant="contained" 
@@ -917,7 +917,7 @@ const RackVisualization = ({
                             sx={{ mb: 2, backgroundColor: '#9C27B0', '&:hover': { backgroundColor: '#8e24aa' } }}
                             onClick={handleAutoWiring}
                         >
-                            Auto Wiring
+                            Auto Component Wiring
                         </Button>
                         <Button 
                             variant="contained" 
@@ -928,14 +928,15 @@ const RackVisualization = ({
                         >
                             Get AI Recommendations (Disabled)
                         </Button>
-                        {/*<Button */}
-                        {/*    variant="contained" */}
-                        {/*    fullWidth */}
-                        {/*    sx={{ mb: 2, backgroundColor: '#e95849', '&:hover': { backgroundColor: '#d32f2f' } }}*/}
-                        {/*    // onClick={handleClearIdf}*/}
-                        {/*>*/}
-                        {/*    Clear IDF*/}
-                        {/*</Button>*/}
+                        <Button
+                            variant="contained"
+                            fullWidth
+                            sx={{ mb: 2, backgroundColor: '#e95849', '&:hover': { backgroundColor: '#d32f2f' } }}
+                            // onClick={handleClearIdf}
+                            disabled
+                        >
+                            Clear IDF
+                        </Button>
                         <Typography variant="body2" sx={{ mt: 2, mb: 2 }}>
                             Note: Auto placement and wiring functions work best when the IDF is empty. Clear the IDF before using these features for optimal results.
                         </Typography>
