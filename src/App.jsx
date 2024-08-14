@@ -103,6 +103,8 @@ const App = () => {
         localStorage.setItem('workspaces', JSON.stringify(savedWorkspaces));
         setCurrentWorkspace(workspace.name);
         setHasUnsavedChanges(false);
+        // Force a re-render to update the UI
+        setAllComponents({...allComponents});
     }, [setupComplete, networkInfo, currentIdf, connections, connectionsPerIdf, rackDesigns, interIdfConnections, allComponents, currentWorkspace]);
 
     const handleLoadWorkspace = (workspace) => {

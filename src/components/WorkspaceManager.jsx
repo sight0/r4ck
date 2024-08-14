@@ -45,6 +45,8 @@ const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, cu
         } else {
             setSaveWorkspaceDialogOpen(true);
         }
+        // Force update of UI
+        setAnchorEl(null);
     }, [currentWorkspace, onSaveWorkspace]);
 
     const handleLoadWorkspace = useCallback(() => {
