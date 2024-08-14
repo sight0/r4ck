@@ -899,7 +899,10 @@ const RackVisualization = ({
                 </Grid>
                 <Grid item xs={12} md={3}>
                     <Paper elevation={3} sx={{ p: 2, height: '98.2%' }}>
-                        <Typography variant="h6" gutterBottom>Quick Actions</Typography>
+                        <Typography variant="h6" gutterBottom>AUTO Panel</Typography>
+                        <Typography variant="body2" sx={{ mb: 2 }}>
+                            Note: Auto placement and wiring functions work best when the IDF is empty. Clear the IDF before using these features for optimal results.
+                        </Typography>
                         <Button
                             variant="contained" 
                             fullWidth 
@@ -916,6 +919,22 @@ const RackVisualization = ({
                         >
                             Auto Wiring
                         </Button>
+                        <Button 
+                            variant="contained" 
+                            fullWidth 
+                            sx={{ mb: 2, backgroundColor: '#4CAF50', '&:hover': { backgroundColor: '#45a049' } }}
+                            onClick={handleGetRecommendations}
+                        >
+                            Get AI Recommendations
+                        </Button>
+                        <Button 
+                            variant="contained" 
+                            fullWidth 
+                            sx={{ mb: 2, backgroundColor: '#F44336', '&:hover': { backgroundColor: '#d32f2f' } }}
+                            onClick={handleClearIdf}
+                        >
+                            Clear IDF
+                        </Button>
                         <Typography variant="subtitle1" gutterBottom sx={{ mt: 3, fontWeight: 'bold' }}>Configuration Calculations</Typography>
                         <Box sx={{ backgroundColor: '#e0e0e0', p: 2, borderRadius: 2, border: '1px solid #bdbdbd' }}>
                             <Typography variant="body2" sx={{ mb: 1, color: '#000000' }}>
@@ -928,7 +947,7 @@ const RackVisualization = ({
                                 <strong>Expected Fiber Patch Panels:</strong> {1}
                             </Typography>
                             <Typography variant="body2" sx={{ color: '#000000' }}>
-                                <strong>Expected Cable Managers:</strong> {Math.ceil(totalDevices / 24) + 1} {/* One cable manager for every two devices */}
+                                <strong>Expected Cable Managers:</strong> {Math.ceil(totalDevices / 24) + 1}
                             </Typography>
                         </Box>
                     </Paper>
