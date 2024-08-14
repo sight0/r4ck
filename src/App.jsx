@@ -194,6 +194,7 @@ const App = () => {
                             onSaveWorkspace={handleSaveWorkspace}
                             onLoadWorkspace={handleLoadWorkspace}
                             onNewWorkspace={handleNewWorkspace}
+                            currentWorkspace={currentWorkspace}
                         />
                         <Typography variant="subtitle1" sx={{ fontStyle: 'italic' }}>
                             {currentWorkspace ? `Current Workspace: ${currentWorkspace}` : 'Unsaved Workspace'}
