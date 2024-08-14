@@ -1,4 +1,4 @@
-import {useMemo, useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import {
   Autocomplete,
   Box,
@@ -27,13 +27,11 @@ const PatchingSchedule = ({ connections, currentIdf }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
 
-  connections.filter(connection => {console.log(connection)});
-
   const allIdentifiers = useMemo(() => {
     return connections.flatMap(connection => [
-      connection.deviceA.identifier,
-      connection.deviceB.identifier,
-    ])
+      connection.deviceA?.identifier,
+      connection.deviceB?.identifier,
+    ].filter(Boolean))
   }, [connections]);
 
   const filteredConnections = connections.filter(connection =>
