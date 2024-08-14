@@ -47,6 +47,8 @@ const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, cu
         }
         // Force update of UI
         setAnchorEl(null);
+        // Reset hasUnsavedChanges
+        onSaveWorkspace(currentWorkspace);
     }, [currentWorkspace, onSaveWorkspace]);
 
     const handleLoadWorkspace = useCallback(() => {
