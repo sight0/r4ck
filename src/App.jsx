@@ -1,5 +1,5 @@
 import './App.css'
-import { useState, useEffect, useCallback, useMemo, useRef, createRef } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { Box, CssBaseline, ThemeProvider, createTheme, Typography, useMediaQuery, CircularProgress } from '@mui/material';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
@@ -11,7 +11,7 @@ import { getCookie } from './utils/cookieUtils';
 
 const App = () => {
     const [setupComplete, setSetupComplete] = useState(false);
-    const workspaceManagerRef = createRef();
+    const workspaceManagerRef = useRef(null);
     const [networkInfo, setNetworkInfo] = useState(null);
     const [currentIdf, setCurrentIdf] = useState(1);
     const [connections, setConnections] = useState([]);
@@ -89,7 +89,11 @@ const App = () => {
 
         // Open the save workspace dialog
         setTimeout(() => {
-            workspaceManagerRef.current.openSaveDialog();
+            if (workspaceManagerRef.current) {
+                workspaceManagerRef.current.openSaveDialog();
+            } else {
+                console.error("WorkspaceManager ref is not available");
+            }
         }, 0);
     };
 
