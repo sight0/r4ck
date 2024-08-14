@@ -159,16 +159,6 @@ const RackVisualization = ({
         setTotalDevices(total);
     }, [currentIdf, idfData]);
 
-    const handleSaveWorkspace = () => {
-        // Implement save workspace functionality
-        console.log('Saving workspace...');
-    };
-
-    const handleLoadWorkspace = () => {
-        // Implement load workspace functionality
-        console.log('Loading workspace...');
-    };
-
     const handleAutoPlacement = () => {
         // Implement auto placement functionality
         console.log('Auto placing components...');
@@ -936,23 +926,7 @@ const RackVisualization = ({
                 <Grid item xs={12} md={3}>
                     <Paper elevation={3} sx={{ p: 2, height: '98.2%' }}>
                         <Typography variant="h6" gutterBottom>Quick Actions</Typography>
-                        <Button 
-                            variant="contained" 
-                            fullWidth 
-                            sx={{ mb: 2, backgroundColor: '#4CAF50', '&:hover': { backgroundColor: '#45a049' } }}
-                            onClick={handleSaveWorkspace}
-                        >
-                            Save Workspace
-                        </Button>
-                        <Button 
-                            variant="contained" 
-                            fullWidth 
-                            sx={{ mb: 2, backgroundColor: '#2196F3', '&:hover': { backgroundColor: '#1e88e5' } }}
-                            onClick={handleLoadWorkspace}
-                        >
-                            Load Workspace
-                        </Button>
-                        <Button 
+                        <Button
                             variant="contained" 
                             fullWidth 
                             sx={{ mb: 2, backgroundColor: '#FF9800', '&:hover': { backgroundColor: '#f57c00' } }}
