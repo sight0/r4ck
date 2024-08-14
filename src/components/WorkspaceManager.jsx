@@ -107,24 +107,26 @@ const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, cu
     return (
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Tooltip title={hasUnsavedChanges ? "Save changes" : "No unsaved changes"}>
-                <Zoom in={true}>
-                    <Button
-                        variant="contained"
-                        onClick={handleSaveWorkspace}
-                        startIcon={isSaving ? <CircularProgress size={20} color="inherit" /> : showSaved ? <CheckCircleIcon /> : <SaveIcon />}
-                        disabled={isSaving}
-                        sx={{
-                            backgroundColor: hasUnsavedChanges ? theme.palette.error.main : theme.palette.primary.main,
-                            color: theme.palette.primary.contrastText,
-                            '&:hover': {
-                                backgroundColor: hasUnsavedChanges ? theme.palette.error.dark : theme.palette.primary.dark,
-                            },
-                            transition: 'background-color 0.3s',
-                        }}
-                    >
-                        {isSaving ? 'Saving...' : showSaved ? 'SAVED!' : 'Save'}
-                    </Button>
-                </Zoom>
+                <span>
+                    <Zoom in={true}>
+                        <Button
+                            variant="contained"
+                            onClick={handleSaveWorkspace}
+                            startIcon={isSaving ? <CircularProgress size={20} color="inherit" /> : showSaved ? <CheckCircleIcon /> : <SaveIcon />}
+                            disabled={isSaving}
+                            sx={{
+                                backgroundColor: hasUnsavedChanges ? theme.palette.error.main : theme.palette.primary.main,
+                                color: theme.palette.primary.contrastText,
+                                '&:hover': {
+                                    backgroundColor: hasUnsavedChanges ? theme.palette.error.dark : theme.palette.primary.dark,
+                                },
+                                transition: 'background-color 0.3s',
+                            }}
+                        >
+                            {isSaving ? 'Saving...' : showSaved ? 'SAVED!' : 'Save'}
+                        </Button>
+                    </Zoom>
+                </span>
             </Tooltip>
             <Button
                 variant="contained"
