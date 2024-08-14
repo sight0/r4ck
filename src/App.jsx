@@ -5,6 +5,7 @@ import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import RackVisualization from './components/RackVisualization';
 import InitialSetupForm from './components/InitialSetupForm';
+import WorkspaceManager from './components/WorkspaceManager';
 import { calculateInterIdfConnections } from './utils/rackUtils';
 
 const App = () => {
@@ -43,6 +44,48 @@ const App = () => {
             initialComponents[i] = [];
         }
         setAllComponents(initialComponents);
+    };
+
+    const handleSaveWorkspace = (name) => {
+        const workspace = {
+            name,
+            data: {
+                setupComplete,
+                networkInfo,
+                currentIdf,
+                connections,
+                connectionsPerIdf,
+                rackDesigns,
+                interIdfConnections,
+                allComponents
+            }
+        };
+        const savedWorkspaces = JSON.parse(localStorage.getItem('workspaces') || '[]');
+        savedWorkspaces.push(workspace);
+        localStorage.setItem('workspaces', JSON.stringify(savedWorkspaces));
+    };
+
+    const handleLoadWorkspace = (workspace) => {
+        const { data } = workspace;
+        setSetupComplete(data.setupComplete);
+        setNetworkInfo(data.networkInfo);
+        setCurrentIdf(data.currentIdf);
+        setConnections(data.connections);
+        setConnectionsPerIdf(data.connectionsPerIdf);
+        setRackDesigns(data.rackDesigns);
+        setInterIdfConnections(data.interIdfConnections);
+        setAllComponents(data.allComponents);
+    };
+
+    const handleNewWorkspace = () => {
+        setSetupComplete(false);
+        setNetworkInfo(null);
+        setCurrentIdf(1);
+        setConnections([]);
+        setConnectionsPerIdf({});
+        setRackDesigns({});
+        setInterIdfConnections({});
+        setAllComponents({});
     };
 
     // const handleAddConnection = (connection) => {
@@ -138,7 +181,13 @@ const App = () => {
         <ThemeProvider theme={theme}>
             <CssBaseline />
             <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-                <Header />
+                <Header>
+                    <WorkspaceManager
+                        onSaveWorkspace={handleSaveWorkspace}
+                        onLoadWorkspace={handleLoadWorkspace}
+                        onNewWorkspace={handleNewWorkspace}
+                    />
+                </Header>
                 {!setupComplete ? (
                     <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <InitialSetupForm onSubmit={handleSetupSubmit} />
