@@ -1,6 +1,25 @@
 import PropTypes from 'prop-types';
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Typography, Box, Grid, Paper, Divider, IconButton, Badge, Tooltip, MenuItem, Container, Menu } from '@mui/material';
+import {
+    Button,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    TextField,
+    Typography,
+    Box,
+    Grid,
+    Paper,
+    Divider,
+    IconButton,
+    Badge,
+    Tooltip,
+    MenuItem,
+    Container,
+    Menu,
+    List, ListItem, ListItemText
+} from '@mui/material';
 import { calculateInterIdfConnections } from '../utils/rackUtils';
 import IssuesDialog from './IssuesDialog';
 import PatchingSchedule from './PatchingSchedule';
