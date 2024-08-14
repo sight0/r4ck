@@ -9,29 +9,27 @@ const Logo = styled('img')({
     height: '34px',
 });
 
-const Title = styled(Typography)({
-    flexGrow: 1,
-});
-
 const Header = ({ children }) => {
     return (
         <AppBar position="static">
-            <Toolbar className="app-bar">
-                <Logo src="/logo.png" alt="Logo" />
-                <Title variant="h6">
-                    Design and Recommendation Tool
-                </Title>
-                <IconButton
-                    color="inherit"
-                    aria-label="GitHub repository"
-                    component="a"
-                    href="https://github.com/sight0/r4ck"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    <GitHubIcon />
-                </IconButton>
-                <Box sx={{ display: 'flex', alignItems: 'center', mr: 2 }}>
+            <Toolbar className="app-bar" sx={{ justifyContent: 'space-between' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <Logo src="/logo.png" alt="Logo" />
+                    <Typography variant="h6" sx={{ mr: 2 }}>
+                        Design and Recommendation Tool
+                    </Typography>
+                    <IconButton
+                        color="inherit"
+                        aria-label="GitHub repository"
+                        component="a"
+                        href="https://github.com/sight0/r4ck"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        <GitHubIcon />
+                    </IconButton>
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     {children}
                 </Box>
             </Toolbar>
