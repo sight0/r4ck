@@ -1,6 +1,6 @@
 import './App.css'
 import { useState, useEffect, useCallback } from "react";
-import { Box, CssBaseline, ThemeProvider, createTheme } from '@mui/material';
+import { Box, CssBaseline, ThemeProvider, createTheme, Typography } from '@mui/material';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import RackVisualization from './components/RackVisualization';
@@ -17,6 +17,7 @@ const App = () => {
     const [rackDesigns, setRackDesigns] = useState({});
     const [interIdfConnections, setInterIdfConnections] = useState({});
     const [allComponents, setAllComponents] = useState({});
+    const [currentWorkspace, setCurrentWorkspace] = useState(null);
 
     const theme = createTheme({
         palette: {
@@ -63,10 +64,11 @@ const App = () => {
         const savedWorkspaces = JSON.parse(localStorage.getItem('workspaces') || '[]');
         savedWorkspaces.push(workspace);
         localStorage.setItem('workspaces', JSON.stringify(savedWorkspaces));
+        setCurrentWorkspace(name);
     };
 
     const handleLoadWorkspace = (workspace) => {
-        const { data } = workspace;
+        const { name, data } = workspace;
         setSetupComplete(data.setupComplete);
         setNetworkInfo(data.networkInfo);
         setCurrentIdf(data.currentIdf);
@@ -75,6 +77,7 @@ const App = () => {
         setRackDesigns(data.rackDesigns);
         setInterIdfConnections(data.interIdfConnections);
         setAllComponents(data.allComponents);
+        setCurrentWorkspace(name);
     };
 
     const handleNewWorkspace = () => {
@@ -86,6 +89,7 @@ const App = () => {
         setRackDesigns({});
         setInterIdfConnections({});
         setAllComponents({});
+        setCurrentWorkspace(null);
     };
 
     // const handleAddConnection = (connection) => {
@@ -182,11 +186,16 @@ const App = () => {
             <CssBaseline />
             <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
                 <Header>
-                    <WorkspaceManager
-                        onSaveWorkspace={handleSaveWorkspace}
-                        onLoadWorkspace={handleLoadWorkspace}
-                        onNewWorkspace={handleNewWorkspace}
-                    />
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <WorkspaceManager
+                            onSaveWorkspace={handleSaveWorkspace}
+                            onLoadWorkspace={handleLoadWorkspace}
+                            onNewWorkspace={handleNewWorkspace}
+                        />
+                        <Typography variant="subtitle1" sx={{ fontStyle: 'italic' }}>
+                            {currentWorkspace ? `Current Workspace: ${currentWorkspace}` : 'Unsaved'}
+                        </Typography>
+                    </Box>
                 </Header>
                 {!setupComplete ? (
                     <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
