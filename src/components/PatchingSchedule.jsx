@@ -103,18 +103,17 @@ const PatchingSchedule = ({ connections, currentIdf }) => {
         <Box>
           <Button
             variant="contained"
-            color="primary"
             startIcon={<GetAppIcon />}
             onClick={handleExportCSV}
-            sx={{ mr: 1 }}
+            sx={{ mr: 1, bgcolor: '#4CAF50', '&:hover': { bgcolor: '#45a049' } }}
           >
             Export CSV
           </Button>
           <Button
             variant="contained"
-            color="secondary"
             startIcon={<PictureAsPdfIcon />}
             onClick={handleExportPDF}
+            sx={{ bgcolor: '#FF5722', '&:hover': { bgcolor: '#E64A19' } }}
           >
             Export PDF
           </Button>
