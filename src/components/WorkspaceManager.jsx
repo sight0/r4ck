@@ -3,26 +3,27 @@ import PropTypes from 'prop-types';
 import { 
     Button, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions, 
     TextField, List, ListItem, ListItemText, IconButton, Typography, Box,
-    Tooltip, Divider, useTheme
+    Tooltip, Divider, useTheme, Badge
 } from '@mui/material';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
+import WarningIcon from '@mui/icons-material/Warning';
 
-const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, currentWorkspace }) => {
+const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, currentWorkspace, hasUnsavedChanges }) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [saveWorkspaceDialogOpen, setSaveWorkspaceDialogOpen] = useState(false);
     const [loadWorkspaceDialogOpen, setLoadWorkspaceDialogOpen] = useState(false);
     const [workspaceName, setWorkspaceName] = useState('');
     const [savedWorkspaces, setSavedWorkspaces] = useState([]);
-    const [editMode, setEditMode] = useState(false);
+    const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+    const [workspaceToDelete, setWorkspaceToDelete] = useState(null);
     const theme = useTheme();
 
     useEffect(() => {
-        const workspaces = JSON.parse(localStorage.getItem('workspaces') || '[]');
-        setSavedWorkspaces(workspaces);
+        updateSavedWorkspaces();
     }, []);
 
     const handleClick = (event) => {
@@ -39,7 +40,11 @@ const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, cu
     };
 
     const handleSaveWorkspace = () => {
-        setSaveWorkspaceDialogOpen(true);
+        if (currentWorkspace) {
+            onSaveWorkspace(currentWorkspace);
+        } else {
+            setSaveWorkspaceDialogOpen(true);
+        }
         handleClose();
     };
 
@@ -60,10 +65,17 @@ const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, cu
         setLoadWorkspaceDialogOpen(false);
     };
 
-    const handleDeleteWorkspace = (index) => {
-        const updatedWorkspaces = savedWorkspaces.filter((_, i) => i !== index);
+    const handleDeleteWorkspace = (workspace) => {
+        setWorkspaceToDelete(workspace);
+        setDeleteConfirmOpen(true);
+    };
+
+    const confirmDeleteWorkspace = () => {
+        const updatedWorkspaces = savedWorkspaces.filter(w => w.name !== workspaceToDelete.name);
         localStorage.setItem('workspaces', JSON.stringify(updatedWorkspaces));
         setSavedWorkspaces(updatedWorkspaces);
+        setDeleteConfirmOpen(false);
+        setWorkspaceToDelete(null);
     };
 
     const updateSavedWorkspaces = () => {
@@ -71,27 +83,25 @@ const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, cu
         setSavedWorkspaces(workspaces);
     };
 
-    const toggleEditMode = () => {
-        setEditMode(!editMode);
-    };
-
     return (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Tooltip title="Workspace Options">
-                <Button
-                    variant="contained"
-                    onClick={handleClick}
-                    startIcon={<FolderOpenIcon />}
-                    sx={{
-                        backgroundColor: theme.palette.primary.main,
-                        color: theme.palette.primary.contrastText,
-                        '&:hover': {
-                            backgroundColor: theme.palette.primary.dark,
-                        },
-                    }}
-                >
-                    Workspace
-                </Button>
+            <Tooltip title={hasUnsavedChanges ? "Unsaved changes" : "Workspace Options"}>
+                <Badge color="error" variant="dot" invisible={!hasUnsavedChanges}>
+                    <Button
+                        variant="contained"
+                        onClick={handleClick}
+                        startIcon={<FolderOpenIcon />}
+                        sx={{
+                            backgroundColor: theme.palette.primary.main,
+                            color: theme.palette.primary.contrastText,
+                            '&:hover': {
+                                backgroundColor: theme.palette.primary.dark,
+                            },
+                        }}
+                    >
+                        Workspace
+                    </Button>
+                </Badge>
             </Tooltip>
             <Menu
                 anchorEl={anchorEl}
@@ -167,14 +177,7 @@ const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, cu
                 maxWidth="sm"
             >
                 <DialogTitle>
-                    <Box display="flex" justifyContent="space-between" alignItems="center">
-                        <Typography variant="h6">Load Workspace</Typography>
-                        <Tooltip title={editMode ? "View Mode" : "Edit Mode"}>
-                            <IconButton onClick={toggleEditMode}>
-                                <EditIcon />
-                            </IconButton>
-                        </Tooltip>
-                    </Box>
+                    <Typography variant="h6">Load Workspace</Typography>
                 </DialogTitle>
                 <DialogContent>
                     <List>
@@ -182,20 +185,18 @@ const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, cu
                             <React.Fragment key={index}>
                                 <ListItem 
                                     secondaryAction={
-                                        editMode && (
-                                            <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteWorkspace(index)}>
-                                                <DeleteIcon />
-                                            </IconButton>
-                                        )
+                                        <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteWorkspace(workspace)}>
+                                            <DeleteIcon />
+                                        </IconButton>
                                     }
                                 >
                                     <ListItemText 
                                         primary={workspace.name} 
-                                        onClick={() => !editMode && handleLoadWorkspaceConfirm(workspace)}
+                                        onClick={() => handleLoadWorkspaceConfirm(workspace)}
                                         sx={{ 
-                                            cursor: editMode ? 'default' : 'pointer',
+                                            cursor: 'pointer',
                                             '&:hover': {
-                                                backgroundColor: editMode ? 'transparent' : theme.palette.action.hover,
+                                                backgroundColor: theme.palette.action.hover,
                                             },
                                         }}
                                     />
@@ -214,6 +215,30 @@ const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, cu
                     <Button onClick={() => setLoadWorkspaceDialogOpen(false)}>Close</Button>
                 </DialogActions>
             </Dialog>
+
+            {/* Delete Confirmation Dialog */}
+            <Dialog
+                open={deleteConfirmOpen}
+                onClose={() => setDeleteConfirmOpen(false)}
+            >
+                <DialogTitle>
+                    <Box display="flex" alignItems="center">
+                        <WarningIcon sx={{ color: 'warning.main', mr: 1 }} />
+                        Confirm Deletion
+                    </Box>
+                </DialogTitle>
+                <DialogContent>
+                    <Typography>
+                        Are you sure you want to delete the workspace "{workspaceToDelete?.name}"? This action cannot be undone.
+                    </Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setDeleteConfirmOpen(false)}>Cancel</Button>
+                    <Button onClick={confirmDeleteWorkspace} color="error" variant="contained">
+                        Delete
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 };
@@ -223,6 +248,7 @@ WorkspaceManager.propTypes = {
     onLoadWorkspace: PropTypes.func.isRequired,
     onNewWorkspace: PropTypes.func.isRequired,
     currentWorkspace: PropTypes.string,
+    hasUnsavedChanges: PropTypes.bool.isRequired,
 };
 
 export default WorkspaceManager;
