@@ -90,13 +90,9 @@ const App = () => {
             console.log('Checking for changes:');
             console.log('Current state:', currentState);
             console.log('Last saved state:', lastSavedStateRef.current);
-            if (currentState !== lastSavedStateRef.current) {
-                console.log('State changed, setting hasUnsavedChanges to true');
-                setHasUnsavedChanges(true);
-            } else {
-                console.log('No changes detected');
-                setHasUnsavedChanges(false);
-            }
+            const hasChanges = currentState !== lastSavedStateRef.current;
+            console.log('Has changes:', hasChanges);
+            setHasUnsavedChanges(hasChanges);
         }
     }, [setupComplete, networkInfo, currentIdf, connections, connectionsPerIdf, rackDesigns, interIdfConnections, allComponents]);
 
@@ -129,9 +125,10 @@ const App = () => {
         }
         localStorage.setItem('workspaces', JSON.stringify(savedWorkspaces));
         setCurrentWorkspace(workspace.name);
-        console.log('Setting hasUnsavedChanges to false');
+        const newSavedState = JSON.stringify(workspaceData);
+        lastSavedStateRef.current = newSavedState;
+        console.log('New saved state:', newSavedState);
         setHasUnsavedChanges(false);
-        lastSavedStateRef.current = JSON.stringify(workspaceData);
         console.log('handleSaveWorkspace completed');
     }, [setupComplete, networkInfo, currentIdf, connections, connectionsPerIdf, rackDesigns, interIdfConnections, allComponents, currentWorkspace]);
 
@@ -147,8 +144,9 @@ const App = () => {
             setInterIdfConnections(data.interIdfConnections);
             setAllComponents(data.allComponents);
             setCurrentWorkspace(workspace.name);
-            const currentState = JSON.stringify(data);
-            lastSavedStateRef.current = currentState;
+            const loadedState = JSON.stringify(data);
+            lastSavedStateRef.current = loadedState;
+            console.log('Loaded state:', loadedState);
             setHasUnsavedChanges(false);
             console.log('Workspace loaded, lastSavedStateRef updated');
         }
