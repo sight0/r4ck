@@ -31,6 +31,12 @@ const App = () => {
             const lastSavedWorkspace = getCookie('lastSavedWorkspace');
             if (lastSavedWorkspace) {
                 await handleLoadWorkspace({ name: lastSavedWorkspace });
+            } else {
+                // If no workspace is saved in cookie, load the most recent workspace
+                const workspaces = JSON.parse(localStorage.getItem('workspaces') || '[]');
+                if (workspaces.length > 0) {
+                    await handleLoadWorkspace(workspaces[workspaces.length - 1]);
+                }
             }
             setIsLoading(false);
         };
