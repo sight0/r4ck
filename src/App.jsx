@@ -18,6 +18,7 @@ const App = () => {
     const [interIdfConnections, setInterIdfConnections] = useState({});
     const [allComponents, setAllComponents] = useState({});
     const [currentWorkspace, setCurrentWorkspace] = useState(null);
+    const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
     const theme = createTheme({
         palette: {
