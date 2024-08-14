@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Button, Menu, MenuItem } from '@mui/material';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 
@@ -48,6 +49,12 @@ const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace }) 
             </Menu>
         </>
     );
+};
+
+WorkspaceManager.propTypes = {
+    onSaveWorkspace: PropTypes.func.isRequired,
+    onLoadWorkspace: PropTypes.func.isRequired,
+    onNewWorkspace: PropTypes.func.isRequired,
 };
 
 export default WorkspaceManager;
