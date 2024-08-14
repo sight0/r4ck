@@ -18,22 +18,22 @@ const Header = ({ children }) => {
         <AppBar position="static">
             <Toolbar className="app-bar">
                 <Logo src="/logo.png" alt="Logo" />
+                <Box sx={{ display: 'flex', alignItems: 'center', mr: 2 }}>
+                    {children}
+                </Box>
                 <Title variant="h6">
                     Design and Recommendation Tool
                 </Title>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    {children}
-                    <IconButton
-                        color="inherit"
-                        aria-label="GitHub repository"
-                        component="a"
-                        href="https://github.com/sight0/r4ck"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        <GitHubIcon />
-                    </IconButton>
-                </Box>
+                <IconButton
+                    color="inherit"
+                    aria-label="GitHub repository"
+                    component="a"
+                    href="https://github.com/sight0/r4ck"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    <GitHubIcon />
+                </IconButton>
             </Toolbar>
         </AppBar>
     );
