@@ -311,7 +311,7 @@ const WorkspaceManager = forwardRef(({ onSaveWorkspace, onLoadWorkspace, onNewWo
             </Dialog>
         </Box>
     );
-};
+});
 
 WorkspaceManager.propTypes = {
     onSaveWorkspace: PropTypes.func.isRequired,

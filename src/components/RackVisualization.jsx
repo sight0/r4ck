@@ -922,15 +922,16 @@ const RackVisualization = ({
                         <Button 
                             variant="contained" 
                             fullWidth 
-                            sx={{ mb: 2, backgroundColor: '#4CAF50', '&:hover': { backgroundColor: '#45a049' } }}
+                            sx={{ mb: 2, backgroundColor: '#d1b4b4', '&:hover': { backgroundColor: '#45a049' } }}
                             onClick={handleGetRecommendations}
+                            disabled
                         >
-                            Get AI Recommendations
+                            Get AI Recommendations (Disabled)
                         </Button>
                         <Button 
                             variant="contained" 
                             fullWidth 
-                            sx={{ mb: 2, backgroundColor: '#F44336', '&:hover': { backgroundColor: '#d32f2f' } }}
+                            sx={{ mb: 2, backgroundColor: '#e95849', '&:hover': { backgroundColor: '#d32f2f' } }}
                             // onClick={handleClearIdf}
                         >
                             Clear IDF
@@ -939,25 +940,25 @@ const RackVisualization = ({
                             Note: Auto placement and wiring functions work best when the IDF is empty. Clear the IDF before using these features for optimal results.
                         </Typography>
                         <Typography variant="subtitle1" gutterBottom sx={{ mt: 3, fontWeight: 'bold' }}>Configuration Calculations</Typography>
-                        <Box sx={{ backgroundColor: '#080808', p: 2, borderRadius: 2, border: '1px solid #bdbdbd' }}>
+                        <Box sx={{ backgroundColor: '#3c3b3b', p: 2, borderRadius: 2, border: '1px solid #bdbdbd' }}>
                             <Typography variant="body2" sx={{ mb: 2, fontStyle: 'italic' }}>
                                 These calculations are based on the total number of devices specified in the initial setup.
                             </Typography>
                             <Typography variant="body2" sx={{ mb: 1, color: '#000000', backgroundColor: '#dcdcdc', padding: 1, borderRadius: 5, display: 'flex', justifyContent: 'space-between' }}>
-                                <strong>Expected Patch Panels:</strong>
-                                <span style={{ paddingLeft: '10px' }}>{Math.ceil(totalDevices / 24)}</span>
+                                <strong style={{ paddingLeft: '10px' }}>Expected Patch Panels:</strong>
+                                <span style={{ paddingRight: '30px' }}>{Math.ceil(totalDevices / 24)}</span>
                             </Typography>
                             <Typography variant="body2" sx={{ mb: 1, color: '#000000', backgroundColor: '#dcdcdc', padding: 1, borderRadius: 5, display: 'flex', justifyContent: 'space-between'  }}>
-                                <strong>Expected 48-port Switches:</strong>
-                                <span style={{ paddingLeft: '10px' }}>{Math.ceil(totalDevices / 48)}</span>
+                                <strong style={{ paddingLeft: '10px' }}>Expected 48-port Switches:</strong>
+                                <span style={{ paddingRight: '30px' }}>{Math.ceil(totalDevices / 48)}</span>
                             </Typography>
                             <Typography variant="body2" sx={{ mb: 1, color: '#000000', backgroundColor: '#dcdcdc', padding: 1, borderRadius: 5, display: 'flex', justifyContent: 'space-between'  }}>
-                                <strong>Expected Fiber Patch Panels:</strong>
-                                <span style={{ paddingLeft: '10px' }}>{1}</span>
+                                <strong style={{ paddingLeft: '10px' }}>Expected Fiber Patch Panels:</strong>
+                                <span style={{ paddingRight: '30px' }}>{1}</span>
                             </Typography>
                             <Typography variant="body2" sx={{ color: '#000000', backgroundColor: '#dcdcdc', padding: 1, borderRadius: 5, display: 'flex', justifyContent: 'space-between'  }}>
-                                <strong>Expected Cable Managers:</strong>
-                                <span style={{ paddingLeft: '10px' }}>{Math.ceil(totalDevices / 24) + 1}</span>
+                                <strong style={{ paddingLeft: '10px' }}>Expected Cable Managers:</strong>
+                                <span style={{ paddingRight: '30px' }}>{Math.ceil(totalDevices / 24) + 1}</span>
                             </Typography>
                             <Typography variant="body2" sx={{ mt: 2, fontStyle: 'italic' }}>
                                 Explanation: Patch panels and switches are calculated based on the number of devices, 

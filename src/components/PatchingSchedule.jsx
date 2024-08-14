@@ -21,6 +21,7 @@ import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import PropTypes from 'prop-types';
 import jsPDF from 'jspdf';
 import {saveAs} from 'file-saver';
+import autoTable from "jspdf-autotable";
 
 const PatchingSchedule = ({ connections, currentIdf }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -65,7 +66,6 @@ const PatchingSchedule = ({ connections, currentIdf }) => {
     doc.text('Patching Schedule', 14, 22);
     doc.setFontSize(11);
     doc.setTextColor(100);
-
     doc.autoTable({
       head: [['From Device', 'From Port', 'From Port Identifier', 'To Device', 'To Port', 'To Port Identifier']],
       body: filteredConnections.map(connection => [
@@ -105,7 +105,7 @@ const PatchingSchedule = ({ connections, currentIdf }) => {
             variant="contained"
             startIcon={<GetAppIcon />}
             onClick={handleExportCSV}
-            sx={{ mr: 1, bgcolor: '#4CAF50', '&:hover': { bgcolor: '#45a049' } }}
+            sx={{ mr: 1, bgcolor: '#9f97eb', '&:hover': { bgcolor: '#9f97eb' } }}
           >
             Export CSV
           </Button>
@@ -113,7 +113,7 @@ const PatchingSchedule = ({ connections, currentIdf }) => {
             variant="contained"
             startIcon={<PictureAsPdfIcon />}
             onClick={handleExportPDF}
-            sx={{ bgcolor: '#FF5722', '&:hover': { bgcolor: '#E64A19' } }}
+            sx={{ bgcolor: '#9f97eb', '&:hover': { bgcolor: '#9f97eb' } }}
           >
             Export PDF
           </Button>
