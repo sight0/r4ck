@@ -190,15 +190,15 @@ const App = () => {
             <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
                 <Header>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <Typography variant="subtitle1" sx={{ fontStyle: 'italic' }}>
+                            {currentWorkspace ? `Current Workspace: ${currentWorkspace}` : 'Unsaved Workspace'}
+                        </Typography>
                         <WorkspaceManager
                             onSaveWorkspace={handleSaveWorkspace}
                             onLoadWorkspace={handleLoadWorkspace}
                             onNewWorkspace={handleNewWorkspace}
                             currentWorkspace={currentWorkspace}
                         />
-                        <Typography variant="subtitle1" sx={{ fontStyle: 'italic' }}>
-                            {currentWorkspace ? `Current Workspace: ${currentWorkspace}` : 'Unsaved Workspace'}
-                        </Typography>
                     </Box>
                 </Header>
                 {!setupComplete ? (
