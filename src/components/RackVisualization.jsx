@@ -901,7 +901,7 @@ const RackVisualization = ({
                     <Paper elevation={3} sx={{ p: 2, height: '98.2%' }}>
                         <Typography variant="h6" gutterBottom>AUTO Panel</Typography>
                         <Typography variant="body2" sx={{ mb: 2 }}>
-                            Note: Auto placement and wiring functions work best when the IDF is empty. Clear the IDF before using these features for optimal results.
+                            Note: This panel's functionality is most accurate when the initial setup form is filled out correctly.
                         </Typography>
                         <Button
                             variant="contained" 
@@ -935,8 +935,14 @@ const RackVisualization = ({
                         >
                             Clear IDF
                         </Button>
+                        <Typography variant="body2" sx={{ mt: 2, mb: 2 }}>
+                            Note: Auto placement and wiring functions work best when the IDF is empty. Clear the IDF before using these features for optimal results.
+                        </Typography>
                         <Typography variant="subtitle1" gutterBottom sx={{ mt: 3, fontWeight: 'bold' }}>Configuration Calculations</Typography>
                         <Box sx={{ backgroundColor: '#e0e0e0', p: 2, borderRadius: 2, border: '1px solid #bdbdbd' }}>
+                            <Typography variant="body2" sx={{ mb: 2, fontStyle: 'italic' }}>
+                                These calculations are based on the total number of devices specified in the initial setup.
+                            </Typography>
                             <Typography variant="body2" sx={{ mb: 1, color: '#000000' }}>
                                 <strong>Expected Patch Panels:</strong> {Math.ceil(totalDevices / 24)}
                             </Typography>
@@ -948,6 +954,11 @@ const RackVisualization = ({
                             </Typography>
                             <Typography variant="body2" sx={{ color: '#000000' }}>
                                 <strong>Expected Cable Managers:</strong> {Math.ceil(totalDevices / 24) + 1}
+                            </Typography>
+                            <Typography variant="body2" sx={{ mt: 2, fontStyle: 'italic' }}>
+                                Explanation: Patch panels and switches are calculated based on the number of devices, 
+                                assuming 24 ports per patch panel and 48 ports per switch. One fiber patch panel is 
+                                included for uplink connections. Cable managers are added to organize cabling between components.
                             </Typography>
                         </Box>
                     </Paper>
