@@ -12,11 +12,13 @@ import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import WarningIcon from '@mui/icons-material/Warning';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { setCookie, getCookie } from '../utils/cookieUtils';
 
 const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, currentWorkspace, hasUnsavedChanges }) => {
     const forceRefresh = useCallback(() => {
+        setCookie('lastSavedWorkspace', currentWorkspace, 1);
         window.location.reload();
-    }, []);
+    }, [currentWorkspace]);
     const [anchorEl, setAnchorEl] = useState(null);
     const [saveWorkspaceDialogOpen, setSaveWorkspaceDialogOpen] = useState(false);
     const [loadWorkspaceDialogOpen, setLoadWorkspaceDialogOpen] = useState(false);
@@ -31,7 +33,12 @@ const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, cu
 
     useEffect(() => {
         updateSavedWorkspaces();
-    }, []);
+        const lastSavedWorkspace = getCookie('lastSavedWorkspace');
+        if (lastSavedWorkspace) {
+            onLoadWorkspace({ name: lastSavedWorkspace });
+            setCookie('lastSavedWorkspace', '', -1); // Clear the cookie
+        }
+    }, [onLoadWorkspace]);
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
