@@ -144,8 +144,9 @@ const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, cu
                             onClick={handleSaveWorkspace}
                             startIcon={isSaving ? <CircularProgress size={20} color="inherit" /> : showSaved ? <CheckCircleIcon /> : <SaveIcon />}
                             disabled={isSaving}
+                            // sx={{ mr: 1, bgcolor: '#9f97eb', '&:hover': { bgcolor: '#9f97eb' } }}
                             sx={{
-                                backgroundColor: hasUnsavedChanges ? theme.palette.error.main : theme.palette.primary.main,
+                                backgroundColor: hasUnsavedChanges ? '#ca4a4a' : '#5c7b01',
                                 color: theme.palette.primary.contrastText,
                                 '&:hover': {
                                     backgroundColor: hasUnsavedChanges ? theme.palette.error.dark : theme.palette.primary.dark,
@@ -163,7 +164,7 @@ const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, cu
                 onClick={handleClick}
                 startIcon={<FolderOpenIcon />}
                 sx={{
-                    backgroundColor: theme.palette.primary.main,
+                    backgroundColor: '#f8f4f4',
                     color: theme.palette.primary.contrastText,
                     '&:hover': {
                         backgroundColor: theme.palette.primary.dark,

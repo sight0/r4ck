@@ -42,10 +42,10 @@ const App = () => {
                 palette: {
                     mode: prefersDarkMode ? 'dark' : 'light',
                     primary: {
-                        main: prefersDarkMode ? '#90caf9' : '#1976d2',
+                        main: prefersDarkMode ? '#4fafff' : '#1976d2',
                     },
                     secondary: {
-                        main: prefersDarkMode ? '#f48fb1' : '#dc004e',
+                        main: prefersDarkMode ? '#4b44ed' : '#dc004e',
                     },
                     background: {
                         default: prefersDarkMode ? '#303030' : '#f5f5f5',
