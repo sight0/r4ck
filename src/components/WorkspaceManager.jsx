@@ -189,9 +189,7 @@ const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, cu
                 fullWidth
                 maxWidth="sm"
             >
-                <DialogTitle>
-                    <Typography variant="h6">Load Workspace</Typography>
-                </DialogTitle>
+                <DialogTitle>Load Workspace</DialogTitle>
                 <DialogContent>
                     <List>
                         {savedWorkspaces.map((workspace, index) => (
