@@ -40,16 +40,20 @@ const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, cu
     }, [onNewWorkspace]);
 
     const handleSaveWorkspace = useCallback(() => {
+        console.log('WorkspaceManager: handleSaveWorkspace called');
+        console.log('Current workspace:', currentWorkspace);
+        console.log('Has unsaved changes:', hasUnsavedChanges);
         if (currentWorkspace) {
+            console.log('Saving existing workspace:', currentWorkspace);
             onSaveWorkspace(currentWorkspace);
         } else {
+            console.log('Opening save workspace dialog');
             setSaveWorkspaceDialogOpen(true);
         }
         // Force update of UI
         setAnchorEl(null);
-        // Reset hasUnsavedChanges
-        onSaveWorkspace(currentWorkspace);
-    }, [currentWorkspace, onSaveWorkspace]);
+        console.log('WorkspaceManager: handleSaveWorkspace completed');
+    }, [currentWorkspace, onSaveWorkspace, hasUnsavedChanges]);
 
     const handleLoadWorkspace = useCallback(() => {
         setLoadWorkspaceDialogOpen(true);

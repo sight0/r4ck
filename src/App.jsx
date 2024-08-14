@@ -80,6 +80,7 @@ const App = () => {
     }, []);
 
     const handleSaveWorkspace = useCallback((name) => {
+        console.log('handleSaveWorkspace called with name:', name);
         const workspace = {
             name: name || currentWorkspace,
             data: {
@@ -102,9 +103,15 @@ const App = () => {
         }
         localStorage.setItem('workspaces', JSON.stringify(savedWorkspaces));
         setCurrentWorkspace(workspace.name);
+        console.log('Setting hasUnsavedChanges to false');
         setHasUnsavedChanges(false);
         // Force a re-render to update the UI
-        setAllComponents({...allComponents});
+        console.log('Updating allComponents to force re-render');
+        setAllComponents(prevComponents => {
+            console.log('Previous allComponents:', prevComponents);
+            return {...prevComponents};
+        });
+        console.log('handleSaveWorkspace completed');
     }, [setupComplete, networkInfo, currentIdf, connections, connectionsPerIdf, rackDesigns, interIdfConnections, allComponents, currentWorkspace]);
 
     const handleLoadWorkspace = (workspace) => {
