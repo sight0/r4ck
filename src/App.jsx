@@ -135,8 +135,8 @@ const App = () => {
         });
     }, [setupComplete, networkInfo, currentIdf, connections, connectionsPerIdf, rackDesigns, interIdfConnections, allComponents, currentWorkspace]);
 
-    const handleLoadWorkspace = (workspace) => {
-        if (workspace) {
+    const handleLoadWorkspace = async (workspace) => {
+        if (workspace && workspace.data) {
             const { data } = workspace;
             setSetupComplete(data.setupComplete);
             setNetworkInfo(data.networkInfo);
@@ -152,6 +152,9 @@ const App = () => {
             console.log('Loaded state:', loadedState);
             setHasUnsavedChanges(false);
             console.log('Workspace loaded, lastSavedStateRef updated');
+        } else {
+            console.error('Invalid workspace data:', workspace);
+            // Optionally, show an error message to the user
         }
     };
 

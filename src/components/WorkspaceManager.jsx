@@ -98,12 +98,24 @@ const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, cu
         });
     }, [workspaceName, onSaveWorkspace, forceRefresh]);
 
-    const handleLoadWorkspaceConfirm = useCallback((workspace) => {
+    const handleLoadWorkspaceConfirm = useCallback(async (workspace) => {
         if (workspace && typeof workspace === 'object') {
-            onLoadWorkspace(workspace);
+            try {
+                const workspaces = JSON.parse(localStorage.getItem('workspaces') || '[]');
+                const fullWorkspace = workspaces.find(w => w.name === workspace.name);
+                if (fullWorkspace && fullWorkspace.data) {
+                    await onLoadWorkspace(fullWorkspace);
+                } else {
+                    console.error('Workspace data not found:', workspace.name);
+                    // Optionally, show an error message to the user
+                }
+            } catch (error) {
+                console.error('Error loading workspace:', error);
+                // Optionally, show an error message to the user
+            }
         } else {
             console.error('Invalid workspace object:', workspace);
-            // Optionally, you can show an error message to the user here
+            // Optionally, show an error message to the user
         }
         setLoadWorkspaceDialogOpen(false);
     }, [onLoadWorkspace]);
