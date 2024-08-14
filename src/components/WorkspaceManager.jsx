@@ -23,6 +23,7 @@ const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, cu
     const [workspaceToDelete, setWorkspaceToDelete] = useState(null);
     const [isSaving, setIsSaving] = useState(false);
     const [showSaved, setShowSaved] = useState(false);
+    const [refreshTrigger, setRefreshTrigger] = useState(0);
     const theme = useTheme();
 
     useEffect(() => {
@@ -53,6 +54,7 @@ const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, cu
                 setIsSaving(false);
                 setShowSaved(true);
                 setTimeout(() => setShowSaved(false), 2000);
+                setRefreshTrigger(prev => prev + 1); // Trigger a re-render
             });
         } else {
             console.log('Opening save workspace dialog');
@@ -78,6 +80,7 @@ const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, cu
             setSaveWorkspaceDialogOpen(false);
             setWorkspaceName('');
             updateSavedWorkspaces();
+            setRefreshTrigger(prev => prev + 1); // Trigger a re-render
         });
     }, [workspaceName, onSaveWorkspace]);
 
