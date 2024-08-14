@@ -137,19 +137,43 @@ const RackVisualization = ({
     };
 
     const handleLoadWorkspace = () => {
-        // Logic for loading a workspace
+        setLoadWorkspaceDialogOpen(true);
         handleWorkspaceMenuClose();
     };
 
     const handleDiscardWorkspace = () => {
-        // Logic for discarding a workspace
+        const confirmDiscard = window.confirm("Are you sure you want to discard the current workspace? This action cannot be undone.");
+        if (confirmDiscard) {
+            onNewWorkspace();
+        }
         handleWorkspaceMenuClose();
     };
 
     const handleSaveWorkspaceConfirm = () => {
-        // Logic for saving the workspace with the given name
-        setSaveWorkspaceDialogOpen(false);
-        setWorkspaceName('');
+        if (workspaceName.trim()) {
+            onSaveWorkspace(workspaceName.trim());
+            setSaveWorkspaceDialogOpen(false);
+            setWorkspaceName('');
+        }
+    };
+
+    const [loadWorkspaceDialogOpen, setLoadWorkspaceDialogOpen] = useState(false);
+    const [savedWorkspaces, setSavedWorkspaces] = useState([]);
+
+    useEffect(() => {
+        const workspaces = JSON.parse(localStorage.getItem('workspaces') || '[]');
+        setSavedWorkspaces(workspaces);
+    }, []);
+
+    const handleLoadWorkspaceConfirm = (workspace) => {
+        onLoadWorkspace(workspace);
+        setLoadWorkspaceDialogOpen(false);
+    };
+
+    const handleDeleteWorkspace = (index) => {
+        const newWorkspaces = savedWorkspaces.filter((_, i) => i !== index);
+        localStorage.setItem('workspaces', JSON.stringify(newWorkspaces));
+        setSavedWorkspaces(newWorkspaces);
     };
 
     useEffect(() => {
@@ -1094,6 +1118,31 @@ const RackVisualization = ({
                 <DialogActions>
                     <Button onClick={() => setSaveWorkspaceDialogOpen(false)}>Cancel</Button>
                     <Button onClick={handleSaveWorkspaceConfirm}>Save</Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* Load Workspace Dialog */}
+            <Dialog open={loadWorkspaceDialogOpen} onClose={() => setLoadWorkspaceDialogOpen(false)}>
+                <DialogTitle>Load Workspace</DialogTitle>
+                <DialogContent>
+                    <List>
+                        {savedWorkspaces.map((workspace, index) => (
+                            <ListItem key={index} secondaryAction={
+                                <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteWorkspace(index)}>
+                                    <DeleteIcon />
+                                </IconButton>
+                            }>
+                                <ListItemText 
+                                    primary={workspace.name} 
+                                    onClick={() => handleLoadWorkspaceConfirm(workspace)}
+                                    style={{cursor: 'pointer'}}
+                                />
+                            </ListItem>
+                        ))}
+                    </List>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setLoadWorkspaceDialogOpen(false)}>Cancel</Button>
                 </DialogActions>
             </Dialog>
         </Box>
