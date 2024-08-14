@@ -640,25 +640,25 @@ const RackVisualization = ({
                             </GreenButton>
                         </span>
                     </Tooltip>
-                    <Button
-                        variant="contained"
-                        onClick={handleGetRecommendations}
-                        sx={{
-                            flex: 1,
-                            py: 1.5,
-                            fontWeight: 'bold',
-                            boxShadow: 3,
-                            backgroundColor: '#424242',
-                            color: '#ffffff',
-                            '&:hover': {
-                                backgroundColor: '#616161',
-                                boxShadow: 5,
-                            },
-                        }}
-                        startIcon={<RecommendIcon />}
-                    >
-                        Get Recommendations
-                    </Button>
+                    {/*<Button*/}
+                    {/*    variant="contained"*/}
+                    {/*    onClick={handleGetRecommendations}*/}
+                    {/*    sx={{*/}
+                    {/*        flex: 1,*/}
+                    {/*        py: 1.5,*/}
+                    {/*        fontWeight: 'bold',*/}
+                    {/*        boxShadow: 3,*/}
+                    {/*        backgroundColor: '#424242',*/}
+                    {/*        color: '#ffffff',*/}
+                    {/*        '&:hover': {*/}
+                    {/*            backgroundColor: '#616161',*/}
+                    {/*            boxShadow: 5,*/}
+                    {/*        },*/}
+                    {/*    }}*/}
+                    {/*    startIcon={<RecommendIcon />}*/}
+                    {/*>*/}
+                    {/*    Get Recommendations*/}
+                    {/*</Button>*/}
                 </Box>
             </Box>
             <Grid container spacing={2}>
@@ -931,7 +931,7 @@ const RackVisualization = ({
                             variant="contained" 
                             fullWidth 
                             sx={{ mb: 2, backgroundColor: '#F44336', '&:hover': { backgroundColor: '#d32f2f' } }}
-                            onClick={handleClearIdf}
+                            // onClick={handleClearIdf}
                         >
                             Clear IDF
                         </Button>
