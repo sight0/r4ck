@@ -2,7 +2,6 @@ import './App.css'
 import { useState, useEffect, useCallback } from "react";
 import { Box, CssBaseline, ThemeProvider, createTheme, Typography } from '@mui/material';
 import Header from './components/Header';
-import WorkspaceManager from './components/WorkspaceManager';
 import Sidebar from './components/Sidebar';
 import RackVisualization from './components/RackVisualization';
 import InitialSetupForm from './components/InitialSetupForm';
@@ -189,7 +188,6 @@ const App = () => {
         <ThemeProvider theme={theme}>
             <CssBaseline />
             <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-                Hee
                 <Header>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                         <WorkspaceManager
