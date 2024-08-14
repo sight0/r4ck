@@ -61,12 +61,8 @@ const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, cu
         if (currentWorkspace) {
             console.log('Saving existing workspace:', currentWorkspace);
             onSaveWorkspace(currentWorkspace).then(() => {
-                setIsSaving(false);
-                setShowSaved(true);
-                setTimeout(() => {
-                    setShowSaved(false);
-                    forceRefresh();
-                }, 2000);
+                // Keep the loading state, as we're about to refresh
+                forceRefresh();
             });
         } else {
             console.log('Opening save workspace dialog');

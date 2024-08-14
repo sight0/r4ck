@@ -1,12 +1,13 @@
 import './App.css'
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
-import { Box, CssBaseline, ThemeProvider, createTheme, Typography, useMediaQuery } from '@mui/material';
+import { Box, CssBaseline, ThemeProvider, createTheme, Typography, useMediaQuery, CircularProgress } from '@mui/material';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import RackVisualization from './components/RackVisualization';
 import InitialSetupForm from './components/InitialSetupForm';
 import WorkspaceManager from './components/WorkspaceManager';
 import { calculateInterIdfConnections } from './utils/rackUtils';
+import { getCookie } from './utils/cookieUtils';
 
 const App = () => {
     const [setupComplete, setSetupComplete] = useState(false);
@@ -19,9 +20,21 @@ const App = () => {
     const [allComponents, setAllComponents] = useState({});
     const [currentWorkspace, setCurrentWorkspace] = useState(null);
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const lastSavedStateRef = useRef(null);
 
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+
+    useEffect(() => {
+        const loadInitialWorkspace = async () => {
+            const lastSavedWorkspace = getCookie('lastSavedWorkspace');
+            if (lastSavedWorkspace) {
+                await handleLoadWorkspace({ name: lastSavedWorkspace });
+            }
+            setIsLoading(false);
+        };
+        loadInitialWorkspace();
+    }, []);
 
     const theme = useMemo(
         () =>
@@ -288,7 +301,11 @@ const App = () => {
                         />
                     </Box>
                 </Header>
-                {!setupComplete ? (
+                {isLoading ? (
+                    <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <CircularProgress />
+                    </Box>
+                ) : !setupComplete ? (
                     <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <InitialSetupForm onSubmit={handleSetupSubmit} />
                     </Box>
