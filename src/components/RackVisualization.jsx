@@ -928,14 +928,14 @@ const RackVisualization = ({
                         >
                             Get AI Recommendations (Disabled)
                         </Button>
-                        <Button 
-                            variant="contained" 
-                            fullWidth 
-                            sx={{ mb: 2, backgroundColor: '#e95849', '&:hover': { backgroundColor: '#d32f2f' } }}
-                            // onClick={handleClearIdf}
-                        >
-                            Clear IDF
-                        </Button>
+                        {/*<Button */}
+                        {/*    variant="contained" */}
+                        {/*    fullWidth */}
+                        {/*    sx={{ mb: 2, backgroundColor: '#e95849', '&:hover': { backgroundColor: '#d32f2f' } }}*/}
+                        {/*    // onClick={handleClearIdf}*/}
+                        {/*>*/}
+                        {/*    Clear IDF*/}
+                        {/*</Button>*/}
                         <Typography variant="body2" sx={{ mt: 2, mb: 2 }}>
                             Note: Auto placement and wiring functions work best when the IDF is empty. Clear the IDF before using these features for optimal results.
                         </Typography>
