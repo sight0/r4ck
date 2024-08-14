@@ -922,13 +922,13 @@ const RackVisualization = ({
                                 <strong>Expected Patch Panels:</strong> {Math.ceil(totalDevices / 24)}
                             </Typography>
                             <Typography variant="body2" sx={{ mb: 1, color: '#000000' }}>
-                                <strong>Expected Switches:</strong> {Math.ceil(totalDevices / 48)}
+                                <strong>Expected 48port Switches:</strong> {Math.ceil(totalDevices / 48)}
                             </Typography>
                             <Typography variant="body2" sx={{ mb: 1, color: '#000000' }}>
-                                <strong>Expected Fiber Patch Panels:</strong> {Math.ceil(totalDevices / 24 * 0.1)} {/* Assuming 10% of connections are fiber */}
+                                <strong>Expected Fiber Patch Panels:</strong> {1}
                             </Typography>
                             <Typography variant="body2" sx={{ color: '#000000' }}>
-                                <strong>Expected Cable Managers:</strong> {Math.ceil((Math.ceil(totalDevices / 24) + Math.ceil(totalDevices / 48)) / 2)} {/* One cable manager for every two devices */}
+                                <strong>Expected Cable Managers:</strong> {Math.ceil(totalDevices / 24) + 1} {/* One cable manager for every two devices */}
                             </Typography>
                         </Box>
                     </Paper>
