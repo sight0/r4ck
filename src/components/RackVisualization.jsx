@@ -452,11 +452,11 @@ const RackVisualization = ({
             });
 
             // Update connections
-            setConnections(prevConnections => 
-                prevConnections.filter(conn => 
-                    conn.deviceA.componentId !== id && conn.deviceB.componentId !== id
-                )
-            );
+            // setConnections(prevConnections =>
+            //     prevConnections.filter(conn =>
+            //         conn.deviceA.componentId !== id && conn.deviceB.componentId !== id
+            //     )
+            // );
 
             // Recalculate inter-IDF connections
             const newInterIdfConnections = calculateInterIdfConnections(
@@ -1026,73 +1026,6 @@ const RackVisualization = ({
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setRecommendationsDialogOpen(false)}>Close</Button>
-                </DialogActions>
-            </Dialog>
-
-            {/* Workspace Menu */}
-            <Menu
-                anchorEl={workspaceMenuAnchor}
-                open={Boolean(workspaceMenuAnchor)}
-                onClose={handleWorkspaceMenuClose}
-            >
-                <MenuItem onClick={handleNewWorkspace}>
-                    <AddIcon sx={{ mr: 1 }} /> New Workspace
-                </MenuItem>
-                <MenuItem onClick={handleSaveWorkspace}>
-                    <SaveIcon sx={{ mr: 1 }} /> Save Workspace
-                </MenuItem>
-                <MenuItem onClick={handleLoadWorkspace}>
-                    <FolderOpenIcon sx={{ mr: 1 }} /> Load Workspace
-                </MenuItem>
-                <MenuItem onClick={handleDiscardWorkspace}>
-                    <DeleteIcon sx={{ mr: 1 }} /> Discard Workspace
-                </MenuItem>
-            </Menu>
-
-            {/* Save Workspace Dialog */}
-            <Dialog open={saveWorkspaceDialogOpen} onClose={() => setSaveWorkspaceDialogOpen(false)}>
-                <DialogTitle>Save Workspace</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="name"
-                        label="Workspace Name"
-                        type="text"
-                        fullWidth
-                        variant="standard"
-                        value={workspaceName}
-                        onChange={(e) => setWorkspaceName(e.target.value)}
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setSaveWorkspaceDialogOpen(false)}>Cancel</Button>
-                    <Button onClick={handleSaveWorkspaceConfirm}>Save</Button>
-                </DialogActions>
-            </Dialog>
-
-            {/* Load Workspace Dialog */}
-            <Dialog open={loadWorkspaceDialogOpen} onClose={() => setLoadWorkspaceDialogOpen(false)}>
-                <DialogTitle>Load Workspace</DialogTitle>
-                <DialogContent>
-                    <List>
-                        {savedWorkspaces.map((workspace, index) => (
-                            <ListItem key={index} secondaryAction={
-                                <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteWorkspace(index)}>
-                                    <DeleteIcon />
-                                </IconButton>
-                            }>
-                                <ListItemText 
-                                    primary={workspace.name} 
-                                    onClick={() => handleLoadWorkspaceConfirm(workspace)}
-                                    style={{cursor: 'pointer'}}
-                                />
-                            </ListItem>
-                        ))}
-                    </List>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setLoadWorkspaceDialogOpen(false)}>Cancel</Button>
                 </DialogActions>
             </Dialog>
         </Box>
