@@ -136,24 +136,36 @@ const App = () => {
     }, [setupComplete, networkInfo, currentIdf, connections, connectionsPerIdf, rackDesigns, interIdfConnections, allComponents, currentWorkspace]);
 
     const handleLoadWorkspace = async (workspace) => {
-        if (workspace && workspace.data) {
-            const { data } = workspace;
-            setSetupComplete(data.setupComplete);
-            setNetworkInfo(data.networkInfo);
-            setCurrentIdf(data.currentIdf);
-            setConnections(data.connections);
-            setConnectionsPerIdf(data.connectionsPerIdf);
-            setRackDesigns(data.rackDesigns);
-            setInterIdfConnections(data.interIdfConnections);
-            setAllComponents(data.allComponents);
-            setCurrentWorkspace(workspace.name);
-            const loadedState = JSON.stringify(data);
-            lastSavedStateRef.current = loadedState;
-            console.log('Loaded state:', loadedState);
-            setHasUnsavedChanges(false);
-            console.log('Workspace loaded, lastSavedStateRef updated');
+        if (workspace && workspace.name) {
+            try {
+                const workspaces = JSON.parse(localStorage.getItem('workspaces') || '[]');
+                const fullWorkspace = workspaces.find(w => w.name === workspace.name);
+                if (fullWorkspace && fullWorkspace.data) {
+                    const { data } = fullWorkspace;
+                    setSetupComplete(data.setupComplete);
+                    setNetworkInfo(data.networkInfo);
+                    setCurrentIdf(data.currentIdf);
+                    setConnections(data.connections);
+                    setConnectionsPerIdf(data.connectionsPerIdf);
+                    setRackDesigns(data.rackDesigns);
+                    setInterIdfConnections(data.interIdfConnections);
+                    setAllComponents(data.allComponents);
+                    setCurrentWorkspace(workspace.name);
+                    const loadedState = JSON.stringify(data);
+                    lastSavedStateRef.current = loadedState;
+                    console.log('Loaded state:', loadedState);
+                    setHasUnsavedChanges(false);
+                    console.log('Workspace loaded, lastSavedStateRef updated');
+                } else {
+                    console.error('Workspace data not found:', workspace.name);
+                    // Optionally, show an error message to the user
+                }
+            } catch (error) {
+                console.error('Error loading workspace:', error);
+                // Optionally, show an error message to the user
+            }
         } else {
-            console.error('Invalid workspace data:', workspace);
+            console.error('Invalid workspace object:', workspace);
             // Optionally, show an error message to the user
         }
     };
