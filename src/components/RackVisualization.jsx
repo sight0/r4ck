@@ -939,20 +939,20 @@ const RackVisualization = ({
                             Note: Auto placement and wiring functions work best when the IDF is empty. Clear the IDF before using these features for optimal results.
                         </Typography>
                         <Typography variant="subtitle1" gutterBottom sx={{ mt: 3, fontWeight: 'bold' }}>Configuration Calculations</Typography>
-                        <Box sx={{ backgroundColor: '#e0e0e0', p: 2, borderRadius: 2, border: '1px solid #bdbdbd' }}>
+                        <Box sx={{ backgroundColor: '#080808', p: 2, borderRadius: 2, border: '1px solid #bdbdbd' }}>
                             <Typography variant="body2" sx={{ mb: 2, fontStyle: 'italic' }}>
                                 These calculations are based on the total number of devices specified in the initial setup.
                             </Typography>
-                            <Typography variant="body2" sx={{ mb: 1, color: '#000000' }}>
+                            <Typography variant="body2" sx={{ mb: 1, color: '#000000', backgroundColor: '#dcdcdc', padding: 1, borderRadius: 5 }}>
                                 <strong>Expected Patch Panels:</strong> {Math.ceil(totalDevices / 24)}
                             </Typography>
-                            <Typography variant="body2" sx={{ mb: 1, color: '#000000' }}>
-                                <strong>Expected 48port Switches:</strong> {Math.ceil(totalDevices / 48)}
+                            <Typography variant="body2" sx={{ mb: 1, color: '#000000', backgroundColor: '#dcdcdc', padding: 1, borderRadius: 5  }}>
+                                <strong>Expected 48-port Switches:</strong> {Math.ceil(totalDevices / 48)}
                             </Typography>
-                            <Typography variant="body2" sx={{ mb: 1, color: '#000000' }}>
+                            <Typography variant="body2" sx={{ mb: 1, color: '#000000', backgroundColor: '#dcdcdc', padding: 1, borderRadius: 5  }}>
                                 <strong>Expected Fiber Patch Panels:</strong> {1}
                             </Typography>
-                            <Typography variant="body2" sx={{ color: '#000000' }}>
+                            <Typography variant="body2" sx={{ color: '#000000', backgroundColor: '#dcdcdc', padding: 1, borderRadius: 5  }}>
                                 <strong>Expected Cable Managers:</strong> {Math.ceil(totalDevices / 24) + 1}
                             </Typography>
                             <Typography variant="body2" sx={{ mt: 2, fontStyle: 'italic' }}>
