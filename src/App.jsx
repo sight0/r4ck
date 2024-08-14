@@ -1,5 +1,5 @@
 import './App.css'
-import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef, createRef } from "react";
 import { Box, CssBaseline, ThemeProvider, createTheme, Typography, useMediaQuery, CircularProgress } from '@mui/material';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
@@ -11,6 +11,7 @@ import { getCookie } from './utils/cookieUtils';
 
 const App = () => {
     const [setupComplete, setSetupComplete] = useState(false);
+    const workspaceManagerRef = createRef();
     const [networkInfo, setNetworkInfo] = useState(null);
     const [currentIdf, setCurrentIdf] = useState(1);
     const [connections, setConnections] = useState([]);
@@ -85,6 +86,11 @@ const App = () => {
             initialComponents[i] = [];
         }
         setAllComponents(initialComponents);
+
+        // Open the save workspace dialog
+        setTimeout(() => {
+            workspaceManagerRef.current.openSaveDialog();
+        }, 0);
     };
 
     const checkForChanges = useCallback(() => {
@@ -293,6 +299,7 @@ const App = () => {
                             {currentWorkspace ? `Current Workspace: ${currentWorkspace}` : 'Unsaved Workspace'}
                         </Typography>
                         <WorkspaceManager
+                            ref={workspaceManagerRef}
                             onSaveWorkspace={handleSaveWorkspace}
                             onLoadWorkspace={handleLoadWorkspace}
                             onNewWorkspace={handleNewWorkspace}

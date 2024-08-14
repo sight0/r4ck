@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, forwardRef, useImperativeHandle } from 'react';
 import PropTypes from 'prop-types';
 import { 
     Button, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions, 
@@ -14,7 +14,7 @@ import WarningIcon from '@mui/icons-material/Warning';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { setCookie, getCookie } from '../utils/cookieUtils';
 
-const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, currentWorkspace, hasUnsavedChanges }) => {
+const WorkspaceManager = forwardRef(({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, currentWorkspace, hasUnsavedChanges }, ref) => {
     const forceRefresh = useCallback(() => {
         setCookie('lastSavedWorkspace', currentWorkspace, 1);
         window.location.reload();
@@ -133,6 +133,12 @@ const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, cu
         const workspaces = JSON.parse(localStorage.getItem('workspaces') || '[]');
         setSavedWorkspaces(workspaces);
     }, []);
+
+    useImperativeHandle(ref, () => ({
+        openSaveDialog: () => {
+            setSaveWorkspaceDialogOpen(true);
+        }
+    }));
 
     return (
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
