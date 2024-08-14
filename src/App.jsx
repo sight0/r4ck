@@ -102,34 +102,37 @@ const App = () => {
 
     const handleSaveWorkspace = useCallback((name) => {
         console.log('handleSaveWorkspace called with name:', name);
-        const workspaceData = {
-            setupComplete,
-            networkInfo,
-            currentIdf,
-            connections,
-            connectionsPerIdf,
-            rackDesigns,
-            interIdfConnections,
-            allComponents
-        };
-        const workspace = {
-            name: name || currentWorkspace,
-            data: workspaceData
-        };
-        const savedWorkspaces = JSON.parse(localStorage.getItem('workspaces') || '[]');
-        const existingIndex = savedWorkspaces.findIndex(w => w.name === workspace.name);
-        if (existingIndex !== -1) {
-            savedWorkspaces[existingIndex] = workspace;
-        } else {
-            savedWorkspaces.push(workspace);
-        }
-        localStorage.setItem('workspaces', JSON.stringify(savedWorkspaces));
-        setCurrentWorkspace(workspace.name);
-        const newSavedState = JSON.stringify(workspaceData);
-        lastSavedStateRef.current = newSavedState;
-        console.log('New saved state:', newSavedState);
-        setHasUnsavedChanges(false);
-        console.log('handleSaveWorkspace completed');
+        return new Promise((resolve) => {
+            const workspaceData = {
+                setupComplete,
+                networkInfo,
+                currentIdf,
+                connections,
+                connectionsPerIdf,
+                rackDesigns,
+                interIdfConnections,
+                allComponents
+            };
+            const workspace = {
+                name: name || currentWorkspace,
+                data: workspaceData
+            };
+            const savedWorkspaces = JSON.parse(localStorage.getItem('workspaces') || '[]');
+            const existingIndex = savedWorkspaces.findIndex(w => w.name === workspace.name);
+            if (existingIndex !== -1) {
+                savedWorkspaces[existingIndex] = workspace;
+            } else {
+                savedWorkspaces.push(workspace);
+            }
+            localStorage.setItem('workspaces', JSON.stringify(savedWorkspaces));
+            setCurrentWorkspace(workspace.name);
+            const newSavedState = JSON.stringify(workspaceData);
+            lastSavedStateRef.current = newSavedState;
+            console.log('New saved state:', newSavedState);
+            setHasUnsavedChanges(false);
+            console.log('handleSaveWorkspace completed');
+            setTimeout(() => resolve(), 500); // Simulate a short delay for saving
+        });
     }, [setupComplete, networkInfo, currentIdf, connections, connectionsPerIdf, rackDesigns, interIdfConnections, allComponents, currentWorkspace]);
 
     const handleLoadWorkspace = (workspace) => {

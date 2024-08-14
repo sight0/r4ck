@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { 
     Button, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions, 
     TextField, List, ListItem, ListItemText, IconButton, Typography, Box,
-    Tooltip, Divider, useTheme, Fade, Zoom
+    Tooltip, Divider, useTheme, Fade, Zoom, CircularProgress
 } from '@mui/material';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -11,6 +11,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import WarningIcon from '@mui/icons-material/Warning';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, currentWorkspace, hasUnsavedChanges }) => {
     const [anchorEl, setAnchorEl] = useState(null);
@@ -20,6 +21,8 @@ const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, cu
     const [savedWorkspaces, setSavedWorkspaces] = useState([]);
     const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
     const [workspaceToDelete, setWorkspaceToDelete] = useState(null);
+    const [isSaving, setIsSaving] = useState(false);
+    const [showSaved, setShowSaved] = useState(false);
     const theme = useTheme();
 
     useEffect(() => {
@@ -43,12 +46,18 @@ const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, cu
         console.log('WorkspaceManager: handleSaveWorkspace called');
         console.log('Current workspace:', currentWorkspace);
         console.log('Has unsaved changes:', hasUnsavedChanges);
+        setIsSaving(true);
         if (currentWorkspace) {
             console.log('Saving existing workspace:', currentWorkspace);
-            onSaveWorkspace(currentWorkspace);
+            onSaveWorkspace(currentWorkspace).then(() => {
+                setIsSaving(false);
+                setShowSaved(true);
+                setTimeout(() => setShowSaved(false), 2000);
+            });
         } else {
             console.log('Opening save workspace dialog');
             setSaveWorkspaceDialogOpen(true);
+            setIsSaving(false);
         }
         // Force update of UI
         setAnchorEl(null);
@@ -61,10 +70,15 @@ const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, cu
     }, []);
 
     const handleSaveWorkspaceConfirm = useCallback(() => {
-        onSaveWorkspace(workspaceName);
-        setSaveWorkspaceDialogOpen(false);
-        setWorkspaceName('');
-        updateSavedWorkspaces();
+        setIsSaving(true);
+        onSaveWorkspace(workspaceName).then(() => {
+            setIsSaving(false);
+            setShowSaved(true);
+            setTimeout(() => setShowSaved(false), 2000);
+            setSaveWorkspaceDialogOpen(false);
+            setWorkspaceName('');
+            updateSavedWorkspaces();
+        });
     }, [workspaceName, onSaveWorkspace]);
 
     const handleLoadWorkspaceConfirm = useCallback((workspace) => {
@@ -97,7 +111,8 @@ const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, cu
                     <Button
                         variant="contained"
                         onClick={handleSaveWorkspace}
-                        startIcon={<SaveIcon />}
+                        startIcon={isSaving ? <CircularProgress size={20} color="inherit" /> : showSaved ? <CheckCircleIcon /> : <SaveIcon />}
+                        disabled={isSaving}
                         sx={{
                             backgroundColor: hasUnsavedChanges ? theme.palette.error.main : theme.palette.primary.main,
                             color: theme.palette.primary.contrastText,
@@ -107,7 +122,7 @@ const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, cu
                             transition: 'background-color 0.3s',
                         }}
                     >
-                        Save
+                        {isSaving ? 'Saving...' : showSaved ? 'SAVED!' : 'Save'}
                     </Button>
                 </Zoom>
             </Tooltip>
