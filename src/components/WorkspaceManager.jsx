@@ -14,6 +14,9 @@ import WarningIcon from '@mui/icons-material/Warning';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, currentWorkspace, hasUnsavedChanges }) => {
+    const forceRefresh = useCallback(() => {
+        window.location.reload();
+    }, []);
     const [anchorEl, setAnchorEl] = useState(null);
     const [saveWorkspaceDialogOpen, setSaveWorkspaceDialogOpen] = useState(false);
     const [loadWorkspaceDialogOpen, setLoadWorkspaceDialogOpen] = useState(false);
@@ -53,8 +56,10 @@ const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, cu
             onSaveWorkspace(currentWorkspace).then(() => {
                 setIsSaving(false);
                 setShowSaved(true);
-                setTimeout(() => setShowSaved(false), 2000);
-                setRefreshTrigger(prev => prev + 1); // Trigger a re-render
+                setTimeout(() => {
+                    setShowSaved(false);
+                    forceRefresh();
+                }, 2000);
             });
         } else {
             console.log('Opening save workspace dialog');
@@ -64,7 +69,7 @@ const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, cu
         // Force update of UI
         setAnchorEl(null);
         console.log('WorkspaceManager: handleSaveWorkspace completed');
-    }, [currentWorkspace, onSaveWorkspace, hasUnsavedChanges]);
+    }, [currentWorkspace, onSaveWorkspace, hasUnsavedChanges, forceRefresh]);
 
     const handleLoadWorkspace = useCallback(() => {
         setLoadWorkspaceDialogOpen(true);
@@ -76,13 +81,15 @@ const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, cu
         onSaveWorkspace(workspaceName).then(() => {
             setIsSaving(false);
             setShowSaved(true);
-            setTimeout(() => setShowSaved(false), 2000);
-            setSaveWorkspaceDialogOpen(false);
-            setWorkspaceName('');
-            updateSavedWorkspaces();
-            setRefreshTrigger(prev => prev + 1); // Trigger a re-render
+            setTimeout(() => {
+                setShowSaved(false);
+                setSaveWorkspaceDialogOpen(false);
+                setWorkspaceName('');
+                updateSavedWorkspaces();
+                forceRefresh();
+            }, 2000);
         });
-    }, [workspaceName, onSaveWorkspace]);
+    }, [workspaceName, onSaveWorkspace, forceRefresh]);
 
     const handleLoadWorkspaceConfirm = useCallback((workspace) => {
         onLoadWorkspace(workspace);
