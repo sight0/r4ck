@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { 
     Button, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogActions, 
     TextField, List, ListItem, ListItemText, IconButton, Typography, Box,
-    Tooltip, Divider, useTheme, Badge
+    Tooltip, Divider, useTheme, Fade, Zoom
 } from '@mui/material';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -34,81 +34,95 @@ const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, cu
         setAnchorEl(null);
     };
 
-    const handleNewWorkspace = () => {
+    const handleNewWorkspace = useCallback(() => {
         onNewWorkspace();
         handleClose();
-    };
+    }, [onNewWorkspace]);
 
-    const handleSaveWorkspace = () => {
+    const handleSaveWorkspace = useCallback(() => {
         if (currentWorkspace) {
             onSaveWorkspace(currentWorkspace);
         } else {
             setSaveWorkspaceDialogOpen(true);
         }
-        handleClose();
-    };
+    }, [currentWorkspace, onSaveWorkspace]);
 
-    const handleLoadWorkspace = () => {
+    const handleLoadWorkspace = useCallback(() => {
         setLoadWorkspaceDialogOpen(true);
         handleClose();
-    };
+    }, []);
 
-    const handleSaveWorkspaceConfirm = () => {
+    const handleSaveWorkspaceConfirm = useCallback(() => {
         onSaveWorkspace(workspaceName);
         setSaveWorkspaceDialogOpen(false);
         setWorkspaceName('');
         updateSavedWorkspaces();
-    };
+    }, [workspaceName, onSaveWorkspace]);
 
-    const handleLoadWorkspaceConfirm = (workspace) => {
+    const handleLoadWorkspaceConfirm = useCallback((workspace) => {
         onLoadWorkspace(workspace);
         setLoadWorkspaceDialogOpen(false);
-    };
+    }, [onLoadWorkspace]);
 
-    const handleDeleteWorkspace = (workspace) => {
+    const handleDeleteWorkspace = useCallback((workspace) => {
         setWorkspaceToDelete(workspace);
         setDeleteConfirmOpen(true);
-    };
+    }, []);
 
-    const confirmDeleteWorkspace = () => {
+    const confirmDeleteWorkspace = useCallback(() => {
         const updatedWorkspaces = savedWorkspaces.filter(w => w.name !== workspaceToDelete.name);
         localStorage.setItem('workspaces', JSON.stringify(updatedWorkspaces));
         setSavedWorkspaces(updatedWorkspaces);
         setDeleteConfirmOpen(false);
         setWorkspaceToDelete(null);
-    };
+    }, [savedWorkspaces, workspaceToDelete]);
 
-    const updateSavedWorkspaces = () => {
+    const updateSavedWorkspaces = useCallback(() => {
         const workspaces = JSON.parse(localStorage.getItem('workspaces') || '[]');
         setSavedWorkspaces(workspaces);
-    };
+    }, []);
 
     return (
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Tooltip title={hasUnsavedChanges ? "Unsaved changes" : "Workspace Options"}>
-                <Badge color="error" variant="dot" invisible={!hasUnsavedChanges}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Tooltip title={hasUnsavedChanges ? "Save changes" : "No unsaved changes"}>
+                <Zoom in={true}>
                     <Button
                         variant="contained"
-                        onClick={handleClick}
-                        startIcon={<FolderOpenIcon />}
+                        onClick={handleSaveWorkspace}
+                        startIcon={<SaveIcon />}
                         sx={{
-                            backgroundColor: theme.palette.primary.main,
+                            backgroundColor: hasUnsavedChanges ? theme.palette.error.main : theme.palette.primary.main,
                             color: theme.palette.primary.contrastText,
                             '&:hover': {
-                                backgroundColor: theme.palette.primary.dark,
+                                backgroundColor: hasUnsavedChanges ? theme.palette.error.dark : theme.palette.primary.dark,
                             },
+                            transition: 'background-color 0.3s',
                         }}
                     >
-                        Workspace {hasUnsavedChanges ? '*' : ''}
+                        Save
                     </Button>
-                </Badge>
+                </Zoom>
             </Tooltip>
+            <Button
+                variant="contained"
+                onClick={handleClick}
+                startIcon={<FolderOpenIcon />}
+                sx={{
+                    backgroundColor: theme.palette.primary.main,
+                    color: theme.palette.primary.contrastText,
+                    '&:hover': {
+                        backgroundColor: theme.palette.primary.dark,
+                    },
+                }}
+            >
+                Workspace
+            </Button>
             <Menu
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
                 PaperProps={{
-                    elevation: 0,
+                    elevation: 3,
                     sx: {
                         overflow: 'visible',
                         filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
@@ -138,9 +152,6 @@ const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, cu
             >
                 <MenuItem onClick={handleNewWorkspace}>
                     <AddIcon sx={{ mr: 1 }} /> New Workspace
-                </MenuItem>
-                <MenuItem onClick={handleSaveWorkspace}>
-                    <SaveIcon sx={{ mr: 1 }} /> Save Workspace
                 </MenuItem>
                 <MenuItem onClick={handleLoadWorkspace}>
                     <FolderOpenIcon sx={{ mr: 1 }} /> Load Workspace
@@ -182,7 +193,7 @@ const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, cu
                 <DialogContent>
                     <List>
                         {savedWorkspaces.map((workspace, index) => (
-                            <React.Fragment key={index}>
+                            <Fade in={true} key={workspace.name}>
                                 <ListItem 
                                     secondaryAction={
                                         <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteWorkspace(workspace)}>
@@ -201,8 +212,7 @@ const WorkspaceManager = ({ onSaveWorkspace, onLoadWorkspace, onNewWorkspace, cu
                                         }}
                                     />
                                 </ListItem>
-                                {index < savedWorkspaces.length - 1 && <Divider />}
-                            </React.Fragment>
+                            </Fade>
                         ))}
                     </List>
                     {savedWorkspaces.length === 0 && (

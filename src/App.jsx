@@ -1,6 +1,6 @@
 import './App.css'
-import { useState, useEffect, useCallback } from "react";
-import { Box, CssBaseline, ThemeProvider, createTheme, Typography } from '@mui/material';
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { Box, CssBaseline, ThemeProvider, createTheme, Typography, useMediaQuery } from '@mui/material';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import RackVisualization from './components/RackVisualization';
@@ -20,21 +20,46 @@ const App = () => {
     const [currentWorkspace, setCurrentWorkspace] = useState(null);
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
-    const theme = createTheme({
-        palette: {
-            mode: 'dark',
-            primary: {
-                main: '#ffffff',
-            },
-            secondary: {
-                main: '#bdbdbd', // New accent color (golden)
-            },
-            background: {
-                default: '#303030',
-                paper: '#424242',
-            },
-        },
-    });
+    const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+
+    const theme = useMemo(
+        () =>
+            createTheme({
+                palette: {
+                    mode: prefersDarkMode ? 'dark' : 'light',
+                    primary: {
+                        main: prefersDarkMode ? '#90caf9' : '#1976d2',
+                    },
+                    secondary: {
+                        main: prefersDarkMode ? '#f48fb1' : '#dc004e',
+                    },
+                    background: {
+                        default: prefersDarkMode ? '#303030' : '#f5f5f5',
+                        paper: prefersDarkMode ? '#424242' : '#ffffff',
+                    },
+                },
+                typography: {
+                    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+                },
+                components: {
+                    MuiButton: {
+                        styleOverrides: {
+                            root: {
+                                borderRadius: 8,
+                            },
+                        },
+                    },
+                    MuiPaper: {
+                        styleOverrides: {
+                            root: {
+                                borderRadius: 12,
+                            },
+                        },
+                    },
+                },
+            }),
+        [prefersDarkMode],
+    );
 
     const handleSetupSubmit = (formData) => {
         setNetworkInfo(formData);
@@ -48,7 +73,13 @@ const App = () => {
         setAllComponents(initialComponents);
     };
 
-    const handleSaveWorkspace = (name) => {
+    useEffect(() => {
+        const handleClick = () => setHasUnsavedChanges(true);
+        document.addEventListener('click', handleClick);
+        return () => document.removeEventListener('click', handleClick);
+    }, []);
+
+    const handleSaveWorkspace = useCallback((name) => {
         const workspace = {
             name: name || currentWorkspace,
             data: {
@@ -72,7 +103,7 @@ const App = () => {
         localStorage.setItem('workspaces', JSON.stringify(savedWorkspaces));
         setCurrentWorkspace(workspace.name);
         setHasUnsavedChanges(false);
-    };
+    }, [setupComplete, networkInfo, currentIdf, connections, connectionsPerIdf, rackDesigns, interIdfConnections, allComponents, currentWorkspace]);
 
     const handleLoadWorkspace = (workspace) => {
         if (workspace) {
