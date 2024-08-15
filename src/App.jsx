@@ -49,7 +49,7 @@ const App = () => {
                 palette: {
                     mode: prefersDarkMode ? 'dark' : 'light',
                     primary: {
-                        main: prefersDarkMode ? '#4fafff' : '#1976d2',
+                        main: prefersDarkMode ? '#d2ecff' : '#173958',
                     },
                     secondary: {
                         main: prefersDarkMode ? '#4b44ed' : '#dc004e',
