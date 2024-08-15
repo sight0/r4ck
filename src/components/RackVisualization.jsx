@@ -160,9 +160,8 @@ const RackVisualization = ({
         const templateSize = template.reduce((sum, comp) => sum + comp.units, 0);
         const requiredTemplates = Math.ceil(totalDevices / 48); // Assuming 48 ports per switch
         const totalRequiredUnits = templateSize * requiredTemplates;
-
-        if (totalRequiredUnits > rackSize) {
-            alert(`Warning: The current rack size (${rackSize}U) is insufficient for the required components (${totalRequiredUnits}U). Please increase the rack size in the initial setup or reduce the number of devices.`);
+        if (totalRequiredUnits > idfData[currentIdf]?.rackSize) {
+            alert(`Warning: The current rack size (${idfData[currentIdf]?.rackSize}U) is insufficient for the required components (${totalRequiredUnits}U). Please increase the rack size in the initial setup or reduce the number of devices.`);
             return;
         }
 
@@ -172,29 +171,30 @@ const RackVisualization = ({
 
         for (let i = 0; i < requiredTemplates; i++) {
             template.forEach((comp, index) => {
-            if (!sequenceTracker[comp.type]) {
-                sequenceTracker[comp.type] = 0;
-            }
-            sequenceTracker[comp.type]++;
-            const sequence = sequenceTracker[comp.type];
-            
-            const component = {
-                ...comp,
-                id: Date.now() + index,
-                x: 30,
-                y: yPosition,
-                sequence: sequence,
-                ports: Array.from({ length: parseInt(comp.capacity) }, (_, i) => ({
-                    label: `Port ${i + 1}`,
-                    cableSource: '',
-                    connectedTo: '',
-                    type: comp.type === 'fiber_patch_panel' ? 'fiber' : 'copper',
-                    identifier: generateSmartIdentifier(comp.type, currentIdf, sequence, i + 1)
-                }))
-            };
-            yPosition += comp.units * 20; // Each U is 20px tall
-            return component;
-        });
+                if (!sequenceTracker[comp.type]) {
+                    sequenceTracker[comp.type] = 0;
+                }
+                sequenceTracker[comp.type]++;
+                const sequence = sequenceTracker[comp.type];
+                console.log(comp)
+                const component = {
+                    ...comp,
+                    id: Date.now() + index,
+                    x: 30,
+                    y: yPosition,
+                    sequence: sequence,
+                    ports: Array.from({length: parseInt(comp.capacity)}, (_, i) => ({
+                        label: `Port ${i + 1}`,
+                        cableSource: '',
+                        connectedTo: '',
+                        type: comp.type === 'fiber_patch_panel' ? 'fiber' : 'copper',
+                        identifier: generateSmartIdentifier(comp.type, currentIdf, sequence, i + 1)
+                    }))
+                };
+                yPosition += comp.units * 20; // Each U is 20px tall
+                return component;
+            });
+        }
 
         setAllComponents(prevAll => ({
             ...prevAll,
