@@ -152,7 +152,7 @@ const WorkspaceManager = forwardRef(({ onSaveWorkspace, onLoadWorkspace, onNewWo
                             disabled={isSaving}
                             // sx={{ mr: 1, bgcolor: '#9f97eb', '&:hover': { bgcolor: '#9f97eb' } }}
                             sx={{
-                                backgroundColor: hasUnsavedChanges ? '#ca4a4a' : '#5c7b01',
+                                backgroundColor: hasUnsavedChanges ? '#ca4a4a' : '#aad523',
                                 color: theme.palette.primary.contrastText,
                                 '&:hover': {
                                     backgroundColor: hasUnsavedChanges ? theme.palette.error.dark : theme.palette.primary.dark,
