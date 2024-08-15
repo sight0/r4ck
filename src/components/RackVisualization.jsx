@@ -155,19 +155,23 @@ const RackVisualization = ({
             { type: 'cable_manager', name: 'Cable Manager 2', capacity: '1', units: 1 },
             { type: 'switch', name: 'Switch 1', capacity: '48', units: 1 },
             { type: 'cable_manager', name: 'Cable Manager 3', capacity: '1', units: 1 },
-            // { type: 'patch_panel', name: 'PP3', capacity: '24', units: 1 },
-            // { type: 'patch_panel', name: 'PP4', capacity: '24', units: 1 },
-            // { type: 'cable_manager', name: 'Cable Manager 4', capacity: '1', units: 1 },
-            // { type: 'switch', name: 'Switch 2', capacity: '48', units: 1 },
-            // { type: 'cable_manager', name: 'Cable Manager 5', capacity: '1', units: 1 },
-            // { type: 'patch_panel', name: 'PP5', capacity: '24', units: 1 },
-            // { type: 'patch_panel', name: 'PP6', capacity: '24', units: 1 },
-            // { type: 'cable_manager', name: 'Cable Manager 6', capacity: '1', units: 1 },
         ];
+
+        const templateSize = template.reduce((sum, comp) => sum + comp.units, 0);
+        const requiredTemplates = Math.ceil(totalDevices / 48); // Assuming 48 ports per switch
+        const totalRequiredUnits = templateSize * requiredTemplates;
+
+        if (totalRequiredUnits > rackSize) {
+            alert(`Warning: The current rack size (${rackSize}U) is insufficient for the required components (${totalRequiredUnits}U). Please increase the rack size in the initial setup or reduce the number of devices.`);
+            return;
+        }
 
         let yPosition = 0;
         const sequenceTracker = {};
-        const newComponents = template.map((comp, index) => {
+        const newComponents = [];
+
+        for (let i = 0; i < requiredTemplates; i++) {
+            template.forEach((comp, index) => {
             if (!sequenceTracker[comp.type]) {
                 sequenceTracker[comp.type] = 0;
             }
