@@ -155,14 +155,14 @@ const RackVisualization = ({
             { type: 'cable_manager', name: 'Cable Manager 2', capacity: '1', units: 1 },
             { type: 'switch', name: 'Switch 1', capacity: '48', units: 1 },
             { type: 'cable_manager', name: 'Cable Manager 3', capacity: '1', units: 1 },
-            { type: 'patch_panel', name: 'PP3', capacity: '24', units: 1 },
-            { type: 'patch_panel', name: 'PP4', capacity: '24', units: 1 },
-            { type: 'cable_manager', name: 'Cable Manager 4', capacity: '1', units: 1 },
-            { type: 'switch', name: 'Switch 2', capacity: '48', units: 1 },
-            { type: 'cable_manager', name: 'Cable Manager 5', capacity: '1', units: 1 },
-            { type: 'patch_panel', name: 'PP5', capacity: '24', units: 1 },
-            { type: 'patch_panel', name: 'PP6', capacity: '24', units: 1 },
-            { type: 'cable_manager', name: 'Cable Manager 6', capacity: '1', units: 1 },
+            // { type: 'patch_panel', name: 'PP3', capacity: '24', units: 1 },
+            // { type: 'patch_panel', name: 'PP4', capacity: '24', units: 1 },
+            // { type: 'cable_manager', name: 'Cable Manager 4', capacity: '1', units: 1 },
+            // { type: 'switch', name: 'Switch 2', capacity: '48', units: 1 },
+            // { type: 'cable_manager', name: 'Cable Manager 5', capacity: '1', units: 1 },
+            // { type: 'patch_panel', name: 'PP5', capacity: '24', units: 1 },
+            // { type: 'patch_panel', name: 'PP6', capacity: '24', units: 1 },
+            // { type: 'cable_manager', name: 'Cable Manager 6', capacity: '1', units: 1 },
         ];
 
         let yPosition = 0;
