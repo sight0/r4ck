@@ -161,21 +161,25 @@ const RackVisualization = ({
             { type: 'switch', name: 'Switch 2', capacity: '48', units: 1 },
             { type: 'cable_manager', name: 'Cable Manager 5', capacity: '1', units: 1 },
             { type: 'patch_panel', name: 'PP5', capacity: '24', units: 1 },
-            { type: 'patch_panel', name: 'PP5', capacity: '24', units: 1 },
+            { type: 'patch_panel', name: 'PP6', capacity: '24', units: 1 },
             { type: 'cable_manager', name: 'Cable Manager 6', capacity: '1', units: 1 },
         ];
 
         let yPosition = 0;
+        const sequenceTracker = {};
         const newComponents = template.map((comp, index) => {
-            const sequence = getNextSequence(comp.type);
+            if (!sequenceTracker[comp.type]) {
+                sequenceTracker[comp.type] = 0;
+            }
+            sequenceTracker[comp.type]++;
+            const sequence = sequenceTracker[comp.type];
+            
             const component = {
                 ...comp,
                 id: Date.now() + index,
                 x: 30,
                 y: yPosition,
                 sequence: sequence,
-                // name: `${comp.type === 'cable_manager' ? 'Cable Manager' :
-                //     comp.type.toUpperCase()} ${sequence}`,
                 ports: Array.from({ length: parseInt(comp.capacity) }, (_, i) => ({
                     label: `Port ${i + 1}`,
                     cableSource: '',
@@ -192,6 +196,11 @@ const RackVisualization = ({
             ...prevAll,
             [currentIdf]: newComponents
         }));
+
+        // Update component sequences after adding all components
+        setComponentSequences(prevSequences => {
+            return { ...prevSequences, ...sequenceTracker };
+        });
     };
 
     const handleAutoWiring = () => {
