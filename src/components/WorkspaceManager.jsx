@@ -54,24 +54,24 @@ const WorkspaceManager = forwardRef(({ onSaveWorkspace, onLoadWorkspace, onNewWo
     }, [onNewWorkspace]);
 
     const handleSaveWorkspace = useCallback(() => {
-        console.log('WorkspaceManager: handleSaveWorkspace called');
-        console.log('Current workspace:', currentWorkspace);
-        console.log('Has unsaved changes:', hasUnsavedChanges);
+        // console.log('WorkspaceManager: handleSaveWorkspace called');
+        // console.log('Current workspace:', currentWorkspace);
+        // console.log('Has unsaved changes:', hasUnsavedChanges);
         setIsSaving(true);
         if (currentWorkspace) {
-            console.log('Saving existing workspace:', currentWorkspace);
+            // console.log('Saving existing workspace:', currentWorkspace);
             onSaveWorkspace(currentWorkspace).then(() => {
                 // Keep the loading state, as we're about to refresh
                 forceRefresh();
             });
         } else {
-            console.log('Opening save workspace dialog');
+            // console.log('Opening save workspace dialog');
             setSaveWorkspaceDialogOpen(true);
             setIsSaving(false);
         }
         // Force update of UI
         setAnchorEl(null);
-        console.log('WorkspaceManager: handleSaveWorkspace completed');
+        // console.log('WorkspaceManager: handleSaveWorkspace completed');
     }, [currentWorkspace, onSaveWorkspace, hasUnsavedChanges, forceRefresh]);
 
     const handleLoadWorkspace = useCallback(() => {

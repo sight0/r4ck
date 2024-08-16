@@ -116,11 +116,11 @@ const App = () => {
         });
         
         if (lastSavedStateRef.current !== null) {
-            console.log('Checking for changes:');
-            console.log('Current state:', currentState);
-            console.log('Last saved state:', lastSavedStateRef.current);
+            // console.log('Checking for changes:');
+            // console.log('Current state:', currentState);
+            // console.log('Last saved state:', lastSavedStateRef.current);
             const hasChanges = currentState !== lastSavedStateRef.current;
-            console.log('Has changes:', hasChanges);
+            // console.log('Has changes:', hasChanges);
             setHasUnsavedChanges(hasChanges);
         }
     }, [setupComplete, networkInfo, currentIdf, connections, connectionsPerIdf, rackDesigns, interIdfConnections, allComponents]);
@@ -130,7 +130,7 @@ const App = () => {
     }, [checkForChanges]);
 
     const handleSaveWorkspace = useCallback((name) => {
-        console.log('handleSaveWorkspace called with name:', name);
+        // console.log('handleSaveWorkspace called with name:', name);
         return new Promise((resolve) => {
             const workspaceData = {
                 setupComplete,
@@ -157,9 +157,9 @@ const App = () => {
             setCurrentWorkspace(workspace.name);
             const newSavedState = JSON.stringify(workspaceData);
             lastSavedStateRef.current = newSavedState;
-            console.log('New saved state:', newSavedState);
+            // console.log('New saved state:', newSavedState);
             setHasUnsavedChanges(false);
-            console.log('handleSaveWorkspace completed');
+            // console.log('handleSaveWorkspace completed');
             setTimeout(() => resolve(), 500); // Simulate a short delay for saving
         });
     }, [setupComplete, networkInfo, currentIdf, connections, connectionsPerIdf, rackDesigns, interIdfConnections, allComponents, currentWorkspace]);
@@ -182,9 +182,9 @@ const App = () => {
                     setCurrentWorkspace(workspace.name);
                     const loadedState = JSON.stringify(data);
                     lastSavedStateRef.current = loadedState;
-                    console.log('Loaded state:', loadedState);
+                    // console.log('Loaded state:', loadedState);
                     setHasUnsavedChanges(false);
-                    console.log('Workspace loaded, lastSavedStateRef updated');
+                    // console.log('Workspace loaded, lastSavedStateRef updated');
                 } else {
                     console.error('Workspace data not found:', workspace.name);
                     // Optionally, show an error message to the user

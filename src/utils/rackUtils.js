@@ -1,5 +1,5 @@
 export const calculateInterIdfConnections = (components, currentIdf) => {
-    console.log('calculateInterIdfConnections called with:', { components, currentIdf });
+    // console.log('calculateInterIdfConnections called with:', { components, currentIdf });
     const connections = {};
 
     components.forEach(component => {
@@ -16,6 +16,6 @@ export const calculateInterIdfConnections = (components, currentIdf) => {
         }
     });
 
-    console.log('Calculated connections:', connections);
+    // console.log('Calculated connections:', connections);
     return connections;
 };
