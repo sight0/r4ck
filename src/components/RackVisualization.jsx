@@ -219,9 +219,17 @@ const RackVisualization = ({
     };
 
     const handleAutoWiring = () => {
-        // Implement auto wiring functionality
+        // Implement auto wiring functionality that is between components on the same IDF (connection wizard automation)
         console.log('Auto wiring components...');
     };
+
+    const handleAutoPortWiring = () => {
+        // Implement auto port wiring functionality which is simply intializing all the ports for all the components but mainly for patch panels which are required to satisfy the devices
+        // The number of devices is depending on the initial setup form from which each IDF has a specific number of end user devices, ip telephones, and access points that must be satsified
+        // This function must make sure that it satsifies the requirement by utilizing the patch panels on the IDF.
+        console.log('Auto wiring components...');
+    };
+
 
     const getNextSequence = (type) => {
         const existingSequences = components
@@ -1005,6 +1013,14 @@ const RackVisualization = ({
                             disabled={components.length > 0}
                         >
                             Auto Component Placement
+                        </Button>
+                        <Button
+                            variant="contained"
+                            fullWidth
+                            sx={{ mb: 2, backgroundColor: '#9C27B0', '&:hover': { backgroundColor: '#8e24aa' } }}
+                            onClick={handleAutoPortWiring}
+                        >
+                            Auto Port Wiring
                         </Button>
                         <Button 
                             variant="contained" 
