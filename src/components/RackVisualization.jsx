@@ -23,6 +23,7 @@ import {
 import { calculateInterIdfConnections } from '../utils/rackUtils';
 import IssuesDialog from './IssuesDialog';
 import PatchingSchedule from './PatchingSchedule';
+import ListAltIcon from '@mui/icons-material/ListAlt';
 import GetAppIcon from '@mui/icons-material/GetApp';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -129,6 +130,7 @@ const RackVisualization = ({
     const [issuesDialogOpen, setIssuesDialogOpen] = useState(false);
     const [connectionWizardOpen, setConnectionWizardOpen] = useState(false);
     const [recommendationsDialogOpen, setRecommendationsDialogOpen] = useState(false);
+    const [patchingScheduleOpen, setPatchingScheduleOpen] = useState(false);
     const rackRef = useRef(null);
 
     const theme = useTheme();
@@ -1168,6 +1170,15 @@ const RackVisualization = ({
                         >
                             Clear IDF
                         </Button>
+                        <Button
+                            variant="contained"
+                            fullWidth
+                            startIcon={<ListAltIcon />}
+                            sx={{ mb: 2, backgroundColor: '#4CAF50', '&:hover': { backgroundColor: '#45a049' } }}
+                            onClick={() => setPatchingScheduleOpen(true)}
+                        >
+                            View Patching Schedule
+                        </Button>
                         <Typography variant="body2" sx={{ mt: 2, mb: 2 }}>
                             Note: Auto placement and wiring functions work best when the IDF is empty. Clear the IDF before using these features for optimal results.
                         </Typography>
@@ -1278,7 +1289,24 @@ const RackVisualization = ({
                 onConnectionDelete={handleConnectionDelete}
                 existingConnections={connectionsPerIdf[currentIdf] || []}
             />
-            <PatchingSchedule connections={connectionsPerIdf[currentIdf] || []} components={components} currentIdf={currentIdf}/>
+            <Dialog
+                open={patchingScheduleOpen}
+                onClose={() => setPatchingScheduleOpen(false)}
+                maxWidth="md"
+                fullWidth
+            >
+                <DialogTitle>Patching Schedule</DialogTitle>
+                <DialogContent>
+                    <PatchingSchedule 
+                        connections={connectionsPerIdf[currentIdf] || []} 
+                        components={components} 
+                        currentIdf={currentIdf}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setPatchingScheduleOpen(false)}>Close</Button>
+                </DialogActions>
+            </Dialog>
             {/* Placeholder for Recommendations Dialog */}
             <Dialog
                 open={recommendationsDialogOpen}
