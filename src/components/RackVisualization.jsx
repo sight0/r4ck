@@ -813,7 +813,6 @@ const RackVisualization = ({
                 }
             }
         });
-
         return issues;
     };
 

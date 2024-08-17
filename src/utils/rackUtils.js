@@ -3,7 +3,7 @@ export const calculateInterIdfConnections = (components, currentIdf) => {
     const connections = {};
 
     components.forEach(component => {
-        if (component.type === 'patch_panel' && component.ports) {
+        if (component.type === 'fiber_patch_panel' && component.ports) {
             component.ports.forEach(port => {
                 if (port.cableSource && port.cableSource.startsWith('IDF_')) {
                     const targetIdf = port.cableSource;
