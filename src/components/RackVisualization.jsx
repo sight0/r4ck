@@ -864,6 +864,23 @@ const RackVisualization = ({
                                 </GreenButton>
                             </span>
                         </Tooltip>
+                        <Button
+                            variant="contained"
+                            startIcon={<ListAltIcon />}
+                            sx={{
+                                flex: 1,
+                                py: 1.5,
+                                fontWeight: 'bold',
+                                backgroundColor: '#f8bf05',
+                                boxShadow: 3,
+                                '&:hover': {
+                                    boxShadow: 5,
+                                },
+                            }}
+                            onClick={() => setPatchingScheduleOpen(true)}
+                        >
+                            View Patching Schedule
+                        </Button>
                     </Box>
                     {/*<Button*/}
                     {/*    variant="contained"*/}
@@ -1169,15 +1186,6 @@ const RackVisualization = ({
                             onClick={handleClearIdf}
                         >
                             Clear IDF
-                        </Button>
-                        <Button
-                            variant="contained"
-                            fullWidth
-                            startIcon={<ListAltIcon />}
-                            sx={{ mb: 2, backgroundColor: '#4CAF50', '&:hover': { backgroundColor: '#45a049' } }}
-                            onClick={() => setPatchingScheduleOpen(true)}
-                        >
-                            View Patching Schedule
                         </Button>
                         <Typography variant="body2" sx={{ mt: 2, mb: 2 }}>
                             Note: Auto placement and wiring functions work best when the IDF is empty. Clear the IDF before using these features for optimal results.
