@@ -26,3 +26,8 @@ export const generateSmartIdentifier = (componentType, idfNumber, sequence, port
 export const isEndUserDeviceType = (type) => {
   return ['access_point', 'ip_phone', 'end_user_device'].includes(type);
 };
+
+let counter = 0;
+export const generateUniqueId = () => {
+  return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}-${counter++}`;
+};
