@@ -65,7 +65,7 @@ const RackComponent = ({ component, rackWidth, onDelete, onEdit, onDragStart, is
 
 RackComponent.propTypes = {
     component: PropTypes.shape({
-        id: PropTypes.number.isRequired,
+        id: PropTypes.string.isRequired,
         x: PropTypes.number.isRequired,
         y: PropTypes.number.isRequired,
         name: PropTypes.string.isRequired,

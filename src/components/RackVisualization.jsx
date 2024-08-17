@@ -44,7 +44,7 @@ import AddIcon from '@mui/icons-material/Add';
 import SaveIcon from '@mui/icons-material/Save';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import DeleteIcon from '@mui/icons-material/Delete';
-import {generateSmartIdentifier} from "../utils/identifierUtils.js";
+import {generateSmartIdentifier, generateUniqueId} from "../utils/identifierUtils.js";
 
 const componentColors = Object.fromEntries(sidebarComponents.map(comp => [comp.type, comp.color]));
 
@@ -205,7 +205,7 @@ const RackVisualization = ({
         
         return {
             ...comp,
-            id: Date.now() + Math.random(),
+            id: generateUniqueId(),
             x: 30,
             y: yPosition,
             sequence: sequence,
@@ -255,7 +255,7 @@ const RackVisualization = ({
                     if (!isPortConnected(switchComponent.id, switchPort.label) && 
                         !isPortConnected(currentPatchPanel.id, patchPanelPort.label)) {
                         const newConnection = {
-                            id: Date.now() + Math.random(),
+                            id: generateUniqueId(),
                             deviceA: {
                                 componentId: currentPatchPanel.id,
                                 port: patchPanelPort.label,
@@ -511,7 +511,7 @@ const RackVisualization = ({
             ...component,
             x: 30, // Adjusted to accommodate rack unit labels
             y: snappedY,
-            id: Date.now(),
+            id: generateUniqueId(),
         };
 
         if (component.type === 'cable_manager') {

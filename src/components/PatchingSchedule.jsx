@@ -196,20 +196,20 @@ const PatchingSchedule = ({ connections, currentIdf }) => {
 PatchingSchedule.propTypes = {
   connections: PropTypes.arrayOf(PropTypes.shape({
     deviceA: PropTypes.shape({
-      componentId: PropTypes.number.isRequired,
+      componentId: PropTypes.string.isRequired,
       deviceType: PropTypes.string.isRequired,
       deviceSequence: PropTypes.number.isRequired,
       port: PropTypes.string.isRequired,
     }).isRequired,
     deviceB: PropTypes.shape({
-      componentId: PropTypes.number.isRequired,
+      componentId: PropTypes.string.isRequired,
       deviceType: PropTypes.string.isRequired,
       deviceSequence: PropTypes.number.isRequired,
       port: PropTypes.string.isRequired,
     }).isRequired,
   })).isRequired,
   components: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.number.isRequired,
+    id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
   })).isRequired,
   currentIdf: PropTypes.number.isRequired,

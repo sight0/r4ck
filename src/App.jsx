@@ -346,7 +346,7 @@ const App = () => {
                         <Box sx={{ width: 250, flexShrink: 0 }}>
                             <Sidebar currentIdf={currentIdf} />
                         </Box>
-                        <Box sx={{ flexGrow: 1, p: 3, overflow: 'auto' }}>
+                        <Box sx={{ flexGrow: 1, pl:3, overflow: 'auto' }}>
                             <RackVisualization 
                                 currentIdf={currentIdf} 
                                 setCurrentIdf={setCurrentIdf}

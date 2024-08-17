@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { generateSmartIdentifier } from '../utils/identifierUtils';
+import {generateSmartIdentifier, generateUniqueId} from '../utils/identifierUtils';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Stepper, Step, StepLabel, Typography, Box, Select, MenuItem, FormControl, InputLabel, IconButton, Tooltip, TextField, Chip, Card, CardContent, Grid, Paper } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
@@ -118,7 +118,7 @@ const ConnectionWizard = ({ open, onClose, components, currentIdf, onConnectionC
         };
 
         const newConnection = {
-            id: editingConnection ? editingConnection.id : Date.now(),
+            id: editingConnection ? editingConnection.id : generateUniqueId(),
             deviceA: getPortDetails(connection.firstComponent, connection.firstPort),
             deviceB: getPortDetails(connection.secondComponent, connection.secondPort),
             idf: currentIdf,

@@ -125,7 +125,7 @@ PortSetupDialog.propTypes = {
     onPortChange: PropTypes.func.isRequired,
     component: PropTypes.shape({
         type: PropTypes.string.isRequired,
-        id: PropTypes.number.isRequired,
+        id: PropTypes.string.isRequired,
         sequence: PropTypes.number.isRequired,
     }).isRequired,
 };
