@@ -219,9 +219,12 @@ const RackVisualization = ({
     };
 
     const handleAutoWiring = () => {
-        // Implement auto wiring functionality between components on the same IDF
+        console.log('Starting auto wiring...');
         const patchPanels = components.filter(c => c.type === 'patch_panel');
         const switches = components.filter(c => c.type === 'switch');
+
+        console.log('Patch Panels:', patchPanels);
+        console.log('Switches:', switches);
 
         if (patchPanels.length === 0 || switches.length === 0) {
             alert('Auto wiring requires at least one patch panel and one switch.');
@@ -231,8 +234,12 @@ const RackVisualization = ({
         let newConnections = [];
         patchPanels.forEach(patchPanel => {
             switches.forEach(switchComponent => {
+                console.log(`Connecting Patch Panel ${patchPanel.sequence} to Switch ${switchComponent.sequence}`);
                 const availablePatchPanelPorts = patchPanel.ports.filter(port => !port.connectedTo);
                 const availableSwitchPorts = switchComponent.ports.filter(port => !port.connectedTo);
+
+                console.log('Available Patch Panel Ports:', availablePatchPanelPorts.length);
+                console.log('Available Switch Ports:', availableSwitchPorts.length);
 
                 const portsToConnect = Math.min(availablePatchPanelPorts.length, availableSwitchPorts.length);
 
@@ -258,14 +265,24 @@ const RackVisualization = ({
                         speed: '10Gbps',
                         notes: 'Auto-generated connection'
                     };
+                    console.log('New Connection:', newConnection);
                     newConnections.push(newConnection);
                 }
             });
         });
 
+        console.log('Total new connections:', newConnections.length);
+
         newConnections.forEach(connection => {
+            console.log('Adding connection:', connection);
             onAddConnection(connection);
         });
+
+        // Check if connections were actually added
+        console.log('Connections after adding:', connectionsPerIdf[currentIdf]);
+
+        // Check if ports are marked as connected
+        console.log('Components after connections:', components);
 
         alert(`Created ${newConnections.length} connections between patch panels and switches.`);
     };
