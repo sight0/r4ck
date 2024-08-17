@@ -219,15 +219,100 @@ const RackVisualization = ({
     };
 
     const handleAutoWiring = () => {
-        // Implement auto wiring functionality that is between components on the same IDF (connection wizard automation)
-        console.log('Auto wiring components...');
+        // Implement auto wiring functionality between components on the same IDF
+        const patchPanels = components.filter(c => c.type === 'patch_panel');
+        const switches = components.filter(c => c.type === 'switch');
+
+        if (patchPanels.length === 0 || switches.length === 0) {
+            alert('Auto wiring requires at least one patch panel and one switch.');
+            return;
+        }
+
+        let newConnections = [];
+        patchPanels.forEach(patchPanel => {
+            switches.forEach(switchComponent => {
+                const availablePatchPanelPorts = patchPanel.ports.filter(port => !port.connectedTo);
+                const availableSwitchPorts = switchComponent.ports.filter(port => !port.connectedTo);
+
+                const portsToConnect = Math.min(availablePatchPanelPorts.length, availableSwitchPorts.length);
+
+                for (let i = 0; i < portsToConnect; i++) {
+                    const newConnection = {
+                        id: Date.now() + Math.random(),
+                        deviceA: {
+                            componentId: patchPanel.id,
+                            port: availablePatchPanelPorts[i].label,
+                            identifier: availablePatchPanelPorts[i].identifier,
+                            deviceType: 'patch_panel',
+                            deviceSequence: patchPanel.sequence
+                        },
+                        deviceB: {
+                            componentId: switchComponent.id,
+                            port: availableSwitchPorts[i].label,
+                            identifier: availableSwitchPorts[i].identifier,
+                            deviceType: 'switch',
+                            deviceSequence: switchComponent.sequence
+                        },
+                        idf: currentIdf,
+                        type: 'copper',
+                        speed: '1Gbps',
+                        notes: 'Auto-generated connection'
+                    };
+                    newConnections.push(newConnection);
+                }
+            });
+        });
+
+        newConnections.forEach(connection => {
+            onConnectionCreate(connection);
+        });
+
+        alert(`Created ${newConnections.length} connections between patch panels and switches.`);
     };
 
     const handleAutoPortWiring = () => {
-        // Implement auto port wiring functionality which is simply intializing all the ports for all the components but mainly for patch panels which are required to satisfy the devices
-        // The number of devices is depending on the initial setup form from which each IDF has a specific number of end user devices, ip telephones, and access points that must be satsified
-        // This function must make sure that it satsifies the requirement by utilizing the patch panels on the IDF.
-        console.log('Auto wiring components...');
+        // Initialize ports for patch panels to satisfy device requirements
+        const patchPanels = components.filter(c => c.type === 'patch_panel');
+        const deviceRequirements = idfData[currentIdf]?.devices || [];
+
+        if (patchPanels.length === 0) {
+            alert('Auto port wiring requires at least one patch panel.');
+            return;
+        }
+
+        let totalRequiredPorts = deviceRequirements.reduce((sum, device) => sum + device.count, 0);
+        let availablePorts = patchPanels.reduce((sum, panel) => sum + panel.ports.length, 0);
+
+        if (availablePorts < totalRequiredPorts) {
+            alert(`Not enough patch panel ports (${availablePorts}) to satisfy device requirements (${totalRequiredPorts}).`);
+            return;
+        }
+
+        let updatedComponents = [...components];
+        let portIndex = 0;
+
+        deviceRequirements.forEach(requirement => {
+            for (let i = 0; i < requirement.count; i++) {
+                while (portIndex < patchPanels.length * patchPanels[0].ports.length) {
+                    const panelIndex = Math.floor(portIndex / patchPanels[0].ports.length);
+                    const port = updatedComponents[patchPanels[panelIndex].id].ports[portIndex % patchPanels[0].ports.length];
+                    
+                    if (!port.cableSource) {
+                        port.cableSource = requirement.type;
+                        port.identifier = generateSmartIdentifier(requirement.type, currentIdf, patchPanels[panelIndex].sequence, portIndex % patchPanels[0].ports.length + 1);
+                        break;
+                    }
+                    portIndex++;
+                }
+            }
+        });
+
+        setAllComponents(prevAll => ({
+            ...prevAll,
+            [currentIdf]: updatedComponents
+        }));
+
+        alert('Auto port wiring completed successfully.');
     };
 
 
