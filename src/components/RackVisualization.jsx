@@ -219,14 +219,10 @@ const RackVisualization = ({
     };
 
     const handleAutoWiring = () => {
-        console.log('Starting auto wiring...');
         let patchPanels = components.filter(c => c.type === 'patch_panel')
             .sort((a, b) => b.ports.length - a.ports.length);
         let switches = components.filter(c => c.type === 'switch')
             .sort((a, b) => b.ports.length - a.ports.length);
-
-        console.log('Sorted Patch Panels:', patchPanels);
-        console.log('Sorted Switches:', switches);
 
         if (patchPanels.length === 0 || switches.length === 0) {
             alert('Auto wiring requires at least one patch panel and one switch.');
@@ -242,9 +238,6 @@ const RackVisualization = ({
             while (remainingSwitchPorts > 0 && currentPatchPanelIndex < patchPanels.length) {
                 let currentPatchPanel = patchPanels[currentPatchPanelIndex];
                 let portsToConnect = Math.min(remainingSwitchPorts, currentPatchPanel.ports.length);
-                
-                console.log(`Connecting Switch ${switchComponent.sequence} to Patch Panel ${currentPatchPanel.sequence}`);
-                console.log(`Ports to connect: ${portsToConnect}`);
 
                 for (let i = 0; i < portsToConnect; i++) {
                     const newConnection = {
@@ -268,7 +261,6 @@ const RackVisualization = ({
                         speed: '10Gbps',
                         notes: 'Auto-generated connection'
                     };
-                    console.log('New Connection:', newConnection);
                     newConnections.push(newConnection);
                 }
 
@@ -277,17 +269,9 @@ const RackVisualization = ({
             }
         });
 
-        console.log('Total new connections:', newConnections.length);
-
         newConnections.forEach(connection => {
-            console.log('Adding connection:', connection);
             onAddConnection(connection);
         });
-
-        console.log('Connections after adding:', connectionsPerIdf[currentIdf]);
-        console.log('Components after connections:', components);
-
-        alert(`Created ${newConnections.length} connections between patch panels and switches.`);
     };
 
     const handleAutoPortWiring = () => {
@@ -818,6 +802,7 @@ const RackVisualization = ({
                     </Box>
                 </Box>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', gap: 2 }}>
+                    {/*ADD HERE THE INFORMATION IN A NICE WAY along with the buttons => const deviceRequirements = idfData[currentIdf]?.devices || [];*/}
                     <Button
                         variant="contained"
                         color={getIssues().some(issue => !issue.isSatisfied) ? "error" : "primary"}
