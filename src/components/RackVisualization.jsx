@@ -274,6 +274,7 @@ const RackVisualization = ({
         newConnections.forEach(connection => {
             onAddConnection(connection);
         });
+        alert('Successfully created connections! > View Patching Schedule');
     };
 
     const handleAutoPortWiring = () => {
@@ -804,8 +805,8 @@ const RackVisualization = ({
                     </Box>
                 </Box>
                 <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: 2 }}>
-                    <Paper elevation={3} sx={{ p: 2, mb: 2, backgroundColor: theme.palette.background.paper }}>
-                        <Typography variant="h6" gutterBottom>Current IDF Requirements</Typography>
+                    <Paper elevation={3} sx={{ p: 2, backgroundColor: theme.palette.background.paper }}>
+                        {/*<Typography variant="h6" gutterBottom>Current IDF Requirements</Typography>*/}
                         <Grid container spacing={2}>
                             {['end_user_device', 'access_point', 'ip_phone'].map((deviceType, index) => {
                                 const device = idfData[currentIdf]?.devices.find(d => d.type === deviceType);
@@ -907,7 +908,7 @@ const RackVisualization = ({
                 </Box>
             </Box>
             <Grid container spacing={2}>
-                <Grid item xs={12} md={5}>
+                <Grid item xs={12} md={4}>
                     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 2 }} className="rack-visualization">
                         <StyledRackContainer>
                             <Box className="rack-units">
@@ -1142,16 +1143,16 @@ const RackVisualization = ({
                         </Box>
                     </Box>
                 </Grid>
-                <Grid item xs={12} md={3}>
+                <Grid item xs={12} md={4}>
                     <Paper elevation={3} sx={{ p: 2, height: '98.2%' }}>
                         <Typography variant="h6" gutterBottom>AUTO Panel</Typography>
                         <Typography variant="body2" sx={{ mb: 2 }}>
-                            Note: This panel's functionality is most accurate when the initial setup form is filled out correctly.
+                            Note: This panel&apos;s functionality is most accurate when the initial setup form is filled out correctly.
                         </Typography>
                         <Button
                             variant="contained" 
                             fullWidth 
-                            sx={{ mb: 2, backgroundColor: '#FF9800', '&:hover': { backgroundColor: '#f57c00' } }}
+                            sx={{ p:2, mb: 3, backgroundColor: '#FF9800', '&:hover': { backgroundColor: '#f57c00' } }}
                             onClick={handleAutoPlacement}
                             disabled={components.length > 0}
                         >
@@ -1160,7 +1161,7 @@ const RackVisualization = ({
                         <Button
                             variant="contained"
                             fullWidth
-                            sx={{ mb: 2, backgroundColor: '#9C27B0', '&:hover': { backgroundColor: '#8e24aa' } }}
+                            sx={{ p:2, mb: 3, backgroundColor: '#9C27B0', '&:hover': { backgroundColor: '#8e24aa' } }}
                             onClick={handleAutoPortWiring}
                         >
                             Auto Port Wiring (Patch Panel Setup)
@@ -1168,24 +1169,24 @@ const RackVisualization = ({
                         <Button 
                             variant="contained" 
                             fullWidth 
-                            sx={{ mb: 2, backgroundColor: '#34c6ea', '&:hover': { backgroundColor: '#8e24aa' } }}
+                            sx={{ p:2,mb: 3, backgroundColor: '#34c6ea', '&:hover': { backgroundColor: '#8e24aa' } }}
                             onClick={handleAutoWiring}
                         >
                             Auto Component Wiring
                         </Button>
-                        <Button 
-                            variant="contained" 
-                            fullWidth 
-                            sx={{ mb: 2, backgroundColor: '#d1b4b4', '&:hover': { backgroundColor: '#45a049' } }}
-                            onClick={handleGetRecommendations}
-                            disabled
-                        >
-                            Get AI Recommendations (Disabled)
-                        </Button>
+                        {/*<Button */}
+                        {/*    variant="contained" */}
+                        {/*    fullWidth */}
+                        {/*    sx={{ mb: 2, backgroundColor: '#d1b4b4', '&:hover': { backgroundColor: '#45a049' } }}*/}
+                        {/*    onClick={handleGetRecommendations}*/}
+                        {/*    disabled*/}
+                        {/*>*/}
+                        {/*    Get AI Recommendations (Disabled)*/}
+                        {/*</Button>*/}
                         <Button
                             variant="contained"
                             fullWidth
-                            sx={{ mb: 2, backgroundColor: '#e95849', '&:hover': { backgroundColor: '#d32f2f' } }}
+                            sx={{ p:4, mb: 1, backgroundColor: '#cd3020', '&:hover': { backgroundColor: '#d32f2f' } }}
                             onClick={handleClearIdf}
                         >
                             Clear IDF
