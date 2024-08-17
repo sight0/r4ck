@@ -807,22 +807,25 @@ const RackVisualization = ({
                     <Paper elevation={3} sx={{ p: 2, mb: 2, backgroundColor: theme.palette.background.paper }}>
                         <Typography variant="h6" gutterBottom>Current IDF Requirements</Typography>
                         <Grid container spacing={2}>
-                            {idfData[currentIdf]?.devices.map((device, index) => (
-                                <Grid item xs={4} key={index}>
-                                    <Box sx={{ 
-                                        display: 'flex', 
-                                        flexDirection: 'column', 
-                                        alignItems: 'center', 
-                                        p: 1, 
-                                        border: `1px solid ${theme.palette.divider}`,
-                                        borderRadius: 1,
-                                        backgroundColor: theme.palette.background.default
-                                    }}>
-                                        <Typography variant="subtitle2">{device.type.replace(/_/g, ' ').toUpperCase()}</Typography>
-                                        <Typography variant="h4" color="primary">{device.count}</Typography>
-                                    </Box>
-                                </Grid>
-                            ))}
+                            {['end_user_device', 'access_point', 'ip_phone'].map((deviceType, index) => {
+                                const device = idfData[currentIdf]?.devices.find(d => d.type === deviceType);
+                                return (
+                                    <Grid item xs={4} key={index}>
+                                        <Box sx={{ 
+                                            display: 'flex', 
+                                            flexDirection: 'column', 
+                                            alignItems: 'center', 
+                                            p: 1, 
+                                            border: `1px solid ${theme.palette.divider}`,
+                                            borderRadius: 1,
+                                            backgroundColor: theme.palette.background.default
+                                        }}>
+                                            <Typography variant="subtitle2">{deviceType.replace(/_/g, ' ').toUpperCase()}</Typography>
+                                            <Typography variant="h4" color="primary">{device ? device.count : 0}</Typography>
+                                        </Box>
+                                    </Grid>
+                                );
+                            })}
                         </Grid>
                     </Paper>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
