@@ -234,47 +234,76 @@ const RackVisualization = ({
         let newConnections = [];
         let currentPatchPanelIndex = 0;
 
-        switches.forEach(switchComponent => {
-            let remainingSwitchPorts = switchComponent.ports.length;
-            
-            while (remainingSwitchPorts > 0 && currentPatchPanelIndex < patchPanels.length) {
-                let currentPatchPanel = patchPanels[currentPatchPanelIndex];
-                let portsToConnect = Math.min(remainingSwitchPorts, currentPatchPanel.ports.length);
+        const isPortConnected = (componentId, portLabel) => {
+            return (connectionsPerIdf[currentIdf] || []).some(conn => 
+                (conn.deviceA.componentId === componentId && conn.deviceA.port === portLabel) ||
+                (conn.deviceB.componentId === componentId && conn.deviceB.port === portLabel)
+            );
+        };
 
-                for (let i = 0; i < portsToConnect; i++) {
-                    const newConnection = {
-                        id: Date.now() + Math.random(),
-                        deviceA: {
-                            componentId: currentPatchPanel.id,
-                            port: currentPatchPanel.ports[i].label,
-                            identifier: currentPatchPanel.ports[i].identifier,
-                            deviceType: 'patch_panel',
-                            deviceSequence: currentPatchPanel.sequence
-                        },
-                        deviceB: {
-                            componentId: switchComponent.id,
-                            port: switchComponent.ports[switchComponent.ports.length - remainingSwitchPorts + i].label,
-                            identifier: switchComponent.ports[switchComponent.ports.length - remainingSwitchPorts + i].identifier,
-                            deviceType: 'switch',
-                            deviceSequence: switchComponent.sequence
-                        },
-                        idf: currentIdf,
-                        type: 'copper',
-                        speed: '10Gbps',
-                        notes: 'Auto-generated connection'
-                    };
-                    newConnections.push(newConnection);
+        switches.forEach(switchComponent => {
+            let switchPortIndex = 0;
+
+            while (switchPortIndex < switchComponent.ports.length && currentPatchPanelIndex < patchPanels.length) {
+                let currentPatchPanel = patchPanels[currentPatchPanelIndex];
+                let patchPanelPortIndex = 0;
+
+                while (patchPanelPortIndex < currentPatchPanel.ports.length && switchPortIndex < switchComponent.ports.length) {
+                    const switchPort = switchComponent.ports[switchPortIndex];
+                    const patchPanelPort = currentPatchPanel.ports[patchPanelPortIndex];
+
+                    if (!isPortConnected(switchComponent.id, switchPort.label) && 
+                        !isPortConnected(currentPatchPanel.id, patchPanelPort.label)) {
+                        const newConnection = {
+                            id: Date.now() + Math.random(),
+                            deviceA: {
+                                componentId: currentPatchPanel.id,
+                                port: patchPanelPort.label,
+                                identifier: patchPanelPort.identifier,
+                                deviceType: 'patch_panel',
+                                deviceSequence: currentPatchPanel.sequence
+                            },
+                            deviceB: {
+                                componentId: switchComponent.id,
+                                port: switchPort.label,
+                                identifier: switchPort.identifier,
+                                deviceType: 'switch',
+                                deviceSequence: switchComponent.sequence
+                            },
+                            idf: currentIdf,
+                            type: 'copper',
+                            speed: '1Gbps',
+                            notes: 'Auto-generated connection'
+                        };
+                        newConnections.push(newConnection);
+                        switchPortIndex++;
+                        patchPanelPortIndex++;
+                    } else {
+                        // If either port is already connected, move to the next port
+                        if (isPortConnected(switchComponent.id, switchPort.label)) {
+                            switchPortIndex++;
+                        }
+                        if (isPortConnected(currentPatchPanel.id, patchPanelPort.label)) {
+                            patchPanelPortIndex++;
+                        }
+                    }
                 }
 
-                remainingSwitchPorts -= portsToConnect;
-                currentPatchPanelIndex++;
+                if (patchPanelPortIndex >= currentPatchPanel.ports.length) {
+                    currentPatchPanelIndex++;
+                }
             }
         });
 
         newConnections.forEach(connection => {
             onAddConnection(connection);
         });
-        alert('Successfully created connections! > View Patching Schedule');
+        
+        if (newConnections.length > 0) {
+            alert(`Successfully created ${newConnections.length} connections! > View Patching Schedule`);
+        } else {
+            alert('No new connections could be created. All ports might be already connected.');
+        }
     };
 
     const handleAutoPortWiring = () => {
