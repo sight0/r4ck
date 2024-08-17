@@ -220,11 +220,13 @@ const RackVisualization = ({
 
     const handleAutoWiring = () => {
         console.log('Starting auto wiring...');
-        const patchPanels = components.filter(c => c.type === 'patch_panel');
-        const switches = components.filter(c => c.type === 'switch');
+        let patchPanels = components.filter(c => c.type === 'patch_panel')
+            .sort((a, b) => b.ports.length - a.ports.length);
+        let switches = components.filter(c => c.type === 'switch')
+            .sort((a, b) => b.ports.length - a.ports.length);
 
-        console.log('Patch Panels:', patchPanels);
-        console.log('Switches:', switches);
+        console.log('Sorted Patch Panels:', patchPanels);
+        console.log('Sorted Switches:', switches);
 
         if (patchPanels.length === 0 || switches.length === 0) {
             alert('Auto wiring requires at least one patch panel and one switch.');
@@ -232,31 +234,32 @@ const RackVisualization = ({
         }
 
         let newConnections = [];
-        patchPanels.forEach(patchPanel => {
-            switches.forEach(switchComponent => {
-                console.log(`Connecting Patch Panel ${patchPanel.sequence} to Switch ${switchComponent.sequence}`);
-                const availablePatchPanelPorts = patchPanel.ports.filter(port => !port.connectedTo);
-                const availableSwitchPorts = switchComponent.ports.filter(port => !port.connectedTo);
+        let currentPatchPanelIndex = 0;
 
-                console.log('Available Patch Panel Ports:', availablePatchPanelPorts.length);
-                console.log('Available Switch Ports:', availableSwitchPorts.length);
-
-                const portsToConnect = Math.min(availablePatchPanelPorts.length, availableSwitchPorts.length);
+        switches.forEach(switchComponent => {
+            let remainingSwitchPorts = switchComponent.ports.length;
+            
+            while (remainingSwitchPorts > 0 && currentPatchPanelIndex < patchPanels.length) {
+                let currentPatchPanel = patchPanels[currentPatchPanelIndex];
+                let portsToConnect = Math.min(remainingSwitchPorts, currentPatchPanel.ports.length);
+                
+                console.log(`Connecting Switch ${switchComponent.sequence} to Patch Panel ${currentPatchPanel.sequence}`);
+                console.log(`Ports to connect: ${portsToConnect}`);
 
                 for (let i = 0; i < portsToConnect; i++) {
                     const newConnection = {
                         id: Date.now() + Math.random(),
                         deviceA: {
-                            componentId: patchPanel.id,
-                            port: availablePatchPanelPorts[i].label,
-                            identifier: availablePatchPanelPorts[i].identifier,
+                            componentId: currentPatchPanel.id,
+                            port: currentPatchPanel.ports[i].label,
+                            identifier: currentPatchPanel.ports[i].identifier,
                             deviceType: 'patch_panel',
-                            deviceSequence: patchPanel.sequence
+                            deviceSequence: currentPatchPanel.sequence
                         },
                         deviceB: {
                             componentId: switchComponent.id,
-                            port: availableSwitchPorts[i].label,
-                            identifier: availableSwitchPorts[i].identifier,
+                            port: switchComponent.ports[switchComponent.ports.length - remainingSwitchPorts + i].label,
+                            identifier: switchComponent.ports[switchComponent.ports.length - remainingSwitchPorts + i].identifier,
                             deviceType: 'switch',
                             deviceSequence: switchComponent.sequence
                         },
@@ -268,7 +271,10 @@ const RackVisualization = ({
                     console.log('New Connection:', newConnection);
                     newConnections.push(newConnection);
                 }
-            });
+
+                remainingSwitchPorts -= portsToConnect;
+                currentPatchPanelIndex++;
+            }
         });
 
         console.log('Total new connections:', newConnections.length);
@@ -278,10 +284,7 @@ const RackVisualization = ({
             onAddConnection(connection);
         });
 
-        // Check if connections were actually added
         console.log('Connections after adding:', connectionsPerIdf[currentIdf]);
-
-        // Check if ports are marked as connected
         console.log('Components after connections:', components);
 
         alert(`Created ${newConnections.length} connections between patch panels and switches.`);
