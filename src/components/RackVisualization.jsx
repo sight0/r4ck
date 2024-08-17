@@ -801,46 +801,68 @@ const RackVisualization = ({
                         </IconButton>
                     </Box>
                 </Box>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', gap: 2 }}>
-                    {/*ADD HERE THE INFORMATION IN A NICE WAY along with the buttons => const deviceRequirements = idfData[currentIdf]?.devices || [];*/}
-                    <Button
-                        variant="contained"
-                        color={getIssues().some(issue => !issue.isSatisfied) ? "error" : "primary"}
-                        onClick={() => setIssuesDialogOpen(true)}
-                        sx={{
-                            flex: 1,
-                            py: 1.5,
-                            fontWeight: 'bold',
-                            boxShadow: 3,
-                            '&:hover': {
-                                boxShadow: 5,
-                            },
-                        }}
-                        startIcon={<ErrorOutlineIcon />}
-                    >
-                        {getIssues().some(issue => !issue.isSatisfied) ? "View Issues" : "All Satisfied"}
-                    </Button>
-                    <Tooltip title={getIssues().some(issue => !issue.isSatisfied) ? "Satisfy all requirements to enable Connection Wizard" : "Open Connection Wizard"}>
-                        <span>
-                            <GreenButton
-                                variant="contained"
-                                onClick={() => setConnectionWizardOpen(true)}
-                                disabled={getIssues().some(issue => !issue.isSatisfied)}
-                                sx={{
-                                    flex: 1,
-                                    py: 1.5,
-                                    fontWeight: 'bold',
-                                    boxShadow: 3,
-                                    '&:hover': {
-                                        boxShadow: 5,
-                                    },
-                                }}
-                                startIcon={<CableIcon />}
-                            >
-                                Connection Wizard
-                            </GreenButton>
-                        </span>
-                    </Tooltip>
+                <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: 2 }}>
+                    <Paper elevation={3} sx={{ p: 2, mb: 2, backgroundColor: theme.palette.background.paper }}>
+                        <Typography variant="h6" gutterBottom>Current IDF Requirements</Typography>
+                        <Grid container spacing={2}>
+                            {idfData[currentIdf]?.devices.map((device, index) => (
+                                <Grid item xs={4} key={index}>
+                                    <Box sx={{ 
+                                        display: 'flex', 
+                                        flexDirection: 'column', 
+                                        alignItems: 'center', 
+                                        p: 1, 
+                                        border: `1px solid ${theme.palette.divider}`,
+                                        borderRadius: 1,
+                                        backgroundColor: theme.palette.background.default
+                                    }}>
+                                        <Typography variant="subtitle2">{device.type.replace(/_/g, ' ').toUpperCase()}</Typography>
+                                        <Typography variant="h4" color="primary">{device.count}</Typography>
+                                    </Box>
+                                </Grid>
+                            ))}
+                        </Grid>
+                    </Paper>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
+                        <Button
+                            variant="contained"
+                            color={getIssues().some(issue => !issue.isSatisfied) ? "error" : "primary"}
+                            onClick={() => setIssuesDialogOpen(true)}
+                            sx={{
+                                flex: 1,
+                                py: 1.5,
+                                fontWeight: 'bold',
+                                boxShadow: 3,
+                                '&:hover': {
+                                    boxShadow: 5,
+                                },
+                            }}
+                            startIcon={<ErrorOutlineIcon />}
+                        >
+                            {getIssues().some(issue => !issue.isSatisfied) ? "View Issues" : "All Satisfied"}
+                        </Button>
+                        <Tooltip title={getIssues().some(issue => !issue.isSatisfied) ? "Satisfy all requirements to enable Connection Wizard" : "Open Connection Wizard"}>
+                            <span>
+                                <GreenButton
+                                    variant="contained"
+                                    onClick={() => setConnectionWizardOpen(true)}
+                                    disabled={getIssues().some(issue => !issue.isSatisfied)}
+                                    sx={{
+                                        flex: 1,
+                                        py: 1.5,
+                                        fontWeight: 'bold',
+                                        boxShadow: 3,
+                                        '&:hover': {
+                                            boxShadow: 5,
+                                        },
+                                    }}
+                                    startIcon={<CableIcon />}
+                                >
+                                    Connection Wizard
+                                </GreenButton>
+                            </span>
+                        </Tooltip>
+                    </Box>
                     {/*<Button*/}
                     {/*    variant="contained"*/}
                     {/*    onClick={handleGetRecommendations}*/}
