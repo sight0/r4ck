@@ -255,7 +255,7 @@ const RackVisualization = ({
                         },
                         idf: currentIdf,
                         type: 'copper',
-                        speed: '1Gbps',
+                        speed: '10Gbps',
                         notes: 'Auto-generated connection'
                     };
                     newConnections.push(newConnection);
@@ -264,7 +264,7 @@ const RackVisualization = ({
         });
 
         newConnections.forEach(connection => {
-            onConnectionCreate(connection);
+            onAddConnection(connection);
         });
 
         alert(`Created ${newConnections.length} connections between patch panels and switches.`);
@@ -295,11 +295,20 @@ const RackVisualization = ({
             for (let i = 0; i < requirement.count; i++) {
                 while (portIndex < patchPanels.length * patchPanels[0].ports.length) {
                     const panelIndex = Math.floor(portIndex / patchPanels[0].ports.length);
-                    const port = updatedComponents[patchPanels[panelIndex].id].ports[portIndex % patchPanels[0].ports.length];
-                    
-                    if (!port.cableSource) {
-                        port.cableSource = requirement.type;
-                        port.identifier = generateSmartIdentifier(requirement.type, currentIdf, patchPanels[panelIndex].sequence, portIndex % patchPanels[0].ports.length + 1);
+                    const portIndexInPanel = portIndex % patchPanels[0].ports.length;
+                    const panelComponent = updatedComponents.find(c => c.id ===
+                        patchPanels[panelIndex].id);
+
+                    if (panelComponent && !panelComponent.ports[portIndexInPanel].cableSource)
+                    {
+                        panelComponent.ports[portIndexInPanel].cableSource = requirement.type
+                        panelComponent.ports[portIndexInPanel].identifier =
+                            generateSmartIdentifier(
+                                requirement.type,
+                                currentIdf,
+                                panelComponent.sequence,
+                                portIndexInPanel + 1
+                            );
                         break;
                     }
                     portIndex++;
@@ -1105,12 +1114,12 @@ const RackVisualization = ({
                             sx={{ mb: 2, backgroundColor: '#9C27B0', '&:hover': { backgroundColor: '#8e24aa' } }}
                             onClick={handleAutoPortWiring}
                         >
-                            Auto Port Wiring
+                            Auto Port Wiring (Patch Panel Setup)
                         </Button>
                         <Button 
                             variant="contained" 
                             fullWidth 
-                            sx={{ mb: 2, backgroundColor: '#9C27B0', '&:hover': { backgroundColor: '#8e24aa' } }}
+                            sx={{ mb: 2, backgroundColor: '#34c6ea', '&:hover': { backgroundColor: '#8e24aa' } }}
                             onClick={handleAutoWiring}
                         >
                             Auto Component Wiring
