@@ -71,9 +71,20 @@ const InitialSetupForm = ({ onSubmit }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        const updatedIdfData = {
+            ...idfData,
+            MDF: {
+                rackSize: 42,
+                devices: [
+                    { type: 'ont', count: 1 },
+                    { type: 'idf', count: numIdfs },
+                    { type: 'core_switch', count: 1 }
+                ]
+            }
+        };
         onSubmit({
-            numIdfs: numIdfs,
-            idfData: idfData
+            numIdfs: numIdfs + 1, // Add 1 for MDF
+            idfData: updatedIdfData
         });
     };
 
