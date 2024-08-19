@@ -366,10 +366,16 @@ const RackVisualization = ({
     const handleAutoPortWiring = () => {
         // Initialize ports for patch panels to satisfy device requirements
         const patchPanels = components.filter(c => c.type === 'patch_panel');
+        const fiberPatchPanels = components.filter(c => c.type === 'fiber_patch_panel');
         const deviceRequirements = idfData[currentIdf]?.devices || [];
 
         if (patchPanels.length === 0) {
             alert('Auto port wiring requires at least one patch panel.');
+            return;
+        }
+
+        if (fiberPatchPanels.length === 0) {
+            alert('Auto port wiring requires at least one fiber patch panel.');
             return;
         }
 
@@ -382,26 +388,40 @@ const RackVisualization = ({
         }
 
         let updatedComponents = [...components];
-        let portIndex = 0;
 
+        // Setup fiber patch panel
+        const fiberPatchPanel = updatedComponents.find(c => c.type === 'fiber_patch_panel');
+        if (currentIdf === numIdfs) {
+            // MDF: Connect to all IDFs
+            for (let i = 1; i < numIdfs; i++) {
+                if (i <= fiberPatchPanel.ports.length) {
+                    fiberPatchPanel.ports[i - 1].cableSource = `IDF_${i}`;
+                    fiberPatchPanel.ports[i - 1].identifier = generateSmartIdentifier('fiber_patch_panel', currentIdf, fiberPatchPanel.sequence, i);
+                }
+            }
+        } else {
+            // IDF: First port connects to MDF
+            fiberPatchPanel.ports[0].cableSource = 'MDF';
+            fiberPatchPanel.ports[0].identifier = generateSmartIdentifier('fiber_patch_panel', currentIdf, fiberPatchPanel.sequence, 1);
+        }
+
+        // Setup copper patch panels
+        let portIndex = 0;
         deviceRequirements.forEach(requirement => {
             for (let i = 0; i < requirement.count; i++) {
                 while (portIndex < patchPanels.length * patchPanels[0].ports.length) {
                     const panelIndex = Math.floor(portIndex / patchPanels[0].ports.length);
                     const portIndexInPanel = portIndex % patchPanels[0].ports.length;
-                    const panelComponent = updatedComponents.find(c => c.id ===
-                        patchPanels[panelIndex].id);
+                    const panelComponent = updatedComponents.find(c => c.id === patchPanels[panelIndex].id);
 
-                    if (panelComponent && !panelComponent.ports[portIndexInPanel].cableSource)
-                    {
-                        panelComponent.ports[portIndexInPanel].cableSource = requirement.type
-                        panelComponent.ports[portIndexInPanel].identifier =
-                            generateSmartIdentifier(
-                                requirement.type,
-                                currentIdf,
-                                panelComponent.sequence,
-                                portIndexInPanel + 1
-                            );
+                    if (panelComponent && !panelComponent.ports[portIndexInPanel].cableSource) {
+                        panelComponent.ports[portIndexInPanel].cableSource = requirement.type;
+                        panelComponent.ports[portIndexInPanel].identifier = generateSmartIdentifier(
+                            requirement.type,
+                            currentIdf,
+                            panelComponent.sequence,
+                            portIndexInPanel + 1
+                        );
                         break;
                     }
                     portIndex++;
