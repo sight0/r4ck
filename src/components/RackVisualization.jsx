@@ -380,9 +380,9 @@ const RackVisualization = ({
             });
         });
 
+        // Add all new connections at once
         newConnections.forEach(connection => {
             onAddConnection(connection);
-            localConnections.push(connection);
         });
         
         if (newConnections.length > 0) {
