@@ -257,10 +257,15 @@ const RackVisualization = ({
         let newConnections = [];
 
         const isPortConnected = (componentId, portIdentifier) => {
-            console.log('Checking connection for:', { componentId, portIdentifier });
+            console.log('isPortConnected called with:', { componentId, portIdentifier });
+            console.log('Current IDF:', currentIdf);
+            console.log('Connections for current IDF:', connectionsPerIdf[currentIdf]);
             const result = (connectionsPerIdf[currentIdf] || []).some(conn => {
                 console.log('Comparing with connection:', conn);
-                return conn.deviceA.identifier === portIdentifier || conn.deviceB.identifier === portIdentifier;
+                const matchA = conn.deviceA.identifier === portIdentifier;
+                const matchB = conn.deviceB.identifier === portIdentifier;
+                console.log('Match A:', matchA, 'Match B:', matchB);
+                return matchA || matchB;
             });
             console.log('Is port connected:', result);
             return result;
