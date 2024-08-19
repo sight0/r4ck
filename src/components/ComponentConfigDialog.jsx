@@ -96,7 +96,7 @@ const ComponentConfigDialog = ({ open, onClose, component, numIdfs, idfData, cur
                             fullWidth
                             margin="normal"
                         />
-                        {editedComponent.type === 'switch' || editedComponent.type === 'patch_panel' || editedComponent.type === 'fiber_patch_panel' ? (
+                        {editedComponent.type === 'switch' || editedComponent.type === 'patch_panel' || editedComponent.type === 'fiber_patch_panel' || editedComponent.type === 'ont' ? (
                             <FormControl fullWidth margin="normal">
                                 <InputLabel>Capacity/Ports</InputLabel>
                                 <Select
@@ -112,6 +112,12 @@ const ComponentConfigDialog = ({ open, onClose, component, numIdfs, idfData, cur
                                         ))
                                     ) : editedComponent.type === 'fiber_patch_panel' ? (
                                         ['12', '24'].map((option) => (
+                                            <MenuItem key={option} value={option}>
+                                                {option}
+                                            </MenuItem>
+                                        ))
+                                    ) : editedComponent.type === 'ont' ? (
+                                        ['1', '2'].map((option) => (
                                             <MenuItem key={option} value={option}>
                                                 {option}
                                             </MenuItem>

@@ -14,12 +14,18 @@ export const componentTypeMap = {
 };
 
 export const generateSmartIdentifier = (componentType, idfNumber, sequence, portNumber) => {
-  const prefix = isEndUserDeviceType(componentType) ? 'A' : 'B';
-  const typeCode = componentTypeMap[componentType] || 'OT'; // OT for Other
+  let prefix = isEndUserDeviceType(componentType) ? 'A' : 'B';
+  let typeCode = componentTypeMap[componentType] || 'OT'; // OT for Other
   const idf = idfNumber.toString().padStart(2, '0');
   const device = sequence.toString().padStart(2, '0');
   const port = portNumber.toString().padStart(3, '0');
-
+  if(componentType === 'MDF'){
+    prefix = 'A';
+    typeCode = 'DF';
+  }else if(componentType === 'IDF'){
+    prefix = 'B';
+    typeCode = 'DF';
+  }
   return `${prefix}${typeCode}-${idf}-${device}-${port}`;
 };
 
