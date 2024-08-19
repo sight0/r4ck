@@ -822,7 +822,7 @@ const RackVisualization = ({
             if (sourceIdf !== currentIdf.toString() && connections) {
                 const incomingConnections = connections[`IDF_${currentIdf}`] || 0;
                 if (incomingConnections > 0) {
-                    const sourceLabel = parseInt(sourceIdf) === numIdfs + 1 ? 'MDF' : `IDF ${sourceIdf}`;
+                    const sourceLabel = parseInt(sourceIdf) === numIdfs ? 'MDF' : `IDF ${sourceIdf}`;
                     const allocatedIncomingPorts = fiberpatchPanelPorts.filter(port => port.cableSource === (parseInt(sourceIdf) === numIdfs + 1 ? 'MDF' : `IDF_${sourceIdf}`)).length;
                     issues.push({
                         message: `Allocate patch panel ports for incoming connections from ${sourceLabel}: This IDF needs to implement ${incomingConnections} dedicated fiber patch panel port(s) to receive connections from ${sourceLabel}.`,
@@ -899,9 +899,9 @@ const RackVisualization = ({
                                         }}>
                                             <Typography variant="subtitle2">CONNECTIONS</Typography>
                                             <Typography variant="h4" color="primary">
-                                                {Object.values(interIdfConnections).reduce((sum, connections) => 
-                                                    sum + (connections.MDF || 0), 0
-                                                )}
+                                                {
+                                                Object.values(interIdfConnections[numIdfs]).reduce((acc, value) => acc + value, 0)
+                                                }
                                             </Typography>
                                         </Box>
                                     </Grid>
