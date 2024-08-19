@@ -145,7 +145,7 @@ const RackVisualization = ({
     }, [currentIdf, idfData]);
 
     useEffect(() => {
-        console.log(allComponents)
+        console.log(idfData)
     }, []);
 
     const handleAutoPlacement = () => {
@@ -155,19 +155,18 @@ const RackVisualization = ({
         }
 
         const fiberPatchPanel = { type: 'fiber_patch_panel', name: 'FPP', capacity: '12', units: 1 };
-        const ont = { type: 'ont', name: 'ONT', capacity: '1', units: 1 };
 
         let template;
         if (currentIdf === numIdfs) {
             // MDF template
             template = [
-                ont,
                 { type: 'cable_manager', name: 'Cable Manager 1', capacity: '1', units: 1 },
                 { type: 'patch_panel', name: 'PP', capacity: '24', units: 1 },
                 { type: 'patch_panel', name: 'PP', capacity: '24', units: 1 },
                 { type: 'cable_manager', name: 'Cable Manager 2', capacity: '1', units: 1 },
                 { type: 'switch', name: 'C9200-48T', capacity: '48', units: 1 },
-            ];
+                { type: 'ont', name: 'ONT', capacity: '1', units: 1 }
+        ];
         } else {
             // IDF template
             template = [
