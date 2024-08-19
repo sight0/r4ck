@@ -256,15 +256,9 @@ const RackVisualization = ({
 
         let newConnections = [];
 
-        const isPortConnected = (componentId, portLabel) => {
-            const component = components.find(comp => comp.id === componentId);
-            if (!component) return false;
-        
-            const port = component.ports.find(p => p.label === portLabel);
-            if (!port) return false;
-
+        const isPortConnected = (componentId, portIdentifier) => {
             return (connectionsPerIdf[currentIdf] || []).some(conn => 
-                conn.deviceA.identifier === port.identifier || conn.deviceB.identifier === port.identifier
+                conn.deviceA.identifier === portIdentifier || conn.deviceB.identifier === portIdentifier
             );
         };
 
@@ -277,8 +271,8 @@ const RackVisualization = ({
                 if (switchPortIndex < switchComponent.ports.length) {
                     const switchPort = switchComponent.ports[switchPortIndex];
 
-                    if (!isPortConnected(switchComponent.id, switchPort.label) && 
-                        !isPortConnected(fiberPatchPanel.id, fiberPort.label)) {
+                    if (!isPortConnected(switchComponent.id, switchPort.identifier) && 
+                        !isPortConnected(fiberPatchPanel.id, fiberPort.identifier)) {
                         newConnections.push({
                             id: generateUniqueId(),
                             deviceA: {
