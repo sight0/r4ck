@@ -145,7 +145,7 @@ const RackVisualization = ({
     }, [currentIdf, idfData]);
 
     useEffect(() => {
-        console.log(idfData)
+        console.log(connectionsPerIdf)
     }, []);
 
     const handleAutoPlacement = () => {
