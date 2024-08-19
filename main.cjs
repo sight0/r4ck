@@ -1,4 +1,4 @@
-const { app, BrowserWindow, globalShortcut } = require('electron');
+const { app, BrowserWindow, globalShortcut, ipcMain } = require('electron');
 const path = require('path');
 
 app.disableHardwareAcceleration();
@@ -10,8 +10,8 @@ function createWindow() {
         height: 1080,
         fullscreen: true,
         webPreferences: {
-            nodeIntegration: true,
-            contextIsolation: false,
+            preload: path.join(__dirname, 'preload.js'), // Use preload script
+            contextIsolation: true,
         },
     });
 
@@ -35,6 +35,12 @@ app.on('ready', () => {
     });
 });
 
+ipcMain.on('close-window', () => {
+    const focusedWindow = BrowserWindow.getFocusedWindow();
+    if (focusedWindow) {
+        focusedWindow.close();
+    }
+});
 
 app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') {

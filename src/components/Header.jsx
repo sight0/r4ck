@@ -2,6 +2,7 @@ import { AppBar, Toolbar, Typography, IconButton, Box } from '@mui/material';
 import { styled } from '@mui/system';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import PropTypes from 'prop-types';
+import CloseButton from "./CloseButton.jsx";
 
 const Logo = styled('img')({
     marginRight: '16px',
@@ -32,6 +33,7 @@ const Header = ({ children }) => {
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     {children}
                 </Box>
+                <CloseButton/>
             </Toolbar>
         </AppBar>
     );
