@@ -155,14 +155,29 @@ const RackVisualization = ({
         }
 
         const fiberPatchPanel = { type: 'fiber_patch_panel', name: 'FPP', capacity: '12', units: 1 };
+        const ont = { type: 'ont', name: 'ONT', capacity: '1', units: 1 };
 
-        const template = [
-            { type: 'cable_manager', name: 'Cable Manager 1', capacity: '1', units: 1 },
-            { type: 'patch_panel', name: 'PP', capacity: '24', units: 1 },
-            { type: 'patch_panel', name: 'PP', capacity: '24', units: 1 },
-            { type: 'cable_manager', name: 'Cable Manager 2', capacity: '1', units: 1 },
-            { type: 'switch', name: 'C9200-48T', capacity: '48', units: 1 },
-        ];
+        let template;
+        if (currentIdf === numIdfs) {
+            // MDF template
+            template = [
+                ont,
+                { type: 'cable_manager', name: 'Cable Manager 1', capacity: '1', units: 1 },
+                { type: 'patch_panel', name: 'PP', capacity: '24', units: 1 },
+                { type: 'patch_panel', name: 'PP', capacity: '24', units: 1 },
+                { type: 'cable_manager', name: 'Cable Manager 2', capacity: '1', units: 1 },
+                { type: 'switch', name: 'C9200-48T', capacity: '48', units: 1 },
+            ];
+        } else {
+            // IDF template
+            template = [
+                { type: 'cable_manager', name: 'Cable Manager 1', capacity: '1', units: 1 },
+                { type: 'patch_panel', name: 'PP', capacity: '24', units: 1 },
+                { type: 'patch_panel', name: 'PP', capacity: '24', units: 1 },
+                { type: 'cable_manager', name: 'Cable Manager 2', capacity: '1', units: 1 },
+                { type: 'switch', name: 'C9200-48T', capacity: '48', units: 1 },
+            ];
+        }
 
         const templateSize = template.reduce((sum, comp) => sum + comp.units, 0) + fiberPatchPanel.units;
         const requiredTemplates = Math.ceil(totalDevices / 48); // Assuming 48 ports per switch
