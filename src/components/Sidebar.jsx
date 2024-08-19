@@ -14,7 +14,7 @@ export const components = [
     { id: 7, name: 'UPS', type: 'ups', color: '#FFA000' },
     { id: 8, name: 'Cable Manager', type: 'cable_manager', color: '#EF6C00' },
     { id: 9, name: 'ONT', type: 'ont', color: '#da6be6' },
-    { id: 10, name: 'Other', type: 'other', color: '#455A64' },
+    // { id: 10, name: 'Other', type: 'other', color: '#455A64' },
 ];
 
 const Sidebar = ({ currentIdf }) => {
