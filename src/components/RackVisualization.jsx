@@ -257,9 +257,13 @@ const RackVisualization = ({
         let newConnections = [];
 
         const isPortConnected = (componentId, portIdentifier) => {
-            return (connectionsPerIdf[currentIdf] || []).some(conn => 
-                conn.deviceA.identifier === portIdentifier || conn.deviceB.identifier === portIdentifier
-            );
+            console.log('Checking connection for:', { componentId, portIdentifier });
+            const result = (connectionsPerIdf[currentIdf] || []).some(conn => {
+                console.log('Comparing with connection:', conn);
+                return conn.deviceA.identifier === portIdentifier || conn.deviceB.identifier === portIdentifier;
+            });
+            console.log('Is port connected:', result);
+            return result;
         };
 
         // Connect Fiber Patch Panel to Switch
