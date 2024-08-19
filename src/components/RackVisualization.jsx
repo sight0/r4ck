@@ -160,13 +160,13 @@ const RackVisualization = ({
         if (currentIdf === numIdfs) {
             // MDF template
             template = [
+                { type: 'ont', name: 'ONT', capacity: '1', units: 1 },
                 { type: 'cable_manager', name: 'Cable Manager 1', capacity: '1', units: 1 },
                 { type: 'patch_panel', name: 'PP', capacity: '24', units: 1 },
                 { type: 'patch_panel', name: 'PP', capacity: '24', units: 1 },
                 { type: 'cable_manager', name: 'Cable Manager 2', capacity: '1', units: 1 },
                 { type: 'switch', name: 'C9200-48T', capacity: '48', units: 1 },
-                { type: 'ont', name: 'ONT', capacity: '1', units: 1 }
-        ];
+            ];
         } else {
             // IDF template
             template = [
@@ -240,18 +240,20 @@ const RackVisualization = ({
     };
 
     const handleAutoWiring = () => {
+        let fiberPatchPanels = components.filter(c => c.type === 'fiber_patch_panel');
         let patchPanels = components.filter(c => c.type === 'patch_panel')
             .sort((a, b) => b.ports.length - a.ports.length);
         let switches = components.filter(c => c.type === 'switch')
             .sort((a, b) => b.ports.length - a.ports.length);
+        let onts = components.filter(c => c.type === 'ont');
 
-        if (patchPanels.length === 0 || switches.length === 0) {
-            alert('Auto wiring requires at least one patch panel and one switch.');
+        if (switches.length === 0) {
+            alert('Auto wiring requires at least one switch.');
             return;
         }
 
         let newConnections = [];
-        let currentPatchPanelIndex = 0;
+        let reservedSwitchPorts = 0;
 
         const isPortConnected = (componentId, portLabel) => {
             return (connectionsPerIdf[currentIdf] || []).some(conn => 
@@ -260,8 +262,90 @@ const RackVisualization = ({
             );
         };
 
-        switches.forEach(switchComponent => {
+        // Connect Fiber Patch Panel to Switch
+        fiberPatchPanels.forEach(fiberPatchPanel => {
+            let switchComponent = switches[0];
             let switchPortIndex = 0;
+
+            while (switchPortIndex < switchComponent.ports.length && reservedSwitchPorts < fiberPatchPanel.ports.length) {
+                const switchPort = switchComponent.ports[switchPortIndex];
+                const fiberPort = fiberPatchPanel.ports[reservedSwitchPorts];
+
+                if (!isPortConnected(switchComponent.id, switchPort.label) && 
+                    !isPortConnected(fiberPatchPanel.id, fiberPort.label)) {
+                    const newConnection = {
+                        id: generateUniqueId(),
+                        deviceA: {
+                            componentId: fiberPatchPanel.id,
+                            port: fiberPort.label,
+                            identifier: fiberPort.identifier,
+                            deviceType: 'fiber_patch_panel',
+                            deviceSequence: fiberPatchPanel.sequence
+                        },
+                        deviceB: {
+                            componentId: switchComponent.id,
+                            port: switchPort.label,
+                            identifier: switchPort.identifier,
+                            deviceType: 'switch',
+                            deviceSequence: switchComponent.sequence
+                        },
+                        idf: currentIdf,
+                        type: 'fiber',
+                        speed: '10Gbps',
+                        notes: 'Auto-generated fiber connection'
+                    };
+                    newConnections.push(newConnection);
+                    reservedSwitchPorts++;
+                }
+                switchPortIndex++;
+            }
+        });
+
+        // Connect ONT to Switch (for MDF)
+        if (currentIdf === numIdfs) {
+            onts.forEach(ont => {
+                let switchComponent = switches[0];
+                let switchPortIndex = reservedSwitchPorts;
+
+                while (switchPortIndex < switchComponent.ports.length && reservedSwitchPorts < ont.ports.length + fiberPatchPanels[0].ports.length) {
+                    const switchPort = switchComponent.ports[switchPortIndex];
+                    const ontPort = ont.ports[reservedSwitchPorts - fiberPatchPanels[0].ports.length];
+
+                    if (!isPortConnected(switchComponent.id, switchPort.label) && 
+                        !isPortConnected(ont.id, ontPort.label)) {
+                        const newConnection = {
+                            id: generateUniqueId(),
+                            deviceA: {
+                                componentId: ont.id,
+                                port: ontPort.label,
+                                identifier: ontPort.identifier,
+                                deviceType: 'ont',
+                                deviceSequence: ont.sequence
+                            },
+                            deviceB: {
+                                componentId: switchComponent.id,
+                                port: switchPort.label,
+                                identifier: switchPort.identifier,
+                                deviceType: 'switch',
+                                deviceSequence: switchComponent.sequence
+                            },
+                            idf: currentIdf,
+                            type: 'fiber',
+                            speed: '10Gbps',
+                            notes: 'Auto-generated ONT connection'
+                        };
+                        newConnections.push(newConnection);
+                        reservedSwitchPorts++;
+                    }
+                    switchPortIndex++;
+                }
+            });
+        }
+
+        // Connect Patch Panels to Switch
+        switches.forEach(switchComponent => {
+            let switchPortIndex = reservedSwitchPorts;
+            let currentPatchPanelIndex = 0;
 
             while (switchPortIndex < switchComponent.ports.length && currentPatchPanelIndex < patchPanels.length) {
                 let currentPatchPanel = patchPanels[currentPatchPanelIndex];
@@ -1311,14 +1395,21 @@ const RackVisualization = ({
                                 <strong style={{ paddingLeft: '10px' }}>Expected Fiber Patch Panels:</strong>
                                 <span style={{ paddingRight: '30px' }}>{1}</span>
                             </Typography>
-                            <Typography variant="body2" sx={{ color: '#000000', backgroundColor: '#dcdcdc', padding: 1, borderRadius: 5, display: 'flex', justifyContent: 'space-between'  }}>
+                            <Typography variant="body2" sx={{ mb: 1, color: '#000000', backgroundColor: '#dcdcdc', padding: 1, borderRadius: 5, display: 'flex', justifyContent: 'space-between'  }}>
                                 <strong style={{ paddingLeft: '10px' }}>Expected Cable Managers:</strong>
                                 <span style={{ paddingRight: '30px' }}>{Math.ceil(totalDevices / 24) + 1}</span>
                             </Typography>
+                            {currentIdf === numIdfs && (
+                                <Typography variant="body2" sx={{ mb: 1, color: '#000000', backgroundColor: '#dcdcdc', padding: 1, borderRadius: 5, display: 'flex', justifyContent: 'space-between'  }}>
+                                    <strong style={{ paddingLeft: '10px' }}>Expected ONT:</strong>
+                                    <span style={{ paddingRight: '30px' }}>1</span>
+                                </Typography>
+                            )}
                             <Typography variant="body2" sx={{ mt: 2, fontStyle: 'italic' }}>
                                 Explanation: Patch panels and switches are calculated based on the number of devices, 
                                 assuming 24 ports per patch panel and 48 ports per switch. One fiber patch panel is 
                                 included for uplink connections. Cable managers are added to organize cabling between components.
+                                {currentIdf === numIdfs && " For MDF, one ONT is included for the main internet connection."}
                             </Typography>
                         </Box>
                     </Paper>
