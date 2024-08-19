@@ -396,13 +396,13 @@ const RackVisualization = ({
             for (let i = 1; i < numIdfs; i++) {
                 if (i <= fiberPatchPanel.ports.length) {
                     fiberPatchPanel.ports[i - 1].cableSource = `IDF_${i}`;
-                    fiberPatchPanel.ports[i - 1].identifier = generateSmartIdentifier('fiber_patch_panel', currentIdf, fiberPatchPanel.sequence, i);
+                    fiberPatchPanel.ports[i - 1].identifier = generateSmartIdentifier('IDF', currentIdf, fiberPatchPanel.sequence, i);
                 }
             }
         } else {
             // IDF: First port connects to MDF
-            fiberPatchPanel.ports[0].cableSource = 'MDF';
-            fiberPatchPanel.ports[0].identifier = generateSmartIdentifier('fiber_patch_panel', currentIdf, fiberPatchPanel.sequence, 1);
+            fiberPatchPanel.ports[0].cableSource = `IDF_${numIdfs}`;
+            fiberPatchPanel.ports[0].identifier = generateSmartIdentifier('MDF', currentIdf, fiberPatchPanel.sequence, 1);
         }
 
         // Setup copper patch panels
