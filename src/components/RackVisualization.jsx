@@ -938,7 +938,9 @@ const RackVisualization = ({
                                             <Typography variant="subtitle2">CONNECTIONS</Typography>
                                             <Typography variant="h4" color="primary">
                                                 {
-                                                Object.values(interIdfConnections[numIdfs]).reduce((acc, value) => acc + value, 0)
+                                                interIdfConnections[numIdfs] 
+                                                    ? Object.values(interIdfConnections[numIdfs]).reduce((acc, value) => acc + value, 0)
+                                                    : 0
                                                 }
                                             </Typography>
                                         </Box>
