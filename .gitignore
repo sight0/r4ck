@@ -9,6 +9,7 @@ lerna-debug.log*
 deploy.sh
 
 node_modules
+releases
 dist
 html
 dist-ssr

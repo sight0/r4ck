@@ -16,3 +16,15 @@ This application provides a visual representation of distribution frames racks, 
 - Component highlighting for easy identification
 - Save and load rack designs for persistence
 
+## Images
+
+Below are some images for the application
+
+### Initial setup screen where users can configure their Intermediate Distribution Frames (IDFs), specifying device types and quantities for accurate rack design
+![Initial Setup Form](images/initial_setup.png)
+
+### Showcasing the layout of the rack and its components, with options for auto wiring and component placement, as well as a detailed infrastructure layout.
+![Rack Visualization](images/home.png)
+
+### Detailed patching schedule displayed in a tabular format, allowing users to export data in CSV or PDF format
+![Patching Schedule](images/patch_schedule.png)
