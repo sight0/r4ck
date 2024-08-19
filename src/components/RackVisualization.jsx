@@ -44,6 +44,7 @@ import AddIcon from '@mui/icons-material/Add';
 import SaveIcon from '@mui/icons-material/Save';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import DeleteIcon from '@mui/icons-material/Delete';
+import RouterIcon from '@mui/icons-material/Router';
 import {generateSmartIdentifier, generateUniqueId} from "../utils/identifierUtils.js";
 
 const componentColors = Object.fromEntries(sidebarComponents.map(comp => [comp.type, comp.color]));
@@ -154,6 +155,7 @@ const RackVisualization = ({
         }
 
         const fiberPatchPanel = { type: 'fiber_patch_panel', name: 'FPP', capacity: '12', units: 1 };
+        const ont = { type: 'ont', name: 'ONT', capacity: '1', units: 1 };
 
         const template = [
             { type: 'cable_manager', name: 'Cable Manager 1', capacity: '1', units: 1 },
@@ -163,9 +165,9 @@ const RackVisualization = ({
             { type: 'switch', name: 'C9200-48T', capacity: '48', units: 1 },
         ];
 
-        const templateSize = template.reduce((sum, comp) => sum + comp.units, 0) + fiberPatchPanel.units;
+        const templateSize = template.reduce((sum, comp) => sum + comp.units, 0) + fiberPatchPanel.units + ont.units;
         const requiredTemplates = Math.ceil(totalDevices / 48); // Assuming 48 ports per switch
-        const totalRequiredUnits = templateSize + (templateSize - fiberPatchPanel.units) * (requiredTemplates - 1);
+        const totalRequiredUnits = templateSize + (templateSize - fiberPatchPanel.units - ont.units) * (requiredTemplates - 1);
 
         if (totalRequiredUnits > idfData[currentIdf]?.rackSize) {
             alert(`Warning: The current rack size (${idfData[currentIdf]?.rackSize}U) is insufficient for the required components (${totalRequiredUnits}U). Please increase the rack size in the initial setup or reduce the number of devices.`);
@@ -1312,7 +1314,7 @@ const RackVisualization = ({
                 <DialogTitle>Component Details</DialogTitle>
                 <DialogContent>
                     <TextField label="Name" fullWidth margin="normal" id="component-name" />
-                    {newComponent && (newComponent.type === 'switch' || newComponent.type === 'patch_panel' || newComponent.type === 'fiber_patch_panel') ? (
+                    {newComponent && (newComponent.type === 'switch' || newComponent.type === 'patch_panel' || newComponent.type === 'fiber_patch_panel' || newComponent.type === 'ont') ? (
                         <TextField
                             select
                             label="Capacity/Ports"
@@ -1329,6 +1331,12 @@ const RackVisualization = ({
                                 ))
                             ) : newComponent.type === 'fiber_patch_panel' ? (
                                 ['12', '24'].map((option) => (
+                                    <MenuItem key={option} value={option}>
+                                        {option}
+                                    </MenuItem>
+                                ))
+                            ) : newComponent.type === 'ont' ? (
+                                ['1'].map((option) => (
                                     <MenuItem key={option} value={option}>
                                         {option}
                                     </MenuItem>
