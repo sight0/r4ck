@@ -840,12 +840,10 @@ const RackVisualization = ({
                 </Box>
                 <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: 2 }}>
                     <Paper elevation={3} sx={{ p: 2, backgroundColor: theme.palette.background.paper }}>
-                        {/*<Typography variant="h6" gutterBottom>Current IDF Requirements</Typography>*/}
                         <Grid container spacing={2}>
-                            {['end_user_device', 'access_point', 'ip_phone'].map((deviceType, index) => {
-                                const device = idfData[currentIdf]?.devices.find(d => d.type === deviceType);
-                                return (
-                                    <Grid item xs={4} key={index}>
+                            {currentIdf === numIdfs ? (
+                                <>
+                                    <Grid item xs={4}>
                                         <Box sx={{ 
                                             display: 'flex', 
                                             flexDirection: 'column', 
@@ -855,12 +853,64 @@ const RackVisualization = ({
                                             borderRadius: 1,
                                             backgroundColor: theme.palette.background.default
                                         }}>
-                                            <Typography variant="subtitle2">{deviceType.replace(/_/g, ' ').toUpperCase()}</Typography>
-                                            <Typography variant="h4" color="primary">{device ? device.count : 0}</Typography>
+                                            <Typography variant="subtitle2">ONT</Typography>
+                                            <Typography variant="h4" color="primary">1</Typography>
                                         </Box>
                                     </Grid>
-                                );
-                            })}
+                                    <Grid item xs={4}>
+                                        <Box sx={{ 
+                                            display: 'flex', 
+                                            flexDirection: 'column', 
+                                            alignItems: 'center', 
+                                            p: 1, 
+                                            border: `1px solid ${theme.palette.divider}`,
+                                            borderRadius: 1,
+                                            backgroundColor: theme.palette.background.default
+                                        }}>
+                                            <Typography variant="subtitle2">IDFs</Typography>
+                                            <Typography variant="h4" color="primary">{numIdfs - 1}</Typography>
+                                        </Box>
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <Box sx={{ 
+                                            display: 'flex', 
+                                            flexDirection: 'column', 
+                                            alignItems: 'center', 
+                                            p: 1, 
+                                            border: `1px solid ${theme.palette.divider}`,
+                                            borderRadius: 1,
+                                            backgroundColor: theme.palette.background.default
+                                        }}>
+                                            <Typography variant="subtitle2">CONNECTIONS</Typography>
+                                            <Typography variant="h4" color="primary">
+                                                {Object.values(interIdfConnections).reduce((sum, connections) => 
+                                                    sum + (connections.MDF || 0), 0
+                                                )}
+                                            </Typography>
+                                        </Box>
+                                    </Grid>
+                                </>
+                            ) : (
+                                ['end_user_device', 'access_point', 'ip_phone'].map((deviceType, index) => {
+                                    const device = idfData[currentIdf]?.devices.find(d => d.type === deviceType);
+                                    return (
+                                        <Grid item xs={4} key={index}>
+                                            <Box sx={{ 
+                                                display: 'flex', 
+                                                flexDirection: 'column', 
+                                                alignItems: 'center', 
+                                                p: 1, 
+                                                border: `1px solid ${theme.palette.divider}`,
+                                                borderRadius: 1,
+                                                backgroundColor: theme.palette.background.default
+                                            }}>
+                                                <Typography variant="subtitle2">{deviceType.replace(/_/g, ' ').toUpperCase()}</Typography>
+                                                <Typography variant="h4" color="primary">{device ? device.count : 0}</Typography>
+                                            </Box>
+                                        </Grid>
+                                    );
+                                })
+                            )}
                         </Grid>
                     </Paper>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
