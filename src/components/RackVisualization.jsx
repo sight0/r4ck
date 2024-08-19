@@ -257,9 +257,14 @@ const RackVisualization = ({
         let newConnections = [];
 
         const isPortConnected = (componentId, portLabel) => {
+            const component = components.find(comp => comp.id === componentId);
+            if (!component) return false;
+        
+            const port = component.ports.find(p => p.label === portLabel);
+            if (!port) return false;
+
             return (connectionsPerIdf[currentIdf] || []).some(conn => 
-                (conn.deviceA.componentId === componentId && conn.deviceA.port === portLabel) ||
-                (conn.deviceB.componentId === componentId && conn.deviceB.port === portLabel)
+                conn.deviceA.identifier === port.identifier || conn.deviceB.identifier === port.identifier
             );
         };
 
