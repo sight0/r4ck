@@ -1313,14 +1313,14 @@ const RackVisualization = ({
                 <DialogTitle>Component Details</DialogTitle>
                 <DialogContent>
                     <TextField label="Name" fullWidth margin="normal" id="component-name" />
-                    {newComponent && (newComponent.type === 'switch' || newComponent.type === 'patch_panel' || newComponent.type === 'fiber_patch_panel') ? (
+                    {newComponent && (newComponent.type === 'switch' || newComponent.type === 'patch_panel' || newComponent.type === 'fiber_patch_panel' || newComponent.type === 'ont') ? (
                         <TextField
                             select
                             label="Capacity/Ports"
                             fullWidth
                             margin="normal"
                             id="component-capacity"
-                            defaultValue='24'
+                            defaultValue={newComponent.type === 'ont' ? '1' : '24'}
                         >
                             {newComponent.type === 'switch' ? (
                                 ['8', '24', '48'].map((option) => (
@@ -1330,6 +1330,12 @@ const RackVisualization = ({
                                 ))
                             ) : newComponent.type === 'fiber_patch_panel' ? (
                                 ['12', '24'].map((option) => (
+                                    <MenuItem key={option} value={option}>
+                                        {option}
+                                    </MenuItem>
+                                ))
+                            ) : newComponent.type === 'ont' ? (
+                                ['1', '2'].map((option) => (
                                     <MenuItem key={option} value={option}>
                                         {option}
                                     </MenuItem>
