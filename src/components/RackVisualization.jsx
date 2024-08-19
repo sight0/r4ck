@@ -861,20 +861,20 @@ const RackVisualization = ({
             });
         });
 
-        // Check for MDF connections
-        const mdfConnections = interIdfConnections[currentIdf]?.MDF || 0;
-        if (mdfConnections > 0) {
-            const allocatedMdfPorts = patchPanelPorts.filter(port => port.cableSource === 'MDF').length;
-
-            issues.push({
-                message: `Allocate patch panel ports for connections to MDF: This IDF requires ${mdfConnections} dedicated patch panel port(s) for MDF connections.`,
-                isSatisfied: allocatedMdfPorts >= mdfConnections,
-                severity: 'high',
-                solutionHint: allocatedMdfPorts >= mdfConnections
-                    ? `All required ports are allocated for MDF connections.`
-                    : `Configure ${mdfConnections - allocatedMdfPorts} more port(s) for MDF connections.`
-            });
-        }
+                // // Check for MDF connections
+        // const mdfConnections = interIdfConnections[currentIdf]?.MDF || 0;
+        // if (mdfConnections > 0) {
+        //     const allocatedMdfPorts = patchPanelPorts.filter(port => port.cableSource === 'MDF').length;
+        //
+        //     issues.push({
+        //         message: `Allocate patch panel ports for connections to MDF: This IDF requires ${mdfConnections} dedicated patch panel port(s) for MDF connections.`,
+        //         isSatisfied: allocatedMdfPorts >= mdfConnections,
+        //         severity: 'high',
+        //         solutionHint: allocatedMdfPorts >= mdfConnections
+        //             ? `All required ports are allocated for MDF connections.`
+        //             : `Configure ${mdfConnections - allocatedMdfPorts} more port(s) for MDF connections.`
+        //     });
+        // }
 
         // Get all fiber patch panel ports in this IDF
         const fiberpatchPanelPorts = components
