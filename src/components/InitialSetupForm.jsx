@@ -76,13 +76,12 @@ const InitialSetupForm = ({ onSubmit }) => {
             [numIdfs]: {
                 rackSize: 42,
                 devices: [
-                    { type: 'ont', count: 1 },
-                    { type: 'core_switch', count: 1 }
+                    { type: 'ont', count: 1 }
                 ]
             }
         };
         onSubmit({
-            numIdfs: numIdfs,
+            numIdfs: numIdfs+1,
             idfData: updatedIdfData
         });
     };
