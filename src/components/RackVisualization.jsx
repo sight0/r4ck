@@ -308,14 +308,14 @@ const RackVisualization = ({
         if (currentIdf === numIdfs) {
             onts.forEach(ont => {
                 let switchComponent = switches[0];
-                let switchPortIndex = switchComponent.ports.findIndex(port => !isPortConnected(switchComponent.id, port.label));
+                let switchPortIndex = switchComponent.ports.findIndex(port => !isPortConnected(switchComponent.id, port.identifier));
 
                 ont.ports.forEach(ontPort => {
                     if (switchPortIndex < switchComponent.ports.length) {
                         const switchPort = switchComponent.ports[switchPortIndex];
 
-                        if (!isPortConnected(switchComponent.id, switchPort.label) && 
-                            !isPortConnected(ont.id, ontPort.label)) {
+                        if (!isPortConnected(switchComponent.id, switchPort.identifier) &&
+                            !isPortConnected(ont.id, ontPort.identifier)) {
                             newConnections.push({
                                 id: generateUniqueId(),
                                 deviceA: {
@@ -346,15 +346,15 @@ const RackVisualization = ({
 
         // Connect Patch Panels to Switch
         switches.forEach(switchComponent => {
-            let switchPortIndex = switchComponent.ports.findIndex(port => !isPortConnected(switchComponent.id, port.label));
+            let switchPortIndex = switchComponent.ports.findIndex(port => !isPortConnected(switchComponent.id, port.identifier));
 
             patchPanels.forEach(patchPanel => {
                 patchPanel.ports.forEach(patchPanelPort => {
                     if (switchPortIndex < switchComponent.ports.length) {
                         const switchPort = switchComponent.ports[switchPortIndex];
 
-                        if (!isPortConnected(switchComponent.id, switchPort.label) && 
-                            !isPortConnected(patchPanel.id, patchPanelPort.label)) {
+                        if (!isPortConnected(switchComponent.id, switchPort.identifier) &&
+                            !isPortConnected(patchPanel.id, patchPanelPort.identifier)) {
                             newConnections.push({
                                 id: generateUniqueId(),
                                 deviceA: {
