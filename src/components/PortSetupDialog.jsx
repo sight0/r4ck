@@ -44,7 +44,7 @@ const PortSetupDialog = ({ open, onClose, ports, numIdfs, idf, onPortChange, com
             ];
         } else if (componentType === 'fiber_patch_panel') {
             return [
-                <MenuItem value="MDF" key="MDF">MDF</MenuItem>,
+                // <MenuItem value="MDF" key="MDF">MDF</MenuItem>,
                 ...[...Array(numIdfs)].map((_, i) => (
                     <MenuItem key={`IDF_${i + 1}`} value={`IDF_${i + 1}`} disabled={i + 1 === idf}>
                         IDF {i + 1}
