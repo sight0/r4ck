@@ -1399,12 +1399,6 @@ const RackVisualization = ({
                                 <strong style={{ paddingLeft: '10px' }}>Expected Cable Managers:</strong>
                                 <span style={{ paddingRight: '30px' }}>{Math.ceil(totalDevices / 24) + 1}</span>
                             </Typography>
-                            {currentIdf === numIdfs && (
-                                <Typography variant="body2" sx={{ mb: 1, color: '#000000', backgroundColor: '#dcdcdc', padding: 1, borderRadius: 5, display: 'flex', justifyContent: 'space-between'  }}>
-                                    <strong style={{ paddingLeft: '10px' }}>Expected ONT:</strong>
-                                    <span style={{ paddingRight: '30px' }}>1</span>
-                                </Typography>
-                            )}
                             <Typography variant="body2" sx={{ mt: 2, fontStyle: 'italic' }}>
                                 Explanation: Patch panels and switches are calculated based on the number of devices, 
                                 assuming 24 ports per patch panel and 48 ports per switch. One fiber patch panel is 
