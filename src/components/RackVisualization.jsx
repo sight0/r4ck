@@ -143,13 +143,17 @@ const RackVisualization = ({
         setTotalDevices(total);
     }, [currentIdf, idfData]);
 
+    useEffect(() => {
+        console.log(allComponents)
+    }, []);
+
     const handleAutoPlacement = () => {
         if (components.length > 0) {
             alert("Auto placement is only available when the IDF is empty. Please clear the IDF first.");
             return;
         }
 
-        const fiberPatchPanel = { type: 'fiber_patch_panel', name: 'FPP', capacity: '24', units: 1 };
+        const fiberPatchPanel = { type: 'fiber_patch_panel', name: 'FPP', capacity: '12', units: 1 };
 
         const template = [
             { type: 'cable_manager', name: 'Cable Manager 1', capacity: '1', units: 1 },
@@ -605,7 +609,6 @@ const RackVisualization = ({
     const handlePreviousIdf = () => {
         if (currentIdf > 1) {
             setCurrentIdf(currentIdf - 1);
-            setComponents([]);
         }
     };
 
@@ -630,10 +633,8 @@ const RackVisualization = ({
 
 
     const handleNextIdf = () => {
-        if (currentIdf < numIdfs) {
+        if (currentIdf <= numIdfs) {
             setCurrentIdf(currentIdf + 1);
-        } else {
-            alert("TODO: Implement MDF visualization");
         }
     };
 
@@ -796,14 +797,19 @@ const RackVisualization = ({
             });
         }
 
+        // Get all fiber patch panel ports in this IDF
+        const fiberpatchPanelPorts = components
+            .filter(c => c.type === 'fiber_patch_panel')
+            .flatMap(panel => panel.ports || []);
+
         // Check for incoming connections from other IDFs
         Object.entries(interIdfConnections).forEach(([sourceIdf, connections]) => {
             if (sourceIdf !== currentIdf.toString() && connections) {
                 const incomingConnections = connections[`IDF_${currentIdf}`] || 0;
                 if (incomingConnections > 0) {
-                    const allocatedIncomingPorts = patchPanelPorts.filter(port => port.cableSource === `IDF_${sourceIdf}`).length;
+                    const allocatedIncomingPorts = fiberpatchPanelPorts.filter(port => port.cableSource === `IDF_${sourceIdf}`).length;
                     issues.push({
-                        message: `Allocate patch panel ports for incoming connections from IDF ${sourceIdf}: This IDF needs to implement ${incomingConnections} dedicated patch panel port(s) to receive connections from IDF ${sourceIdf}.`,
+                        message: `Allocate patch panel ports for incoming connections from IDF ${sourceIdf}: This DF needs to implement ${incomingConnections} dedicated fiber patch panel port(s) to receive connections from IDF ${sourceIdf}.`,
                         isSatisfied: allocatedIncomingPorts >= incomingConnections,
                         severity: 'high',
                         solutionHint: allocatedIncomingPorts >= incomingConnections
@@ -821,7 +827,7 @@ const RackVisualization = ({
             <Box sx={{ mb: 2 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                     <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'text.primary' }}>
-                        {currentIdf === numIdfs + 1 ? 'MDF' : `IDF ${currentIdf}`} Rack Design
+                        {currentIdf === numIdfs ? 'MDF' : `IDF ${currentIdf}`} Rack Design
                     </Typography>
                     <Box>
                         <IconButton onClick={handlePreviousIdf} disabled={currentIdf === 1}>
@@ -1089,7 +1095,7 @@ const RackVisualization = ({
                                 height: '20px', 
                                 backgroundColor: theme.palette.grey[400]
                             }} />
-                            <StyledMdfButton sx={{ mb: 2 }}>MDF</StyledMdfButton>
+                            <StyledMdfButton sx={{ mb: 2 }} onClick={() => setCurrentIdf(numIdfs)}>MDF</StyledMdfButton>
                             <Box sx={{ 
                                 width: '100%', 
                                 height: '2px', 
@@ -1133,7 +1139,7 @@ const RackVisualization = ({
                                         justifyContent: numIdfs === 1 ? 'center' : 'flex-start',
                                     }}
                                 >
-                                    {[...Array(numIdfs)].map((_, index) => (
+                                    {[...Array(numIdfs-1)].map((_, index) => (
                                         <Box key={index} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', m: 1, flexShrink: 0 }}>
                                             <Box sx={{ 
                                                 width: '2px', 
