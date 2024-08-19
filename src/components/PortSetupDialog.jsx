@@ -47,7 +47,7 @@ const PortSetupDialog = ({ open, onClose, ports, numIdfs, idf, onPortChange, com
                 // <MenuItem value="MDF" key="MDF">MDF</MenuItem>,
                 ...[...Array(numIdfs)].map((_, i) => (
                     <MenuItem key={`IDF_${i + 1}`} value={`IDF_${i + 1}`} disabled={i + 1 === idf}>
-                        IDF {i + 1}
+                        {i + 1 === numIdfs ? 'MDF' : `IDF ${i + 1}`}
                     </MenuItem>
                 ))
             ];
