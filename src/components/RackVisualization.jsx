@@ -255,7 +255,6 @@ const RackVisualization = ({
         }
 
         let newConnections = [];
-        let reservedSwitchPorts = 0;
 
         const isPortConnected = (componentId, portLabel) => {
             return (connectionsPerIdf[currentIdf] || []).some(conn => 
@@ -269,60 +268,20 @@ const RackVisualization = ({
             let switchComponent = switches[0];
             let switchPortIndex = 0;
 
-            while (switchPortIndex < switchComponent.ports.length && reservedSwitchPorts < fiberPatchPanel.ports.length) {
-                const switchPort = switchComponent.ports[switchPortIndex];
-                const fiberPort = fiberPatchPanel.ports[reservedSwitchPorts];
-
-                if (!isPortConnected(switchComponent.id, switchPort.label) && 
-                    !isPortConnected(fiberPatchPanel.id, fiberPort.label)) {
-                    const newConnection = {
-                        id: generateUniqueId(),
-                        deviceA: {
-                            componentId: fiberPatchPanel.id,
-                            port: fiberPort.label,
-                            identifier: fiberPort.identifier,
-                            deviceType: 'fiber_patch_panel',
-                            deviceSequence: fiberPatchPanel.sequence
-                        },
-                        deviceB: {
-                            componentId: switchComponent.id,
-                            port: switchPort.label,
-                            identifier: switchPort.identifier,
-                            deviceType: 'switch',
-                            deviceSequence: switchComponent.sequence
-                        },
-                        idf: currentIdf,
-                        type: 'fiber',
-                        speed: '10Gbps',
-                        notes: 'Auto-generated fiber connection'
-                    };
-                    newConnections.push(newConnection);
-                    reservedSwitchPorts++;
-                }
-                switchPortIndex++;
-            }
-        });
-
-        // Connect ONT to Switch (for MDF)
-        if (currentIdf === numIdfs) {
-            onts.forEach(ont => {
-                let switchComponent = switches[0];
-                let switchPortIndex = reservedSwitchPorts;
-
-                while (switchPortIndex < switchComponent.ports.length && reservedSwitchPorts < ont.ports.length + fiberPatchPanels[0].ports.length) {
+            fiberPatchPanel.ports.forEach(fiberPort => {
+                if (switchPortIndex < switchComponent.ports.length) {
                     const switchPort = switchComponent.ports[switchPortIndex];
-                    const ontPort = ont.ports[reservedSwitchPorts - fiberPatchPanels[0].ports.length];
 
                     if (!isPortConnected(switchComponent.id, switchPort.label) && 
-                        !isPortConnected(ont.id, ontPort.label)) {
-                        const newConnection = {
+                        !isPortConnected(fiberPatchPanel.id, fiberPort.label)) {
+                        newConnections.push({
                             id: generateUniqueId(),
                             deviceA: {
-                                componentId: ont.id,
-                                port: ontPort.label,
-                                identifier: ontPort.identifier,
-                                deviceType: 'ont',
-                                deviceSequence: ont.sequence
+                                componentId: fiberPatchPanel.id,
+                                port: fiberPort.label,
+                                identifier: fiberPort.identifier,
+                                deviceType: 'fiber_patch_panel',
+                                deviceSequence: fiberPatchPanel.sequence
                             },
                             deviceB: {
                                 componentId: switchComponent.id,
@@ -334,70 +293,91 @@ const RackVisualization = ({
                             idf: currentIdf,
                             type: 'fiber',
                             speed: '10Gbps',
-                            notes: 'Auto-generated ONT connection'
-                        };
-                        newConnections.push(newConnection);
-                        reservedSwitchPorts++;
+                            notes: 'Auto-generated fiber connection'
+                        });
+                        switchPortIndex++;
                     }
-                    switchPortIndex++;
                 }
+            });
+        });
+
+        // Connect ONT to Switch (for MDF)
+        if (currentIdf === numIdfs) {
+            onts.forEach(ont => {
+                let switchComponent = switches[0];
+                let switchPortIndex = switchComponent.ports.findIndex(port => !isPortConnected(switchComponent.id, port.label));
+
+                ont.ports.forEach(ontPort => {
+                    if (switchPortIndex < switchComponent.ports.length) {
+                        const switchPort = switchComponent.ports[switchPortIndex];
+
+                        if (!isPortConnected(switchComponent.id, switchPort.label) && 
+                            !isPortConnected(ont.id, ontPort.label)) {
+                            newConnections.push({
+                                id: generateUniqueId(),
+                                deviceA: {
+                                    componentId: ont.id,
+                                    port: ontPort.label,
+                                    identifier: ontPort.identifier,
+                                    deviceType: 'ont',
+                                    deviceSequence: ont.sequence
+                                },
+                                deviceB: {
+                                    componentId: switchComponent.id,
+                                    port: switchPort.label,
+                                    identifier: switchPort.identifier,
+                                    deviceType: 'switch',
+                                    deviceSequence: switchComponent.sequence
+                                },
+                                idf: currentIdf,
+                                type: 'fiber',
+                                speed: '10Gbps',
+                                notes: 'Auto-generated ONT connection'
+                            });
+                            switchPortIndex++;
+                        }
+                    }
+                });
             });
         }
 
         // Connect Patch Panels to Switch
         switches.forEach(switchComponent => {
-            let switchPortIndex = reservedSwitchPorts;
-            let currentPatchPanelIndex = 0;
+            let switchPortIndex = switchComponent.ports.findIndex(port => !isPortConnected(switchComponent.id, port.label));
 
-            while (switchPortIndex < switchComponent.ports.length && currentPatchPanelIndex < patchPanels.length) {
-                let currentPatchPanel = patchPanels[currentPatchPanelIndex];
-                let patchPanelPortIndex = 0;
+            patchPanels.forEach(patchPanel => {
+                patchPanel.ports.forEach(patchPanelPort => {
+                    if (switchPortIndex < switchComponent.ports.length) {
+                        const switchPort = switchComponent.ports[switchPortIndex];
 
-                while (patchPanelPortIndex < currentPatchPanel.ports.length && switchPortIndex < switchComponent.ports.length) {
-                    const switchPort = switchComponent.ports[switchPortIndex];
-                    const patchPanelPort = currentPatchPanel.ports[patchPanelPortIndex];
-
-                    if (!isPortConnected(switchComponent.id, switchPort.label) && 
-                        !isPortConnected(currentPatchPanel.id, patchPanelPort.label)) {
-                        const newConnection = {
-                            id: generateUniqueId(),
-                            deviceA: {
-                                componentId: currentPatchPanel.id,
-                                port: patchPanelPort.label,
-                                identifier: patchPanelPort.identifier,
-                                deviceType: 'patch_panel',
-                                deviceSequence: currentPatchPanel.sequence
-                            },
-                            deviceB: {
-                                componentId: switchComponent.id,
-                                port: switchPort.label,
-                                identifier: switchPort.identifier,
-                                deviceType: 'switch',
-                                deviceSequence: switchComponent.sequence
-                            },
-                            idf: currentIdf,
-                            type: 'copper',
-                            speed: '1Gbps',
-                            notes: 'Auto-generated connection'
-                        };
-                        newConnections.push(newConnection);
-                        switchPortIndex++;
-                        patchPanelPortIndex++;
-                    } else {
-                        // If either port is already connected, move to the next port
-                        if (isPortConnected(switchComponent.id, switchPort.label)) {
+                        if (!isPortConnected(switchComponent.id, switchPort.label) && 
+                            !isPortConnected(patchPanel.id, patchPanelPort.label)) {
+                            newConnections.push({
+                                id: generateUniqueId(),
+                                deviceA: {
+                                    componentId: patchPanel.id,
+                                    port: patchPanelPort.label,
+                                    identifier: patchPanelPort.identifier,
+                                    deviceType: 'patch_panel',
+                                    deviceSequence: patchPanel.sequence
+                                },
+                                deviceB: {
+                                    componentId: switchComponent.id,
+                                    port: switchPort.label,
+                                    identifier: switchPort.identifier,
+                                    deviceType: 'switch',
+                                    deviceSequence: switchComponent.sequence
+                                },
+                                idf: currentIdf,
+                                type: 'copper',
+                                speed: '1Gbps',
+                                notes: 'Auto-generated connection'
+                            });
                             switchPortIndex++;
                         }
-                        if (isPortConnected(currentPatchPanel.id, patchPanelPort.label)) {
-                            patchPanelPortIndex++;
-                        }
                     }
-                }
-
-                if (patchPanelPortIndex >= currentPatchPanel.ports.length) {
-                    currentPatchPanelIndex++;
-                }
-            }
+                });
+            });
         });
 
         newConnections.forEach(connection => {
