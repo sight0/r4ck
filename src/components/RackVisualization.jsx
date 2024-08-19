@@ -388,21 +388,25 @@ const RackVisualization = ({
         }
 
         let updatedComponents = [...components];
+        let updatedInterIdfConnections = { ...interIdfConnections };
 
         // Setup fiber patch panel
         const fiberPatchPanel = updatedComponents.find(c => c.type === 'fiber_patch_panel');
         if (currentIdf === numIdfs) {
             // MDF: Connect to all IDFs
+            updatedInterIdfConnections[currentIdf] = {};
             for (let i = 1; i < numIdfs; i++) {
                 if (i <= fiberPatchPanel.ports.length) {
                     fiberPatchPanel.ports[i - 1].cableSource = `IDF_${i}`;
                     fiberPatchPanel.ports[i - 1].identifier = generateSmartIdentifier('IDF', currentIdf, fiberPatchPanel.sequence, i);
+                    updatedInterIdfConnections[currentIdf][`IDF_${i}`] = 1;
                 }
             }
         } else {
             // IDF: First port connects to MDF
             fiberPatchPanel.ports[0].cableSource = `IDF_${numIdfs}`;
             fiberPatchPanel.ports[0].identifier = generateSmartIdentifier('MDF', currentIdf, fiberPatchPanel.sequence, 1);
+            updatedInterIdfConnections[currentIdf] = { MDF: 1 };
         }
 
         // Setup copper patch panels
@@ -433,6 +437,8 @@ const RackVisualization = ({
             ...prevAll,
             [currentIdf]: updatedComponents
         }));
+
+        onUpdateInterIdfConnections(updatedInterIdfConnections);
 
         alert('Auto port wiring completed successfully.');
     };
