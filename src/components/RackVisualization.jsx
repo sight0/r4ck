@@ -179,8 +179,10 @@ const RackVisualization = ({
         }
 
         const templateSize = template.reduce((sum, comp) => sum + comp.units, 0) + fiberPatchPanel.units;
+
         const requiredTemplates = Math.ceil(totalDevices / 48); // Assuming 48 ports per switch
         const totalRequiredUnits = templateSize + (templateSize - fiberPatchPanel.units) * (requiredTemplates - 1);
+
 
         if (totalRequiredUnits > idfData[currentIdf]?.rackSize) {
             alert(`Warning: The current rack size (${idfData[currentIdf]?.rackSize}U) is insufficient for the required components (${totalRequiredUnits}U). Please increase the rack size in the initial setup or reduce the number of devices.`);
