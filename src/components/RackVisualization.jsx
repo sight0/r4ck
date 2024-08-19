@@ -255,12 +255,10 @@ const RackVisualization = ({
         }
 
         let newConnections = [];
+        let localConnections = [...(connectionsPerIdf[currentIdf] || [])];
 
         const isPortConnected = (componentId, portIdentifier) => {
-            console.log('connectionsPerIdf:', connectionsPerIdf);
-            console.log('currentIdf:', currentIdf);
-            const currentConnections = connectionsPerIdf[currentIdf] || [];
-            return currentConnections.some(conn => 
+            return localConnections.some(conn => 
                 conn.deviceA.identifier === portIdentifier || conn.deviceB.identifier === portIdentifier
             );
         };
@@ -384,6 +382,7 @@ const RackVisualization = ({
 
         newConnections.forEach(connection => {
             onAddConnection(connection);
+            localConnections.push(connection);
         });
         
         if (newConnections.length > 0) {
