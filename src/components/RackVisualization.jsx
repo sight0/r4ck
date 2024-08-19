@@ -817,19 +817,20 @@ const RackVisualization = ({
             .filter(c => c.type === 'fiber_patch_panel')
             .flatMap(panel => panel.ports || []);
 
-        // Check for incoming connections from other IDFs
+        // Check for incoming connections from other IDFs and MDF
         Object.entries(interIdfConnections).forEach(([sourceIdf, connections]) => {
             if (sourceIdf !== currentIdf.toString() && connections) {
                 const incomingConnections = connections[`IDF_${currentIdf}`] || 0;
                 if (incomingConnections > 0) {
-                    const allocatedIncomingPorts = fiberpatchPanelPorts.filter(port => port.cableSource === `IDF_${sourceIdf}`).length;
+                    const sourceLabel = parseInt(sourceIdf) === numIdfs + 1 ? 'MDF' : `IDF ${sourceIdf}`;
+                    const allocatedIncomingPorts = fiberpatchPanelPorts.filter(port => port.cableSource === (parseInt(sourceIdf) === numIdfs + 1 ? 'MDF' : `IDF_${sourceIdf}`)).length;
                     issues.push({
-                        message: `Allocate patch panel ports for incoming connections from IDF ${sourceIdf}: This DF needs to implement ${incomingConnections} dedicated fiber patch panel port(s) to receive connections from IDF ${sourceIdf}.`,
+                        message: `Allocate patch panel ports for incoming connections from ${sourceLabel}: This IDF needs to implement ${incomingConnections} dedicated fiber patch panel port(s) to receive connections from ${sourceLabel}.`,
                         isSatisfied: allocatedIncomingPorts >= incomingConnections,
                         severity: 'high',
                         solutionHint: allocatedIncomingPorts >= incomingConnections
-                            ? `All required ports are allocated for incoming connections from IDF ${sourceIdf}.`
-                            : `Configure ${incomingConnections - allocatedIncomingPorts} more port(s) for receiving connections from IDF ${sourceIdf}.`
+                            ? `All required ports are allocated for incoming connections from ${sourceLabel}.`
+                            : `Configure ${incomingConnections - allocatedIncomingPorts} more port(s) for receiving connections from ${sourceLabel}.`
                     });
                 }
             }
