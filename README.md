@@ -16,6 +16,13 @@ This application provides a visual representation of distribution frames racks, 
 - Component highlighting for easy identification
 - Save and load rack designs for persistence
 
+## Todo
+Improve the autocomponent & autowiring MDF template by doing the following:<br>
+1) Connect the ONT component to a Router component
+2) Connect the Router component to a Firewall component
+3) Connect the Firewall component to the core Switch component
+4) (* Maybe) For more security a Firewall would be placed between the ONT and Router components
+
 ## Images
 
 Below are some images for the application
