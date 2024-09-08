@@ -14,7 +14,7 @@ const Header = ({ children }) => {
         <AppBar position="static">
             <Toolbar className="app-bar" sx={{ justifyContent: 'space-between' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Logo src="/logo.png" alt="Logo" />
+                    <Logo src={`${import.meta.env.BASE_URL}logo.png`} alt="Logo" />
                     <Typography variant="h6" sx={{ mr: 2 }}>
                         Design and Recommendation Tool
                     </Typography>
