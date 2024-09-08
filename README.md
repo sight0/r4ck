@@ -1,4 +1,4 @@
-# R4CK - Network Rack Visualization Tool ![link](https://sight0.github.io/r4ck/)
+# R4CK - Network Rack Visualization Tool
 
 This application provides a visual representation of distribution frames racks, allowing users to configure and manage network components efficiently and connect them together correctly.
 
