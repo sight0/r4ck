@@ -3,33 +3,32 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main  # This triggers the workflow when changes are pushed to the main branch
+      - main  # Triggers the workflow when code is pushed to the main branch
 
 jobs:
-  build-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write  # This ensures the workflow has write access to the repository
+
     steps:
-    # Step 1: Checkout the code from the main branch
-    - name: Checkout code
+    - name: Checkout the repository
       uses: actions/checkout@v2
 
-    # Step 2: Set up Node.js (specify the version)
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '20.x'
+        node-version: '20.x'  # Set your desired Node.js version here
 
-    # Step 3: Install dependencies and build the project
-    - name: Install dependencies and build
+    - name: Install dependencies and build the project
       run: |
-        npm ci  # Clean install dependencies
-        npm run build  # Build the Vite project
+        npm ci
+        npm run build  # Build the Vite project (output goes to ./dist)
 
-    # Step 4: Deploy the built files to GitHub Pages (gh-pages branch)
     - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
+      uses: peaceiris/actions-gh-pages@v4
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}  # Auth token to push to the repo
-        publish_dir: ./dist  # Directory to deploy (this is where Vite outputs the build)
-        publish_branch: gh-pages  # Explicitly specify the branch to push to (gh-pages by default)
+        github_token: ${{ secrets.GITHUB_TOKEN }}  # Use the built-in GitHub token for authentication
+        publish_dir: ./dist  # This is where Vite outputs its build artifacts
+        publish_branch: gh-pages  # Ensure the action deploys to the gh-pages branch
