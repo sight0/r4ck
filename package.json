@@ -16,7 +16,7 @@
     "@mui/material": "^5.2.0",
     "@mui/system": "^5.16.5",
     "file-saver": "^2.0.5",
-    "jspdf": "^4.1.0",
+    "jspdf": "^4.2.1",
     "jspdf-autotable": "^5.0.7",
     "konva": "^8.0.3",
     "prop-types": "^15.8.1",
